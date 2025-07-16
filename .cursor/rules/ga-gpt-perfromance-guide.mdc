@@ -1,0 +1,64 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+FragGPT-GA Project: Core Development & Optimization Guidelines (v2.0)
+Project Description: This document outlines the core development guidelines for the FragGPT-GA project. The project aims to build an innovative small-molecule generation framework by combining a Generative Pre-trained Transformer (GPT) with a Genetic Algorithm (GA) for efficient molecular discovery and optimization.
+1. Core Philosophy & Objectives
+Hybrid Strategy: The core of this project is a hybrid strategy leveraging both GPT and GA.
+  GPT's Role (Diversity Expansion): In the initial generations, utilize a fragment-based GPT model to rapidly explore a vast chemical space and generate diverse molecular scaffolds.
+  GA's Role (High-Quality Optimization): In later generations, employ a Genetic Algorithm (crossover, mutation) for the fine-grained optimization of molecules, improving their performance on specific metrics like Docking Score, QED, and SA.
+Current Goal: The main framework (including pure GA and GA-GPT versions) is complete. The current core task is version tuning and code optimization to achieve the best possible molecule generation performance.
+2. Core Iterative Optimization Workflow
+The project is centered around a precisely defined iterative loop. All development and debugging must align with this workflow.
+Single Iteration Steps:
+①Evaluate Parent Population:
+  Conduct a comprehensive performance evaluation of the current generation's parent population.
+  Metrics: Docking Score (DS), QED, SA.
+  Scripts: @operoperations/docking/ and @operations/scoring/scoring_demo.py.
+②Decomposition & GPT Generation:
+  Decompose & Mask: Break down parent molecules into fragments and apply a masking strategy.
+    Script: @datasets/decompose/demo_frags.py
+  GPT Generation: Feed the processed fragments into the GPT model to generate a new batch of molecules.
+    Script: @fragment_GPT/generate_all.py
+③Genetic Algorithm (GA) Operations:
+  Crossover: Perform crossover operations on the pool of (GPT-generated molecules + parent population) to create new child molecules.
+    Script: @operations/crossover/crossover_demo_finetune.py
+  Mutation: Perform reaction-based mutation operations on the pool of (GPT-generated molecules + parent population) to create new child molecules.
+    Script: @operations/mutation/mutation_demo_finetune.py
+④Filter & Evaluate Child Population:
+  Merge & Filter: Combine molecules from crossover and mutation into a child population, then use a filter to remove invalid or undesirable chemical structures.
+    Script: @operations/filter/filter_demo.py
+  Evaluate Children: Assess the performance of the filtered child population using the same metrics (DS, QED, SA).
+⑤Selection:
+  From the combined pool of (parent population + child population), select the top-performing molecules based on a predefined strategy to form the next generation's parent population.
+  Single-Objective Selection: Select the top-K molecules based on docking score (lower is better).Multi-Objective Selection: Use Pareto optimization, considering three objectives: Docking Score (minimize), QED (maximize), and SA Score (maximize).
+⑥Logging & Loop:
+  Generate an evaluation report (.txt file) for the newly formed population (the next-generation parents).
+  Use this new population as the starting parents for the next iteration, repeating the process until the predefined number of generations is reached.
+3. Current Key Development TaskTask: Implement Flexible Fragment Masking
+  Target File: @datasets/decompose/demo_frags.py
+  Current State: The masking logic is hardcoded (e.g., always masking the last fragment).
+  Requirement: Refactor the masking logic into a more flexible function. This function should accept an integer n as a parameter to enable masking of the last n fragments of a molecule. This is crucial for tuning the diversity and novelty of the GPT-generated molecules.
+4. Code Quality & Engineering StandardsAll code contributions must strictly adhere to the following standards to ensure project maintainability, readability, and scalability.
+  Modularity (500-Line Rule):
+    No single Python file should exceed 500 lines of code.
+    Complex functionalities should be broken down into smaller, single-responsibility functions or moved to separate utility modules.
+  DRY (Don't Repeat Yourself):
+    Actively identify and refactor redundant code, especially within the @operations/ directory.
+    If similar functions exist across different modules, consolidate them into a shared utility module (utils).
+  Meaningful Comments:
+    The core value of a comment is to explain the "why" behind a decision, not just the "what."
+    Good: # A deep copy is used here to prevent modifying the original population list during selection.
+    Bad: # Copy the list.
+    Principle: Add comments only where necessary. Avoid cluttering code with obvious or redundant comments
+  Documentation & Formatting:
+    File Headers: Every .py file must begin with a header comment block that clearly explains its purpose and its role within the project.
+    Docstrings: All public functions, classes, and methods must have standard-format (e.g., Google Style) docstrings, clearly describing their purpose, arguments (Args), and return values (Returns).
+  Unified Configuration:
+    Centralize all variable parameters—such as population size, file paths, number of generations, and model parameters—in a single configuration file (e.g., config.py or config.yaml).
+    Strictly prohibit hardcoding these values directly into the business logic.
+  Environment:
+    The project uses a Python virtual environment named fraggpt.
+    Code should not include any logic for installing new packages. Assume all necessary libraries (RDKit, PyTorch, etc.) are already installed in the environment.
