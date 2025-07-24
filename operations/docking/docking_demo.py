@@ -659,15 +659,25 @@ def main():
                             f.write(f"{s}\t{r:.2f}\n")
                 logging.info(f"已完成 {i+1}/{len(smiles_list)} 分子对接，中间结果已保存")
     
-    # 写入结果文件
+    # 写入结果文件，按分数排序（分数越低越好排在前面）
     success_count = 0
     total_score = 0.0
+    valid_results = []
+    
+    # 收集有效结果
+    for smile, score in zip(smiles_list, results):
+        if score is not None:
+            success_count += 1
+            total_score += score
+            valid_results.append((smile, score))
+    
+    # 按分数排序（分数越低越好，升序排列）
+    valid_results.sort(key=lambda x: x[1])
+    
+    # 写入排序后的结果
     with open(args.output, 'w') as f:
-        for smile, score in zip(smiles_list, results):
-            if score is not None:
-                success_count += 1
-                total_score += score
-                f.write(f"{smile}\t{score:.2f}\n")
+        for smile, score in valid_results:
+            f.write(f"{smile}\t{score:.2f}\n")
     
     # 计算平均得分
     average_score = 0.0

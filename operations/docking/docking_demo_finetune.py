@@ -151,7 +151,7 @@ def keep_best_docking_results(results_dir):
                     print(f"删除文件失败: {file_path}, 错误: {e}")
 
 def output_smiles_scores(smiles_file, scores_dict, output_file):
-    """将成功对接的结果写入文件 不包含头 不记录NA值。"""
+    """将成功对接的结果写入文件,按对接分数排序（分数越低越好排在前面）,不包含头,不记录NA值。"""
     # 读取SMILES与分子名映射
     smiles_map = {}
     with open(smiles_file, "r") as f:
@@ -161,13 +161,26 @@ def output_smiles_scores(smiles_file, scores_dict, output_file):
                 if len(parts) >= 2:
                     smiles_map[parts[1]] = parts[0]
     
-    # 写入最终结果
+    # 收集有效的分子和分数
+    valid_molecules = []
+    for mol_name, smiles in smiles_map.items():
+        score = scores_dict.get(mol_name, "NA")
+        # 仅收集得分有效的分子
+        if score != "NA":
+            try:
+                valid_molecules.append((smiles, float(score)))
+            except (ValueError, TypeError):
+                continue  # 跳过无效分数
+    
+    # 按对接分数排序（分数越低越好，升序排列）
+    valid_molecules.sort(key=lambda x: x[1])
+    
+    # 写入排序后的结果
     with open(output_file, "w") as out:
-        for mol_name, smiles in smiles_map.items():
-            score = scores_dict.get(mol_name, "NA")
-            # 仅在得分有效时写入
-            if score != "NA":
-                out.write(f"{smiles}\t{score}\n")
+        for smiles, score in valid_molecules:
+            out.write(f"{smiles}\t{score}\n")
+    
+    print(f"已将 {len(valid_molecules)} 个有效分子按对接分数排序写入 {output_file}")
 
 class DockingWorkflow:
     """分子对接工作流程类"""    

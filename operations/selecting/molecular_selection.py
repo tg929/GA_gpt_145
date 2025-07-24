@@ -168,13 +168,16 @@ def select_molecules_by_algorithm(molecules_data: List[List[str]],
         return []
 
 def save_selected_molecules_with_scores(selected_molecules: List[List[str]], output_file: str):
-    """将选中的分子及其分数保存到文件，格式为: SMILES score"""
+    """将选中的分子及其分数保存到文件，按对接分数排序（分数越低越好排在前面），格式为: SMILES score"""
+    # 按对接分数排序（分数越低越好，升序排列）
+    sorted_molecules = sorted(selected_molecules, key=lambda mol: float(mol[2]))
+    
     with open(output_file, 'w') as f:
-        for mol in selected_molecules:
+        for mol in sorted_molecules:
             smiles = mol[0]
             score = mol[2]  # 对接分数
             f.write(f"{smiles}\t{score}\n")
-    logger.info(f"已保存 {len(selected_molecules)} 个选中的分子(带分数)到 {output_file}")
+    logger.info(f"已保存 {len(sorted_molecules)} 个选中的分子(带分数，已按对接分数排序)到 {output_file}")
 
 def save_selected_molecules(selected_smiles: List[str], output_file: str):
     """将选中的分子SMILES保存到文件。"""

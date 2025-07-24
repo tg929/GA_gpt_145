@@ -140,7 +140,7 @@ def dock_all_receptors(input_file, output_dir, targets, mgltools_path, logger):
     return results
 
 def calculate_multi_receptor_scores(docking_results, output_file, logger):
-    """计算多受体对接的综合得分"""
+    """计算多受体对接的综合得分，并按分数排序（分数越低越好排在前面）"""
     logger.info("计算多受体对接综合得分")    
     # 读取所有对接结果
     molecules = {}  # 分子SMILES -> {受体 -> 得分}    
@@ -180,7 +180,7 @@ def calculate_multi_receptor_scores(docking_results, output_file, logger):
         for smiles, score in sorted_molecules:
             f.write(f"{smiles}\t{score:.4f}\n")
     
-    logger.info(f"多受体综合得分计算完成，已将 {len(sorted_molecules)} 个分子的综合得分写入文件: {output_file}")
+    logger.info(f"多受体综合得分计算完成，已将 {len(sorted_molecules)} 个分子按综合得分排序写入文件: {output_file}")
     return output_file
 
 def main():

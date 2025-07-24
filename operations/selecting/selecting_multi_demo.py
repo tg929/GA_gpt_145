@@ -221,7 +221,7 @@ def save_selected_molecules(selected_molecules, output_file):
 
 def save_selected_molecules_with_scores(selected_molecules, output_file):
     """
-    保存选中的分子及其完整分数信息到文件
+    保存选中的分子及其完整分数信息到文件，按对接分数排序（分数越低越好排在前面）
     
     Args:
         selected_molecules: 选中的分子数据列表
@@ -229,15 +229,18 @@ def save_selected_molecules_with_scores(selected_molecules, output_file):
         
     输出格式: SMILES\tdocking_score\tqed_score\tsa_score
     """
+    # 按对接分数排序（分数越低越好，升序排列）
+    sorted_molecules = sorted(selected_molecules, key=lambda mol: mol['docking_score'])
+    
     with open(output_file, 'w') as f:
-        for mol_data in selected_molecules:
+        for mol_data in sorted_molecules:
             smiles = mol_data['smiles']
             docking = mol_data['docking_score']
             qed = mol_data.get('qed_score', 0.0)
             sa = mol_data.get('sa_score', 5.0)
             f.write(f"{smiles}\t{docking:.4f}\t{qed:.4f}\t{sa:.4f}\n")
     
-    logger.info(f"已保存 {len(selected_molecules)} 个选中的分子及分数到 {output_file}")
+    logger.info(f"已保存 {len(sorted_molecules)} 个选中的分子及分数(已按对接分数排序)到 {output_file}")
 
 def print_selection_statistics(selected_molecules):
     """打印选择统计信息"""
