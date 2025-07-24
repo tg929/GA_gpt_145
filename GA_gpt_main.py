@@ -19,7 +19,7 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PROJECT_ROOT)
 
 # --- 模块导入 ---
-from operations.operations_execute_GAgpt_demo import GAGPTWorkflowExecutor
+from operations.operations_execute_GAgpt_finetune import GAGPTWorkflowExecutor
 from utils.cpu_utils import get_available_cpu_cores, calculate_optimal_workers
 
 # --- 日志配置 ---
@@ -206,7 +206,7 @@ def main():
                         failed_runs.append(receptor_name)
 
             except concurrent.futures.TimeoutError:
-                logger.error("并行执行总超时（2小时），可能存在死锁。正在强制终止所有剩余的子进程...")
+                logger.error("并行执行总超时(2小时),可能存在死锁。正在强制终止所有剩余的子进程...")
                 # 强制关闭进程池并取消所有正在运行和等待的任务
                 # cancel_futures=True 是Python 3.9+的新特性，可以终止正在运行的任务
                 executor.shutdown(wait=False, cancel_futures=True)

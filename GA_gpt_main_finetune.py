@@ -67,29 +67,25 @@ def monitor_process_memory(pid: int, process_name: str, interval: int = 60):
         logger.error(f"启动监控进程 {process_name} (PID: {pid}) 时出错: {e}")
 
 def cleanup_child_processes():
-    """清理所有子进程"""
-    current_pid = os.getpid()
+    """清理所有子进程，使用更安全的方式"""
     try:
-        parent = psutil.Process(current_pid)
-        children = parent.children(recursive=True)
-        
-        for child in children:
-            try:
-                logger.info(f"正在终止子进程 PID: {child.pid}")
-                child.terminate()
-            except psutil.NoSuchProcess:
-                pass
-        
-        # 等待子进程终止
-        gone, alive = psutil.wait_procs(children, timeout=3)
-        
-        # 强制终止仍然存活的进程
-        for p in alive:
-            try:
-                logger.warning(f"强制终止子进程 PID: {p.pid}")
-                p.kill()
-            except psutil.NoSuchProcess:
-                pass
+        if os.name == 'posix':
+            # 在 Linux/Unix 上，使用 os.killpg 更安全
+            import os
+            import signal
+            
+            # 只终止当前进程组中的进程
+            os.killpg(os.getpgid(os.getpid()), signal.SIGTERM)
+        else:
+            # Windows上使用不同的方法
+            import psutil
+            current_process = psutil.Process(os.getpid())
+            children = current_process.children(recursive=True)
+            for child in children:
+                try:
+                    child.terminate()
+                except psutil.NoSuchProcess:
+                    pass
     except Exception as e:
         logger.error(f"清理子进程时出错: {e}")
 
@@ -111,11 +107,11 @@ def run_workflow_for_receptor(config_path: str, receptor_name: str, output_dir: 
     logger.info(f"分配的CPU核心数: {num_processors}")
     logger.info(f"进程ID: {os.getpid()}")
     logger.info("=" * 80)
-    
+    start_time = time.time()
     # 注册进程信息
     process_info = {
         'receptor': receptor_display_name,
-        'start_time': time.time(),
+        'start_time': start_time,
         'status': 'running'
     }
     active_processes[os.getpid()] = process_info
@@ -343,20 +339,31 @@ def main():
             
             # 添加超时机制，防止进程无限等待
             import concurrent.futures
+            timeout_seconds = 14400  # 4小时总超时，给每个受体更多时间
+            result_timeout = 300  # 单个结果等待5分钟
+            
             try:
-                for future in as_completed(futures, timeout=7200):  # 2小时总超时
+                completed_count = 0
+                for future in as_completed(futures, timeout=timeout_seconds):
                     try:
-                        receptor_display_name, success = future.result(timeout=60)  # 单个结果60秒超时
+                        receptor_display_name, success = future.result(timeout=result_timeout)
+                        completed_count += 1
                         if success:
                             successful_runs.append(receptor_display_name)
                         else:
                             failed_runs.append(receptor_display_name)
+                        logger.info(f"已完成 {completed_count}/{len(receptors_to_run)} 个受体的处理")
                     except concurrent.futures.TimeoutError:
                         receptor_name = futures[future]
                         logger.error(f"获取受体 '{receptor_name}' 结果超时")
                         failed_runs.append(receptor_name)
                         # 尝试取消任务
                         future.cancel()
+                    except Exception as e:
+                        receptor_name = futures[future]
+                        logger.error(f"处理受体 '{receptor_name}' 时发生异常: {e}")
+                        failed_runs.append(receptor_name)
+                        
             except concurrent.futures.TimeoutError:
                 logger.error("并行执行总超时，可能存在死锁。正在终止所有进程...")
                 # 取消所有未完成的任务
@@ -364,7 +371,17 @@ def main():
                     if not future.done():
                         future.cancel()
                         receptor_name = futures[future]
-                        failed_runs.append(receptor_name)
+                        if receptor_name not in failed_runs:
+                            failed_runs.append(receptor_name)
+            except KeyboardInterrupt:
+                logger.info("接收到中断信号，正在取消所有任务...")
+                for future in futures:
+                    if not future.done():
+                        future.cancel()
+                        receptor_name = futures[future]
+                        if receptor_name not in failed_runs:
+                            failed_runs.append(receptor_name)
+                raise
             finally:
                 # 确保所有进程都被终止
                 executor.shutdown(wait=False)
@@ -375,7 +392,17 @@ def main():
     logger.info("=" * 80)
     logger.info("所有GA-GPT工作流执行完毕")
     logger.info(f"成功运行的受体 ({len(successful_runs)}): {successful_runs}")
-    logger.info(f"失败的受体 ({len(failed_runs)}): {failed_runs}")
+    if failed_runs:
+        logger.error(f"失败的受体 ({len(failed_runs)}): {failed_runs}")
+        logger.error("建议检查以下可能的问题:")
+        logger.error("1. 配置文件路径和格式是否正确")
+        logger.error("2. 受体文件是否存在且可访问")
+        logger.error("3. 初始种群文件是否存在且格式正确")
+        logger.error("4. 系统资源是否充足（内存、CPU）")
+        logger.error("5. 依赖的外部工具是否正确安装（如AutoDock Vina）")
+        logger.error("6. 文件权限是否正确")
+    else:
+        logger.info("所有受体处理成功！")
     logger.info("=" * 80)
 
     if failed_runs:

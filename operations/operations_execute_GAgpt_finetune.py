@@ -51,6 +51,9 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             output_dir_override (Optional[str]): 覆盖配置文件中的输出目录。
             num_processors_override (Optional[int]): 覆盖配置文件中的处理器数量。
         """
+        # 系统兼容性检查
+        self._check_system_compatibility()
+        
         self.config_path = config_path
         self.config = self._load_config()        
         # 应用处理器数量覆盖
@@ -345,50 +348,61 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
         """
         import time
         import random
+        import tempfile
+        import shutil
         
         # 添加随机延迟，避免多进程同时访问文件
         time.sleep(random.uniform(0.1, 0.5))
         
+        temp_output_file = None
         try:
+            # 使用临时文件确保原子性操作
+            temp_fd, temp_output_file = tempfile.mkstemp(
+                prefix=f"dedup_{os.getpid()}_", 
+                suffix=".smi",
+                dir=os.path.dirname(output_file)
+            )
+            
+            # 记录临时文件以便清理
+            self._temp_files.add(temp_output_file)
+            
             # 使用生成器而不是一次性加载所有内容到内存
             unique_smiles = set()
             
-            # 记录临时文件以便清理
-            temp_output_file = output_file + f".tmp_{os.getpid()}_{int(time.time())}"
-            self._temp_files.add(temp_output_file)
-            
             # 分批处理大文件
             batch_size = 10000
-            current_batch = set()
+            current_batch = []
             i = 0
             
-            with open(input_file, 'r', encoding='utf-8') as f, open(temp_output_file, 'w', encoding='utf-8') as out:
-                for line_num, line in enumerate(f):
-                    parts = line.strip().split()
-                    if not parts:
-                        continue
-                        
-                    smiles = parts[0]
-                    if not smiles or smiles in unique_smiles:
-                        continue
-                    
-                    unique_smiles.add(smiles)
-                    current_batch.add(smiles)
-                    
-                    # 每处理batch_size个分子，写入一次文件
-                    if len(current_batch) >= batch_size:
-                        for smiles in sorted(current_batch):
-                            out.write(f"{smiles}\tligand_id_{i}\n")
+            with os.fdopen(temp_fd, 'w', encoding='utf-8') as out:
+                try:
+                    with open(input_file, 'r', encoding='utf-8') as f:
+                        for line_num, line in enumerate(f):
+                            parts = line.strip().split()
+                            if not parts:
+                                continue
+                                
+                            smiles = parts[0]
+                            if not smiles or smiles in unique_smiles:
+                                continue
+                            
+                            unique_smiles.add(smiles)
+                            current_batch.append(f"{smiles}\tligand_id_{i}\n")
                             i += 1
-                        current_batch.clear()
-                
-                # 写入最后一批
-                for smiles in sorted(current_batch):
-                    out.write(f"{smiles}\tligand_id_{i}\n")
-                    i += 1
+                            
+                            # 每处理batch_size个分子，写入一次文件
+                            if len(current_batch) >= batch_size:
+                                out.writelines(current_batch)
+                                current_batch = []
+                        
+                        # 写入最后一批
+                        if current_batch:
+                            out.writelines(current_batch)
+                except Exception as e:
+                    logger.error(f"读取输入文件 {input_file} 时出错: {e}")
+                    return 0
             
             # 原子性重命名
-            import shutil
             shutil.move(temp_output_file, output_file)
             
             # 从临时文件列表中移除
@@ -396,15 +410,16 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             
             logger.info(f"去重完成: {len(unique_smiles)} 个独特分子保存到 {output_file}")
             return len(unique_smiles)
+            
         except Exception as e:
             logger.error(f"去重过程中发生错误: {e}")
             # 清理可能的临时文件
-            if os.path.exists(temp_output_file):
+            if temp_output_file and os.path.exists(temp_output_file):
                 try:
                     os.remove(temp_output_file)
                     self._temp_files.discard(temp_output_file)
-                except:
-                    pass
+                except Exception as cleanup_error:
+                    logger.warning(f"清理临时文件时出错: {cleanup_error}")
             return 0
 
     def _extract_smiles_from_docked_file(self, docked_file: str, output_smiles_file: str) -> bool:
@@ -980,6 +995,26 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             # 配置格式错误，使用默认值
             logger.warning(f"处理器数量配置格式错误: {configured_processors}，使用默认值1")
             return 1
+
+    def _check_system_compatibility(self):
+        """检查系统兼容性和依赖"""
+        try:
+            import psutil
+            import multiprocessing
+            logger.debug("系统依赖检查通过: psutil, multiprocessing")
+        except ImportError as e:
+            logger.error(f"缺少必需的系统依赖: {e}")
+            raise
+            
+        # 检查操作系统特定功能
+        if os.name == 'posix':
+            try:
+                import select
+                logger.debug("Unix系统功能检查通过: select")
+            except ImportError:
+                logger.warning("Unix系统缺少select模块，将使用备用方法")
+        else:
+            logger.info("检测到Windows系统，将使用Windows兼容的进程管理方法")
 
 # --- 主函数入口 ---
 def main():
