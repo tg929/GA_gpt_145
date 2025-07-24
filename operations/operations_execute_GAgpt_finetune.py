@@ -51,9 +51,6 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             output_dir_override (Optional[str]): 覆盖配置文件中的输出目录。
             num_processors_override (Optional[int]): 覆盖配置文件中的处理器数量。
         """
-        # 系统兼容性检查
-        self._check_system_compatibility()
-        
         self.config_path = config_path
         self.config = self._load_config()        
         # 应用处理器数量覆盖
@@ -348,61 +345,50 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
         """
         import time
         import random
-        import tempfile
-        import shutil
         
         # 添加随机延迟，避免多进程同时访问文件
         time.sleep(random.uniform(0.1, 0.5))
         
-        temp_output_file = None
         try:
-            # 使用临时文件确保原子性操作
-            temp_fd, temp_output_file = tempfile.mkstemp(
-                prefix=f"dedup_{os.getpid()}_", 
-                suffix=".smi",
-                dir=os.path.dirname(output_file)
-            )
-            
-            # 记录临时文件以便清理
-            self._temp_files.add(temp_output_file)
-            
             # 使用生成器而不是一次性加载所有内容到内存
             unique_smiles = set()
             
+            # 记录临时文件以便清理
+            temp_output_file = output_file + f".tmp_{os.getpid()}_{int(time.time())}"
+            self._temp_files.add(temp_output_file)
+            
             # 分批处理大文件
             batch_size = 10000
-            current_batch = []
+            current_batch = set()
             i = 0
             
-            with os.fdopen(temp_fd, 'w', encoding='utf-8') as out:
-                try:
-                    with open(input_file, 'r', encoding='utf-8') as f:
-                        for line_num, line in enumerate(f):
-                            parts = line.strip().split()
-                            if not parts:
-                                continue
-                                
-                            smiles = parts[0]
-                            if not smiles or smiles in unique_smiles:
-                                continue
-                            
-                            unique_smiles.add(smiles)
-                            current_batch.append(f"{smiles}\tligand_id_{i}\n")
-                            i += 1
-                            
-                            # 每处理batch_size个分子，写入一次文件
-                            if len(current_batch) >= batch_size:
-                                out.writelines(current_batch)
-                                current_batch = []
+            with open(input_file, 'r', encoding='utf-8') as f, open(temp_output_file, 'w', encoding='utf-8') as out:
+                for line_num, line in enumerate(f):
+                    parts = line.strip().split()
+                    if not parts:
+                        continue
                         
-                        # 写入最后一批
-                        if current_batch:
-                            out.writelines(current_batch)
-                except Exception as e:
-                    logger.error(f"读取输入文件 {input_file} 时出错: {e}")
-                    return 0
+                    smiles = parts[0]
+                    if not smiles or smiles in unique_smiles:
+                        continue
+                    
+                    unique_smiles.add(smiles)
+                    current_batch.add(smiles)
+                    
+                    # 每处理batch_size个分子，写入一次文件
+                    if len(current_batch) >= batch_size:
+                        for smiles in sorted(current_batch):
+                            out.write(f"{smiles}\tligand_id_{i}\n")
+                            i += 1
+                        current_batch.clear()
+                
+                # 写入最后一批
+                for smiles in sorted(current_batch):
+                    out.write(f"{smiles}\tligand_id_{i}\n")
+                    i += 1
             
             # 原子性重命名
+            import shutil
             shutil.move(temp_output_file, output_file)
             
             # 从临时文件列表中移除
@@ -410,16 +396,15 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             
             logger.info(f"去重完成: {len(unique_smiles)} 个独特分子保存到 {output_file}")
             return len(unique_smiles)
-            
         except Exception as e:
             logger.error(f"去重过程中发生错误: {e}")
             # 清理可能的临时文件
-            if temp_output_file and os.path.exists(temp_output_file):
+            if os.path.exists(temp_output_file):
                 try:
                     os.remove(temp_output_file)
                     self._temp_files.discard(temp_output_file)
-                except Exception as cleanup_error:
-                    logger.warning(f"清理临时文件时出错: {cleanup_error}")
+                except:
+                    pass
             return 0
 
     def _extract_smiles_from_docked_file(self, docked_file: str, output_smiles_file: str) -> bool:
@@ -720,13 +705,42 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             logger.info("执行多目标选择...")
             multi_obj_config = selection_config.get('multi_objective_settings', {})
             n_select = multi_obj_config.get('n_select', 100)
-            selection_args = [
-                '--docked_file', offspring_docked_file,
-                '--parent_file', parent_docked_file,
-                '--output_file', str(next_parents_file),
-                '--n_select', str(n_select)  # 统一通过命令行传递
-            ]
-            selection_succeeded = self._run_script('operations/selecting/selecting_multi_demo.py', selection_args)
+            
+            # 检查是否启用增强选择策略
+            enhanced_strategy = multi_obj_config.get('enhanced_strategy', 'standard')
+            
+            if enhanced_strategy == 'adaptive':
+                logger.info("使用自适应多目标选择策略...")
+                selection_args = [
+                    '--docked_file', offspring_docked_file,
+                    '--parent_file', parent_docked_file,
+                    '--output_file', str(next_parents_file),
+                    '--n_select', str(n_select),
+                    '--generation', str(generation),
+                    '--max_generations', str(self.max_generations)
+                ]
+                selection_succeeded = self._run_script('operations/selecting/adaptive_multi_selection.py', selection_args)
+            
+            elif enhanced_strategy == 'enhanced':
+                logger.info("使用增强多目标选择策略...")
+                selection_args = [
+                    '--docked_file', offspring_docked_file,
+                    '--parent_file', parent_docked_file,
+                    '--output_file', str(next_parents_file),
+                    '--n_select', str(n_select),
+                    '--strategy', 'enhanced'
+                ]
+                selection_succeeded = self._run_script('operations/selecting/enhanced_multi_selection.py', selection_args)
+            
+            else:  # standard
+                logger.info("使用标准多目标选择策略...")
+                selection_args = [
+                    '--docked_file', offspring_docked_file,
+                    '--parent_file', parent_docked_file,
+                    '--output_file', str(next_parents_file),
+                    '--n_select', str(n_select)
+                ]
+                selection_succeeded = self._run_script('operations/selecting/selecting_multi_demo.py', selection_args)
         
         else:
             logger.error(f"不支持的选择模式: {selection_mode}")
@@ -766,9 +780,12 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             logger.warning(f"第 {generation} 代: 精英种群评分分析失败，但不影响主流程")            
         return scoring_succeeded
 
-    def run_complete_workflow(self): #执行完整的GA-GPT工作流。
-        #
-        logger.info(f"开始执行完整的GA-GPT工作流程 (输出目录: {self.output_dir})")        
+    def run_complete_workflow(self):
+        """
+        执行完整的GA-GPT工作流。
+        """
+        logger.info(f"开始执行完整的GA-GPT工作流程 (输出目录: {self.output_dir})")
+        
         try:
             # 第0步：初代种群处理
             current_parents_docked_file = self.run_initial_generation()
@@ -996,26 +1013,6 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             logger.warning(f"处理器数量配置格式错误: {configured_processors}，使用默认值1")
             return 1
 
-    def _check_system_compatibility(self):
-        """检查系统兼容性和依赖"""
-        try:
-            import psutil
-            import multiprocessing
-            logger.debug("系统依赖检查通过: psutil, multiprocessing")
-        except ImportError as e:
-            logger.error(f"缺少必需的系统依赖: {e}")
-            raise
-            
-        # 检查操作系统特定功能
-        if os.name == 'posix':
-            try:
-                import select
-                logger.debug("Unix系统功能检查通过: select")
-            except ImportError:
-                logger.warning("Unix系统缺少select模块，将使用备用方法")
-        else:
-            logger.info("检测到Windows系统，将使用Windows兼容的进程管理方法")
-
 # --- 主函数入口 ---
 def main():
     """主函数，用于解析命令行参数和启动工作流"""
@@ -1070,3 +1067,4 @@ def main():
 if __name__ == "__main__":
     sys.exit(main())
 
+        
