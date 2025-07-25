@@ -9,7 +9,7 @@
   "workflow": {
     "description": "GA-GPT混合工作流核心参数",
     "max_generations": 20,
-    "initial_population_file": "datasets/source_compounds/my_initial_population_200.smi",
+    "initial_population_file": "datasets/source_compounds/my_initial_population.smi",
     "output_directory": "GA_GPT_output",
     "enable_gpt_generation": true,
     "gpt_integration_mode": "additive",
@@ -189,7 +189,7 @@
   
   "crossover_finetune": {
     "description": "GA交叉操作参数",
-    "crossover_attempts": 50,
+    "crossover_attempts": 100,
     "crossover_rate": 0.8,
     "min_atom_match_mcs": 4,
     "max_time_mcs_prescreen": 1,
@@ -204,7 +204,7 @@
   
   "mutation_finetune": {
     "description": "GA突变操作参数",
-    "mutation_attempts": 50,
+    "mutation_attempts": 100,
     "max_mutations_per_parent": 2,
     "rxn_library": "all_rxns",
     "max_attempts_multiplier": 50,
@@ -246,14 +246,14 @@
         "Rank_Selector",
         "Roulette_Selector",
         "Tournament_Selector"],
-      "n_select": 150,
+      "n_select": 100,
       "selector_choice": "Rank_Selector",
       "tourn_size": 0.1
     },
     
     "multi_objective_settings": {
       "description": "Parameters for multi-objective molecular selection using NSGA-II.",
-      "n_select": 150,
+      "n_select": 100,
       "objectives": [
         {
           "name": "docking_score",
