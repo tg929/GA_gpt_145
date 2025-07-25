@@ -67,7 +67,7 @@ def visualize_scores(data_file: str, output_image: str, protein_name: str):
     axes[0].set_ylabel('QED Score (Higher is Better)', fontsize=12)
     axes[0].grid(True)
 
-    axes[0].tick_params(axis='y', direction='in')
+    #axes[0].tick_params(axis='y', direction='in')
 
     # --- 7. Plot 2: -Docking Score vs. SA Score ---
     sns.scatterplot(

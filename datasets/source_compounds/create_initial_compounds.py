@@ -3,7 +3,7 @@
 """
 创建自定义初始种群脚本 (可复现版本)
 
-本脚本根据特定策略从一个大的分子数据库（如ZINC250k）中筛选分子，
+本脚本根据特定策略从一个大的分子数据库如ZINC250k中筛选分子,
 以构建一个具有特定分层结构的初始种群。
 
 新功能：通过设置随机数种子，可以确保每次运行结果完全一致。
@@ -185,10 +185,10 @@ def main():
     args = parser.parse_args()
 
     population_targets = {
-        "MW_up_to_100": 20,
-        "MW_100_to_150": 30,
-        "MW_150_to_200": 40,
-        "MW_200_to_250": 10
+        "MW_up_to_100": 40,
+        "MW_100_to_150": 60,
+        "MW_150_to_200": 80,
+        "MW_200_to_250": 20
     }
     
     create_population(args.input, args.output, population_targets, args.seed)
