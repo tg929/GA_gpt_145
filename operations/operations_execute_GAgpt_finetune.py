@@ -500,7 +500,7 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             masked_fragments_file (str): 掩码片段文件路径。
             generation (int): 当前代数。            
         Returns:
-            Optional[str]: 成功则返回GPT生成的新分子文件路径，失败则返回None。
+            Optional[str]: 成功则返回GPT生成的新分子文件路径,失败则返回None。
         """
         logger.info(f"第 {generation} 代: 开始GPT生成...")
         gen_dir = self.output_dir / f"generation_{generation}"
