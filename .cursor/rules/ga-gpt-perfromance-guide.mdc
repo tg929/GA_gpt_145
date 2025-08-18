@@ -1,4 +1,4 @@
----
+<!-- ---
 description: 
 globs: 
 alwaysApply: true
@@ -61,4 +61,4 @@ Single Iteration Steps:
     Strictly prohibit hardcoding these values directly into the business logic.
   Environment:
     The project uses a Python virtual environment named fraggpt.
-    Code should not include any logic for installing new packages. Assume all necessary libraries (RDKit, PyTorch, etc.) are already installed in the environment.
+    Code should not include any logic for installing new packages. Assume all necessary libraries (RDKit, PyTorch, etc.) are already installed in the environment. -->

@@ -76,30 +76,46 @@ def vina_dock_single(ligand_file, receptor_pdbqt, results_dir, vars):
 
 def extract_vina_score_from_pdbqt(pdbqt_file):
     """
-    从PDBQT输出文件中提取Vina对接分数    
-    Args:
-        pdbqt_file: PDBQT输出文件路径        
-    Returns:
-        str: 对接分数（负值表示更好的结合亲和力）
+    从输出中提取对接分数，兼容 Vina 与 QuickVina2 多种格式。
+    优先解析 out.pdbqt 中含有 REMARK 的结果行；若失败，回退解析 .log。
+    返回字符串形式分数（如 "-7.6"），失败返回 "NA"。
     """
+    import re
+    # 1) 尝试从 pdbqt 读取
     try:
-        with open(pdbqt_file, "r") as f:
+        with open(pdbqt_file, "r", errors='ignore') as f:
             for line in f:
-                # 查找第一个VINA RESULT行（最佳分数）
-                if "REMARK VINA RESULT:" in line:
-                    parts = line.split()
-                    if len(parts) >= 4:
-                        # REMARK VINA RESULT:      -7.6      0.000      0.000
-                        # 分数是第4个元素（索引3）
-                        score_str = parts[3]
+                u = line.upper()
+                if "REMARK" in u and ("RESULT" in u or "VINA" in u or "QVINA" in u):
+                    # 抓取行中的所有浮点数
+                    nums = re.findall(r"[-+]?\d*\.\d+|[-+]?\d+", line)
+                    # 选择第一个带负号或第一个数字作为能量值
+                    if nums:
+                        # 优先选择负值
+                        negs = [x for x in nums if x.startswith('-')]
+                        val = negs[0] if negs else nums[0]
                         try:
-                            # 验证是否为有效的浮点数
-                            float(score_str)
-                            return score_str
-                        except ValueError:
-                            continue
+                            float(val)
+                            return val
+                        except Exception:
+                            pass
     except Exception as e:
-        print(f"解析PDBQT文件出错 {pdbqt_file}: {e}")    
+        print(f"解析PDBQT文件出错 {pdbqt_file}: {e}")
+
+    # 2) 回退到 log 文件
+    try:
+        log_file = pdbqt_file.replace("_out.pdbqt", ".log")
+        if os.path.exists(log_file):
+            with open(log_file, 'r', errors='ignore') as f:
+                content = f.read()
+            # 常见模式： Vina 记录或 qvina 的结果行
+            # 尝试抓取最优能量（第一个负值）
+            nums = re.findall(r"[-+]?\d*\.\d+|[-+]?\d+", content)
+            negs = [x for x in nums if x.startswith('-')]
+            if negs:
+                return negs[0]
+    except Exception:
+        pass
     return "NA"
 
 def keep_best_docking_results(results_dir):
@@ -334,14 +350,33 @@ class DockingWorkflow:
     def prepare_receptor(self) -> str:
         """
         准备受体蛋白文件。
-        此函数验证预先准备好的PDBQT文件是否存在。        
-        返回:returns: str: 找到的受体PDBQT文件路径。
+        兼容两种配置：给出 .pdb（则使用同名 .pdbqt），或直接给出 .pdbqt。
+        优先返回实际存在的 .pdbqt 文件，否则抛出异常。
+        返回: str: 受体PDBQT文件路径。
         """
-        print("正在验证受体文件...")        
-        # 根据 .pdb 文件路径推断出 .pdbqt 文件路径
-        receptor_pdbqt_path = self.vars["receptor_file"] + "qt"           
-        print(f"成功找到受体文件: {receptor_pdbqt_path}")
-        return receptor_pdbqt_path
+        print("正在验证受体文件...")
+        base_path = self.vars["receptor_file"]
+        candidates = []
+        # 如果已是 .pdbqt 直接使用
+        if base_path.lower().endswith('.pdbqt'):
+            candidates.append(base_path)
+        # 常见写法：.pdb + 'qt'
+        candidates.append(base_path + 'qt')
+        # 将 .pdb 替换为 .pdbqt
+        if base_path.lower().endswith('.pdb'):
+            candidates.append(base_path + 'qt')
+            candidates.append(base_path[:-4] + '.pdbqt')
+        # 去重保序
+        seen = set()
+        uniq = []
+        for p in candidates:
+            if p not in seen:
+                uniq.append(p); seen.add(p)
+        for p in uniq:
+            if os.path.exists(p) and os.path.getsize(p) > 0:
+                print(f"成功找到受体文件: {p}")
+                return p
+        raise FileNotFoundError(f"未找到有效的受体PDBQT文件,尝试过: {uniq}")
 
     def prepare_ligands(self, smi_file: str) -> str:
         """准备配体分子，静默忽略转换失败的分子。"""
@@ -350,10 +385,17 @@ class DockingWorkflow:
         ligand_dir = self.vars["ligand_dir"]
         if not os.path.exists(ligand_dir):
             os.makedirs(ligand_dir)
-        convert_to_3d(self.vars, smi_file, ligand_dir)
+        # 使用 try/except 捕获生成3D失败，避免整体中断
+        try:
+            convert_to_3d(self.vars, smi_file, ligand_dir)
+        except Exception as e:
+            logger.warning(f"convert_to_3d 发生异常: {e}")
         # 2. SDF转PDB
         sdf_dir = self.vars["sdf_dir"]
-        convert_sdf_to_pdbs(self.vars, sdf_dir, sdf_dir)
+        try:
+            convert_sdf_to_pdbs(self.vars, sdf_dir, sdf_dir)
+        except Exception as e:
+            logger.warning(f"convert_sdf_to_pdbs 发生异常: {e}")
         pdb_dir = sdf_dir + "_PDB"
         if not os.path.exists(pdb_dir):
             raise RuntimeError(f"PDB目录未生成: {pdb_dir}")
@@ -429,10 +471,19 @@ class DockingWorkflow:
                     if mol_name not in scores:
                         scores[mol_name] = "NA"        
         
-        keep_best_docking_results(results_dir)  # 仅保留最佳对接的mol/姿势        
+        # 仅保留最佳对接的mol/姿势
+        try:
+            keep_best_docking_results(results_dir)
+        except Exception as e:
+            logger.warning(f"清理对接结果时异常: {e}")
+
+        # 写出分数字典
         final_scores_file = os.path.join(results_dir, "final_scored.smi")
-        output_smiles_scores(self.vars["ligands"], scores, final_scores_file)        
-        return final_scores_file        
+        try:
+            output_smiles_scores(self.vars["ligands"], scores, final_scores_file)
+        except Exception as e:
+            logger.warning(f"写出最终分数失败: {e}")
+        return final_scores_file
     @staticmethod
     def pick_conversion_class(conversion_choice: str) -> type:
         """

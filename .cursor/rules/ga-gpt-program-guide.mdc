@@ -1,4 +1,4 @@
----
+<!-- ---
 description: 
 globs: 
 alwaysApply: true
@@ -75,4 +75,4 @@ Task C: Write the Main Workflow Script
 ·Commenting and Documentation:
     File Headers: Every Python file must start with a header comment block explaining its overall purpose and its role within the project.Necessary Comments: Comments must explain the "why" behind a design choice or complex logic, not just the "what". Add comments only where they provide genuine value. Avoid cluttering the code with obvious or redundant comments.
     Docstrings: All public functions, classes, and methods must have clear docstrings in a standard format (e.g., Google Style), explaining their purpose, arguments (Args), and return values (Returns)
-·Environment: The project uses a Python virtual environment named fraggpt. Do not add code that installs new packages. Assume all necessary libraries (like RDKit, PyTorch, etc.) are already installed.
+·Environment: The project uses a Python virtual environment named fraggpt. Do not add code that installs new packages. Assume all necessary libraries (like RDKit, PyTorch, etc.) are already installed. -->
