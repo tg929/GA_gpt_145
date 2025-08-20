@@ -6,7 +6,7 @@
   "workflow": {
     "output_directory": "GA_GPT_output_rag",
     "max_generations": 5,
-    "initial_population_file": "/data1/ytg/medium_models/GA_gpt/datasets/source_compounds/my_initial_population.smi"
+    "initial_population_file": "/data1/ytg/medium_models/GA_gpt/datasets/source_compounds/naphthalene_smiles.smi"
   },
   "gpt": {
     "seed": 42,
@@ -43,7 +43,7 @@
         "qed_min": 0.5,
         "sa_max": 5.0,
         "ds_active_median": -7.5,
-        "reference_smiles_file": "/data1/ytg/medium_models/GA_gpt/datasets/source_compounds/my_initial_population.smi",
+        "reference_smiles_file": "/data1/ytg/medium_models/GA_gpt/datasets/source_compounds/naphthalene_smiles.smi",
         "fp_type": "morgan",
         "fp_radius": 2,
         "fp_nbits": 2048
