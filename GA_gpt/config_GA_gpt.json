@@ -246,14 +246,14 @@
         "Rank_Selector",
         "Roulette_Selector",
         "Tournament_Selector"],
-      "n_select": 200,
+      "n_select": 120,
       "selector_choice": "Rank_Selector",
       "tourn_size": 0.1
     },
     
     "multi_objective_settings": {
       "description": "Parameters for multi-objective molecular selection using NSGA-II.",
-      "n_select": 200,
+      "n_select": 120,
       "objectives": [
         {
           "name": "docking_score",

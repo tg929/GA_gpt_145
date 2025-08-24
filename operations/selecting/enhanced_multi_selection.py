@@ -199,3 +199,91 @@ def objective_guided_selection(molecules_data: List[Dict], n_select: int) -> Lis
     
     logger.info(f"目标引导选择完成: 共选择 {len(selected_molecules)} 个分子")
     return selected_molecules
+
+def load_molecules_with_scores_and_deduplicate(parent_file: str, docked_file: str):
+    """
+    加载并合并父代和子代分子数据，自动去重
+    """
+    from operations.selecting.selecting_multi_demo import load_molecules_with_scores
+    
+    # 加载父代分子
+    parent_molecules = load_molecules_with_scores(parent_file)
+    logger.info(f"从父代文件加载了 {len(parent_molecules)} 个分子")
+    
+    # 加载子代分子  
+    offspring_molecules = load_molecules_with_scores(docked_file)
+    logger.info(f"从子代文件加载了 {len(offspring_molecules)} 个分子")
+    
+    # 合并并去重：使用字典以SMILES为key，保留分数更好的分子
+    molecules_dict = {}
+    total_before_dedup = len(parent_molecules) + len(offspring_molecules)
+    
+    # 先添加父代分子
+    for mol in parent_molecules:
+        smiles = mol['smiles']
+        score = mol['docking_score']
+        if smiles not in molecules_dict or score < molecules_dict[smiles]['docking_score']:
+            molecules_dict[smiles] = mol
+    
+    # 然后添加子代分子（保留更好分数的）
+    for mol in offspring_molecules:
+        smiles = mol['smiles']
+        score = mol['docking_score']
+        if smiles not in molecules_dict or score < molecules_dict[smiles]['docking_score']:
+            molecules_dict[smiles] = mol
+    
+    all_molecules = list(molecules_dict.values())
+    duplicates_removed = total_before_dedup - len(all_molecules)
+    
+    logger.info(f"合并前总数: {total_before_dedup}, 去重后: {len(all_molecules)}, 删除重复: {duplicates_removed}")
+    logger.info(f"去重率: {duplicates_removed/total_before_dedup*100:.1f}%")
+    
+    return all_molecules
+
+def main():
+    import argparse
+    from operations.selecting.selecting_multi_demo import add_additional_scores, save_selected_molecules_with_scores, print_selection_statistics
+    
+    parser = argparse.ArgumentParser(description="增强多目标分子选择")
+    parser.add_argument('--docked_file', type=str, required=True, help='子代对接结果文件')
+    parser.add_argument('--parent_file', type=str, required=True, help='父代对接结果文件')
+    parser.add_argument('--output_file', type=str, required=True, help='输出文件')
+    parser.add_argument('--n_select', type=int, required=True, help='选择数量')
+    parser.add_argument('--strategy', type=str, default='enhanced', help='选择策略')
+    
+    args = parser.parse_args()
+    
+    logger.info("开始增强多目标分子选择...")
+    logger.info(f"子代文件: {args.docked_file}")
+    logger.info(f"父代文件: {args.parent_file}")
+    logger.info(f"输出文件: {args.output_file}")
+    logger.info(f"选择数量: {args.n_select}")
+    logger.info(f"选择策略: {args.strategy}")
+    
+    # 1. 加载并去重分子数据
+    molecules = load_molecules_with_scores_and_deduplicate(args.parent_file, args.docked_file)
+    if not molecules:
+        logger.error("错误: 无法加载分子数据")
+        return
+    
+    # 2. 计算QED和SA分数
+    molecules = add_additional_scores(molecules)
+    
+    # 3. 根据策略选择算法
+    if args.strategy == 'enhanced':
+        selected_molecules = enhanced_nsga2_selection(molecules, args.n_select)
+    elif args.strategy == 'objective_guided':
+        selected_molecules = objective_guided_selection(molecules, args.n_select)
+    else:
+        logger.warning(f"未知策略 {args.strategy}，使用增强策略")
+        selected_molecules = enhanced_nsga2_selection(molecules, args.n_select)
+    
+    # 4. 保存结果
+    if selected_molecules:
+        save_selected_molecules_with_scores(selected_molecules, args.output_file)
+        print_selection_statistics(selected_molecules)
+    else:
+        logger.error("错误: 未选择任何分子")
+
+if __name__ == "__main__":
+    main()

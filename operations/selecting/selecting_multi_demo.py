@@ -157,28 +157,47 @@ def load_molecules_with_scores(docked_file):
 
 def load_molecules_from_combined_files(parent_file: str, docked_file: str):
     """
-    合并父代和子代分子数据进行统一选择
+    合并父代和子代分子数据进行统一选择，自动去重
     
     Args:
         parent_file: 父代文件路径 (格式: SMILES score)
         docked_file: 子代对接结果文件路径 (格式: SMILES score)
         
     Returns:
-        list: 合并后的分子数据列表
+        list: 合并并去重后的分子数据列表
     """
-    all_molecules = []
-    
     # 加载父代分子
     parent_molecules = load_molecules_with_scores(parent_file)
     logger.info(f"从父代文件加载了 {len(parent_molecules)} 个分子")
-    all_molecules.extend(parent_molecules)
     
     # 加载子代分子  
     offspring_molecules = load_molecules_with_scores(docked_file)
     logger.info(f"从子代文件加载了 {len(offspring_molecules)} 个分子")
-    all_molecules.extend(offspring_molecules)
     
-    logger.info(f"总计加载了 {len(all_molecules)} 个候选分子")
+    # 合并并去重：使用字典以SMILES为key，保留分数更好的分子
+    molecules_dict = {}
+    total_before_dedup = len(parent_molecules) + len(offspring_molecules)
+    
+    # 先添加父代分子
+    for mol in parent_molecules:
+        smiles = mol['smiles']
+        score = mol['docking_score']
+        if smiles not in molecules_dict or score < molecules_dict[smiles]['docking_score']:
+            molecules_dict[smiles] = mol
+    
+    # 然后添加子代分子（保留更好分数的）
+    for mol in offspring_molecules:
+        smiles = mol['smiles']
+        score = mol['docking_score']
+        if smiles not in molecules_dict or score < molecules_dict[smiles]['docking_score']:
+            molecules_dict[smiles] = mol
+    
+    all_molecules = list(molecules_dict.values())
+    duplicates_removed = total_before_dedup - len(all_molecules)
+    
+    logger.info(f"合并前总数: {total_before_dedup}, 去重后: {len(all_molecules)}, 删除重复: {duplicates_removed}")
+    logger.info(f"去重率: {duplicates_removed/total_before_dedup*100:.1f}%")
+    
     return all_molecules
 
 def add_additional_scores(molecules: List[Dict]) -> List[Dict]:
