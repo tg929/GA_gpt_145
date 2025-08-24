@@ -13,6 +13,9 @@ def get_qed(mol):
     return QED.qed(mol)
 
 
+# def get_sa(mol):
+#     return sascorer.calculateScore(mol)
+
 def get_sa(mol):
     return (10 - sascorer.calculateScore(mol)) / 9
 

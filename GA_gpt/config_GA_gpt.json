@@ -9,7 +9,7 @@
   "workflow": {
     "description": "GA-GPT混合工作流核心参数",
     "max_generations": 25,
-    "initial_population_file": "datasets/source_compounds/naphthalene_smiles.smi",
+    "initial_population_file": "datasets/source_compounds/my_initial_population.smi",
     "output_directory": "GA_GPT_output",
     "enable_gpt_generation": true,
     "gpt_integration_mode": "additive",
