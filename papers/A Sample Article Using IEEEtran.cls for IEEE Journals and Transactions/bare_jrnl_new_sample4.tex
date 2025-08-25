@@ -141,7 +141,7 @@ Molecules are represented as SMILES for lightweight manipulation and interoperab
 % ----------------------------------------------------
 \section{Experimental Setup}
 \subsection{Datasets}
-We employ standard public chemical corpora for pretraining the fragment-based GPT and use curated compound sets to initialize the evolutionary process. In our configuration, the initial parent pool is read from \texttt{datasets/source\_compounds/my\_initial\_population.smi}, which contains diverse, drug-like scaffolds representative of the targeted chemical space.
+We employ standard public chemical corpora for pretraining the fragment-based GPT and use curated compound sets to initialize the evolutionary process. In our configuration, the initial parent pool is read from \texttt{datasets/}, which contains diverse, drug-like scaffolds representative of the targeted chemical space.
 \subsection{Protein Target and Docking Protocol}
 Experiments focus on protein targets defined in the configuration. Unless otherwise stated, we use the default receptor PARP1 with grid parameters provided in the configuration file. Ligand preparation follows standard protocols via MGLTools; docking is performed with AutoDock Vina using typical settings (exhaustiveness and modes as in the configuration), yielding binding scores that serve as one objective in the multi-objective selection.
 \subsection{Baseline Methods}
@@ -176,78 +176,65 @@ GPT-Only &  kcal/mol &  &  \\
 \end{tabular}
 \end{table}
 
-% 使用带星号的 table* 环境来实现跨双栏放置
-% [t] 参数表示将表格放置在页面顶部 (top)
-\begin{table*}[t]
-    \caption{Performance comparison: (a) Docking scores (↓ better); (b) Diversity and drug-likeness metrics (↑ better except SA ↓ better).}
-    \label{tab:performance_comparison_fullwidth} % 保持原label以避免引用失效
+% Table II: Docking scores
+\begin{table}[!t]
+    \caption{Docking Score Comparison (kcal/mol, ↓ better)}
+    \label{tab:docking_scores}
     \centering    
-    % 使用 footnotesize 字体和紧密列间距以适配双栏布局
-    \footnotesize
-    \setlength{\tabcolsep}{3pt} % 紧密列间距
+    \small
+    \setlength{\tabcolsep}{4pt}
     
-    % 左侧子表：Docking scores
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \begin{tabular}{l c c c}
-            \hline\hline
-            Method & TOP-100$\downarrow$ & TOP-10$\downarrow$ & TOP-1$\downarrow$ \\
-            \hline
-            screening & -9.351$\pm$0.643 & -10.433$\pm$0.563 & -11.400$\pm$0.630 \\
-            MARS & -7.758$\pm$0.612 & -8.875$\pm$0.711 & -9.257$\pm$0.791 \\
-            MolDQN & -6.287$\pm$0.396 & -7.043$\pm$0.487 & -7.501$\pm$0.402 \\
-            GEGL & -9.064$\pm$0.920 & -9.910$\pm$0.990 & -10.450$\pm$1.040 \\
-            REINVENT & -10.181$\pm$0.441 & -11.234$\pm$0.632 & -12.010$\pm$0.833 \\
-            RationaleRL & -9.233$\pm$0.920 & -10.834$\pm$0.856 & -11.642$\pm$1.102 \\
-            JTVAE & -9.291$\pm$0.702 & -10.242$\pm$0.839 & -10.963$\pm$1.133 \\
-            Gen3D & -8.686$\pm$0.450 & -9.285$\pm$0.584 & -9.832$\pm$0.324 \\
-            GA+D & -7.487$\pm$0.757 & -8.305$\pm$0.803 & -8.760$\pm$0.796 \\
-            Graph-GA & \textbf{-10.848$\pm$0.860} & -11.702$\pm$0.930 & -12.302$\pm$1.010 \\
-            Autogrow 4.0 & \textbf{-11.371$\pm$0.398} & \textbf{-12.213$\pm$0.623} & \textbf{-12.474$\pm$0.839} \\
-            RGA (ours) & \textbf{-11.867$\pm$0.170} & \textbf{-12.564$\pm$0.287} & \textbf{-12.869$\pm$0.473} \\
-            \hline
-            RGA - pretrain & -11.443$\pm$0.219 & -12.424$\pm$0.384 & -12.435$\pm$0.654 \\
-            RGA - KT & -11.434$\pm$0.169 & -12.437$\pm$0.354 & -12.502$\pm$0.603 \\
-            \hline 
-            \textbf{FragGPT-GA} & & & \\
-            \textbf{(Ours)} & & & \\
-            \hline\hline
-        \end{tabular}
-        \vspace{0.5em}
-        \textbf{(a) Docking scores}
-    \end{minipage}
-    \hfill % 水平填充分隔两个子表
-    % 右侧子表：Diversity and drug-likeness metrics
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \begin{tabular}{l c c c c}
-            \hline\hline
-            Method & Nov$\uparrow$ & Div$\uparrow$ & QED$\uparrow$ & SA$\downarrow$ \\
-            \hline
-            screening & 0.0$\pm$0.0\% & 0.858$\pm$0.005 & 0.678$\pm$0.022 & 2.689$\pm$0.077 \\
-            MARS & 100.0$\pm$0.0\% & \textbf{0.877$\pm$0.001} & \textbf{0.709$\pm$0.008} & \textbf{2.450$\pm$0.034} \\
-            MolDQN & 100.0$\pm$0.0\% & 0.877$\pm$0.009 & 0.170$\pm$0.024 & 5.833$\pm$0.182 \\
-            GEGL & 100.0$\pm$0.0\% & 0.853$\pm$0.003 & 0.643$\pm$0.014 & 2.990$\pm$0.054 \\
-            REINVENT & 100.0$\pm$0.0\% & 0.857$\pm$0.011 & 0.445$\pm$0.058 & 2.596$\pm$0.116 \\
-            RationaleRL & 100.0$\pm$0.0\% & 0.717$\pm$0.025 & 0.315$\pm$0.023 & 2.919$\pm$0.126 \\
-            JTVAE & 98.0$\pm$0.27\% & 0.867$\pm$0.001 & 0.593$\pm$0.035 & 3.222$\pm$0.136 \\
-            Gen3D & 100.0$\pm$0.0\% & \textbf{0.870$\pm$0.006} & 0.701$\pm$0.016 & 3.450$\pm$0.120 \\
-            GA+D & 99.2$\pm$0.011\% & 0.834$\pm$0.035 & 0.405$\pm$0.024 & 5.024$\pm$0.164 \\
-            Graph-GA & 100.0$\pm$0.0\% & 0.811$\pm$0.037 & 0.456$\pm$0.067 & 3.503$\pm$0.367 \\
-            Autogrow 4.0 & 100.0$\pm$0.0\% & 0.852$\pm$0.011 & \textbf{0.748$\pm$0.022} & \textbf{2.497$\pm$0.049} \\
-            RGA (ours) & 100.0$\pm$0.0\% & 0.857$\pm$0.020 & \textbf{0.742$\pm$0.036} & \textbf{2.473$\pm$0.048} \\
-            \hline
-            RGA - pretrain & 100.0$\pm$0.0\% & 0.854$\pm$0.035 & 0.750$\pm$0.034 & 2.494$\pm$0.043 \\
-            RGA - KT & 100.0$\pm$0.0\% & 0.853$\pm$0.028 & 0.738$\pm$0.034 & 2.501$\pm$0.050 \\
-            \hline 
-            \textbf{FragGPT-GA} & & & & \\
-            \textbf{(Ours)} & & & & \\
-            \hline\hline
-        \end{tabular}
-        \vspace{0.5em}
-        \textbf{(b) Diversity \& drug-likeness}
-    \end{minipage}
-\end{table*}
+    \begin{tabular}{l c c c}
+        \hline\hline
+        Method & TOP-100$\downarrow$ & TOP-10$\downarrow$ & TOP-1$\downarrow$ \\
+        \hline
+        screening & -9.351$\pm$0.643 & -10.433$\pm$0.563 & -11.400$\pm$0.630 \\
+        MARS & -7.758$\pm$0.612 & -8.875$\pm$0.711 & -9.257$\pm$0.791 \\
+        MolDQN & -6.287$\pm$0.396 & -7.043$\pm$0.487 & -7.501$\pm$0.402 \\
+        GEGL & -9.064$\pm$0.920 & -9.910$\pm$0.990 & -10.450$\pm$1.040 \\
+        REINVENT & -10.181$\pm$0.441 & -11.234$\pm$0.632 & -12.010$\pm$0.833 \\
+        RationaleRL & -9.233$\pm$0.920 & -10.834$\pm$0.856 & -11.642$\pm$1.102 \\
+        JTVAE & -9.291$\pm$0.702 & -10.242$\pm$0.839 & -10.963$\pm$1.133 \\
+        Gen3D & -8.686$\pm$0.450 & -9.285$\pm$0.584 & -9.832$\pm$0.324 \\
+        GA+D & -7.487$\pm$0.757 & -8.305$\pm$0.803 & -8.760$\pm$0.796 \\
+        Graph-GA & -10.848$\pm$0.860 & -11.702$\pm$0.930 & -12.302$\pm$1.010 \\
+        Autogrow 4.0 & -11.371$\pm$0.398 & -12.213$\pm$0.623 & -12.474$\pm$0.839 \\
+        RGA  & -11.867$\pm$0.170 & -12.564$\pm$0.287 & -12.869$\pm$0.473 \\             
+        \hline
+        \textbf{FragGPT-GA} & \textbf{-12.635$\pm$0.090} & \textbf{-13.241$\pm$0.190} & \textbf{-13.458$\pm$0.442} \\           
+        \hline\hline
+    \end{tabular}
+\end{table}
+
+% Table III: Diversity and drug-likeness metrics
+\begin{table}[!t]
+    \caption{Diversity and Drug-likeness Metrics (↑ better except SA ↓ better)}
+    \label{tab:diversity_metrics}
+    \centering    
+    \small
+    \setlength{\tabcolsep}{4pt}
+    
+    \begin{tabular}{l c c c c}
+        \hline\hline
+        Method & Nov$\uparrow$ & Div$\uparrow$ & QED$\uparrow$ & SA$\downarrow$ \\
+        \hline
+        screening & 0.0$\pm$0.0\% & 0.858$\pm$0.005 & 0.678$\pm$0.022 & 2.689$\pm$0.077 \\
+        MARS & 100.0$\pm$0.0\% & \textbf{0.877}$\pm$\textbf{0.001} & 0.709$\pm$0.008 & 2.450$\pm$0.034 \\
+            MolDQN & 100.0$\pm$0.0\% & \textbf{0.877}$\pm$\textbf{0.009} & 0.170$\pm$0.024 & 5.833$\pm$0.182 \\
+        GEGL & 100.0$\pm$0.0\% & 0.853$\pm$0.003 & 0.643$\pm$0.014 & 2.990$\pm$0.054 \\
+        REINVENT & 100.0$\pm$0.0\% & 0.857$\pm$0.011 & 0.445$\pm$0.058 & 2.596$\pm$0.116 \\
+        RationaleRL & 100.0$\pm$0.0\% & 0.717$\pm$0.025 & 0.315$\pm$0.023 & 2.919$\pm$0.126 \\
+        JTVAE & 98.0$\pm$0.27\% & 0.867$\pm$0.001 & 0.593$\pm$0.035 & 3.222$\pm$0.136 \\
+        Gen3D & 100.0$\pm$0.0\% & 0.870$\pm$0.006 & 0.701$\pm$0.016 & 3.450$\pm$0.120 \\
+        GA+D & 99.2$\pm$0.011\% & 0.834$\pm$0.035 & 0.405$\pm$0.024 & 5.024$\pm$0.164 \\
+        Graph-GA & 100.0$\pm$0.0\% & 0.811$\pm$0.037 & 0.456$\pm$0.067 & 3.503$\pm$0.367 \\
+        Autogrow 4.0 & 100.0$\pm$0.0\% & 0.852$\pm$0.011 & 0.748$\pm$0.022 & 2.497$\pm$0.049 \\
+        RGA  & 100.0$\pm$0.0\% & 0.857$\pm$0.020 & 0.742$\pm$0.036 & 2.473$\pm$0.048 \\                 
+        \hline
+        \textbf{FragGPT-GA} & 100.0$\pm$0.0\% & 0.845$\pm$0.024 & \textbf{0.764$\pm$0.012} & \textbf{2.014$\pm$0.153} \\            
+        \hline\hline
+    \end{tabular}
+\end{table}
 
 
 %对比f-rag
@@ -287,11 +274,11 @@ GPT-Only &  kcal/mol &  &  \\
         RetMol [42]    & -8.590 $\pm$ 0.475 & -5.448 $\pm$ 0.688 & -6.980 $\pm$ 0.740 & -8.811 $\pm$ 0.574 & -7.133 $\pm$ 0.242 \\
         GEAM [25]      & -12.891 $\pm$ 0.158 & -9.890 $\pm$ 0.116 & -12.374 $\pm$ 0.036 & -12.342 $\pm$ 0.095 & -11.816 $\pm$ 0.067 \\
         Genetic GFN [19] & -9.227 $\pm$ 0.644 & -7.288 $\pm$ 0.433 & -8.973 $\pm$ 0.804 & -8.719 $\pm$ 0.190 & -8.539 $\pm$ 0.592 \\
-        \textit{f}-RAG (ours) & \textbf{-12.945 $\pm$ 0.053} & \textbf{-9.899 $\pm$ 0.205} & \textbf{-12.670 $\pm$ 0.144} & \textbf{-12.390 $\pm$ 0.046} & \textbf{-11.842 $\pm$ 0.316} \\
+        \textit{f}-RAG  & \textbf{-12.945 $\pm$ 0.053} & \textbf{-9.899 $\pm$ 0.205} & \textbf{-12.670 $\pm$ 0.144} & \textbf{-12.390 $\pm$ 0.046} & \textbf{-11.842 $\pm$ 0.316} \\
         \hline
         
         % --- 为您预留的两个空白行 ---
-        \textbf{FragGPT-GA (Ours)} & & & & & \\
+        \textbf{FragGPT-GA } & & & & & \\
         \textbf{Model 2} & & & & & \\
         \hline
     \end{tabular}
