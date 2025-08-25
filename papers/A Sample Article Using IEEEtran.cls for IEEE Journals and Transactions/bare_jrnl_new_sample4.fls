@@ -156,11 +156,11 @@ INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/adobe/times/ptmr7t.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/adobe/times/ptmri7t.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/times/ptmri8r.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/adobe/times/ptmr8c.vf
-INPUT ./model_pictures.pdf
-INPUT ./model_pictures.pdf
-INPUT ./model_pictures.pdf
-INPUT ./model_pictures.pdf
-INPUT ./model_pictures.pdf
+INPUT ./model_pictures_01.png
+INPUT ./model_pictures_01.png
+INPUT ./model_pictures_01.png
+INPUT ./model_pictures_01.png
+INPUT ./model_pictures_01.png
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/adobe/times/ptmb7t.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/times/ptmb8r.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/ot1pcr.fd
