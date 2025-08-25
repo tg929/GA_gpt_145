@@ -1,4 +1,4 @@
-\documentclass[lettersize,journal]{IEEEtran}
+\documentclass[letterpaper,journal]{IEEEtran}
 \usepackage{rotating}
 \makeatletter
 \setlength{\@fptop}{0pt}
@@ -159,20 +159,6 @@ Unless specified, the maximum generations are set to 25. We retain 120 elites pe
 \section{Results and Discussion}
 \subsection{Performance Comparison}
 FragGPT-GA consistently improves docking scores while maintaining or enhancing QED and SA compared to GA-only and GPT-only baselines. The hybrid design yields a broader and more favorable Pareto front, indicating better trade-offs across objectives. Qualitatively, GPT proposals inject scaffold-level diversity that GA operators refine toward binding-competent chemotypes.
-%[cite_start]% 这是放置性能对比表的地方 [cite: 87, 88, 98]
-\begin{table}[!t]
-\caption{Performance Comparison of Different Methods\label{tab:performance}}
-\centering
-\begin{tabular}{|l|c|c|c|}
-\hline
-\textbf{Method} & \textbf{Best Docking Score} & \textbf{Avg. QED} & \textbf{Avg. SA Score} \\
-\hline
-GA-Only &  kcal/mol &  & \\
-GPT-Only &  kcal/mol &  &  \\
-\textbf{FragGPT-GA} & \textbf{  kcal/mol} & \textbf{0.75} & \textbf{} \\
-\hline
-\end{tabular}
-\end{table}
 
 % Table II: Docking scores
 \begin{table}[!t]
@@ -237,56 +223,50 @@ GPT-Only &  kcal/mol &  &  \\
 
 %对比f-rag
 % 使用 table* 环境，并用 [t] 参数建议其置于页面顶部
-\begin{table*}[t]
-    \caption{Docking scores across five protein targets on PMO benchmark (kcal/mol, \textdownarrow\ better).}
-    \label{tab:target_protein_scores}
-    \centering
-    \small % 使用 small 字体以确保内容能良好地排列
+% \begin{table*}[t]
+%     \caption{Docking scores across five protein targets on PMO benchmark (kcal/mol, \textdownarrow\ better).}
+%     \label{tab:target_protein_scores}
+%     \centering
+%     \small % 使用 small 字体以确保内容能良好地排列
 
-    % {l ccccc} 定义了1个左对齐列和5个居中对齐的列
-    \begin{tabular}{l ccccc}
-        \hline
-        % --- 这是多级表头的第一行 ---
-        % \multicolumn{5}{c}{...} 命令让 "Target protein" 这个标题横跨5列并居中
-        \textbf{Method} & \multicolumn{5}{c}{\textbf{Target protein}} \\ 
-        \cline{2-6} % \cline{2-6} 只在第2列到第6列下画线，不会影响 "Method" 列
+%     % {l ccccc} 定义了1个左对齐列和5个居中对齐的列
+%     \begin{tabular}{l ccccc}
+%         \hline
+%         % --- 这是多级表头的第一行 ---
+%         % \multicolumn{5}{c}{...} 命令让 "Target protein" 这个标题横跨5列并居中
+%         \textbf{Method} & \multicolumn{5}{c}{\textbf{Target protein}} \\ 
+%         \cline{2-6} % \cline{2-6} 只在第2列到第6列下画线，不会影响 "Method" 列
 
-        % --- 这是多级表头的第二行 ---
-        & \textbf{parp1} & \textbf{fa7} & \textbf{5ht1b} & \textbf{braf} & \textbf{jak2} \\
-        \hline
+%         % --- 这是多级表头的第二行 ---
+%         & \textbf{parp1} & \textbf{fa7} & \textbf{5ht1b} & \textbf{braf} & \textbf{jak2} \\
+%         \hline
         
-        % --- 表格数据行 ---
-        % 请注意，您需要将 [16] 等替换为您自己的 \cite{...} 命令
-        JT-VAE [16]    & -9.482 $\pm$ 0.132 & -7.683 $\pm$ 0.048 & -9.382 $\pm$ 0.332 & -9.079 $\pm$ 0.069 & -8.885 $\pm$ 0.026 \\
-        REINVENT [35]  & -8.702 $\pm$ 0.523 & -7.205 $\pm$ 0.264 & -8.770 $\pm$ 0.316 & -8.392 $\pm$ 0.400 & -8.165 $\pm$ 0.277 \\
-        Graph GA [14]  & -10.949 $\pm$ 0.532 & -7.365 $\pm$ 0.326 & -10.422 $\pm$ 0.670 & -10.789 $\pm$ 0.341 & -10.167 $\pm$ 0.576 \\
-        MORLD [15]     & -7.532 $\pm$ 0.260 & -6.263 $\pm$ 0.165 & -7.869 $\pm$ 0.650 & -8.040 $\pm$ 0.337 & -7.816 $\pm$ 0.133 \\
-        HierVAE [17]   & -9.487 $\pm$ 0.278 & -6.812 $\pm$ 0.274 & -8.081 $\pm$ 0.252 & -8.978 $\pm$ 0.525 & -8.285 $\pm$ 0.370 \\
-        GA+D [32]      & -8.365 $\pm$ 0.201 & -6.539 $\pm$ 0.297 & -8.567 $\pm$ 0.177 & -9.371 $\pm$ 0.728 & -8.610 $\pm$ 0.104 \\
-        MARS [45]      & -9.716 $\pm$ 0.082 & -7.839 $\pm$ 0.018 & -9.804 $\pm$ 0.073 & -9.569 $\pm$ 0.078 & -9.150 $\pm$ 0.114 \\
-        GEGL [1]       & -9.329 $\pm$ 0.170 & -7.470 $\pm$ 0.013 & -9.086 $\pm$ 0.067 & -9.073 $\pm$ 0.047 & -8.601 $\pm$ 0.038 \\
-        RationaleRL [18] & -10.663 $\pm$ 0.086 & -8.129 $\pm$ 0.048 & -9.005 $\pm$ 0.155 & \textit{No hit found} & -9.398 $\pm$ 0.076 \\
-        FREED [46]     & -10.579 $\pm$ 0.104 & -8.378 $\pm$ 0.044 & -10.714 $\pm$ 0.183 & -10.561 $\pm$ 0.080 & -9.735 $\pm$ 0.022 \\
-        PS-VAE [20]    & -9.978 $\pm$ 0.091 & -8.028 $\pm$ 0.050 & -9.887 $\pm$ 0.115 & -9.637 $\pm$ 0.049 & -9.464 $\pm$ 0.129 \\
-        MOOD [24]      & -10.865 $\pm$ 0.113 & -8.160 $\pm$ 0.071 & -11.145 $\pm$ 0.042 & -11.063 $\pm$ 0.034 & -10.147 $\pm$ 0.060 \\
-        RetMol [42]    & -8.590 $\pm$ 0.475 & -5.448 $\pm$ 0.688 & -6.980 $\pm$ 0.740 & -8.811 $\pm$ 0.574 & -7.133 $\pm$ 0.242 \\
-        GEAM [25]      & -12.891 $\pm$ 0.158 & -9.890 $\pm$ 0.116 & -12.374 $\pm$ 0.036 & -12.342 $\pm$ 0.095 & -11.816 $\pm$ 0.067 \\
-        Genetic GFN [19] & -9.227 $\pm$ 0.644 & -7.288 $\pm$ 0.433 & -8.973 $\pm$ 0.804 & -8.719 $\pm$ 0.190 & -8.539 $\pm$ 0.592 \\
-        \textit{f}-RAG  & \textbf{-12.945 $\pm$ 0.053} & \textbf{-9.899 $\pm$ 0.205} & \textbf{-12.670 $\pm$ 0.144} & \textbf{-12.390 $\pm$ 0.046} & \textbf{-11.842 $\pm$ 0.316} \\
-        \hline
+%         % --- 表格数据行 ---
+%         % 请注意，您需要将 [16] 等替换为您自己的 \cite{...} 命令
+%         JT-VAE [16]    & -9.482 $\pm$ 0.132 & -7.683 $\pm$ 0.048 & -9.382 $\pm$ 0.332 & -9.079 $\pm$ 0.069 & -8.885 $\pm$ 0.026 \\
+%         REINVENT [35]  & -8.702 $\pm$ 0.523 & -7.205 $\pm$ 0.264 & -8.770 $\pm$ 0.316 & -8.392 $\pm$ 0.400 & -8.165 $\pm$ 0.277 \\
+%         Graph GA [14]  & -10.949 $\pm$ 0.532 & -7.365 $\pm$ 0.326 & -10.422 $\pm$ 0.670 & -10.789 $\pm$ 0.341 & -10.167 $\pm$ 0.576 \\
+%         MORLD [15]     & -7.532 $\pm$ 0.260 & -6.263 $\pm$ 0.165 & -7.869 $\pm$ 0.650 & -8.040 $\pm$ 0.337 & -7.816 $\pm$ 0.133 \\
+%         HierVAE [17]   & -9.487 $\pm$ 0.278 & -6.812 $\pm$ 0.274 & -8.081 $\pm$ 0.252 & -8.978 $\pm$ 0.525 & -8.285 $\pm$ 0.370 \\
+%         GA+D [32]      & -8.365 $\pm$ 0.201 & -6.539 $\pm$ 0.297 & -8.567 $\pm$ 0.177 & -9.371 $\pm$ 0.728 & -8.610 $\pm$ 0.104 \\
+%         MARS [45]      & -9.716 $\pm$ 0.082 & -7.839 $\pm$ 0.018 & -9.804 $\pm$ 0.073 & -9.569 $\pm$ 0.078 & -9.150 $\pm$ 0.114 \\
+%         GEGL [1]       & -9.329 $\pm$ 0.170 & -7.470 $\pm$ 0.013 & -9.086 $\pm$ 0.067 & -9.073 $\pm$ 0.047 & -8.601 $\pm$ 0.038 \\
+%         RationaleRL [18] & -10.663 $\pm$ 0.086 & -8.129 $\pm$ 0.048 & -9.005 $\pm$ 0.155 & \textit{No hit found} & -9.398 $\pm$ 0.076 \\
+%         FREED [46]     & -10.579 $\pm$ 0.104 & -8.378 $\pm$ 0.044 & -10.714 $\pm$ 0.183 & -10.561 $\pm$ 0.080 & -9.735 $\pm$ 0.022 \\
+%         PS-VAE [20]    & -9.978 $\pm$ 0.091 & -8.028 $\pm$ 0.050 & -9.887 $\pm$ 0.115 & -9.637 $\pm$ 0.049 & -9.464 $\pm$ 0.129 \\
+%         MOOD [24]      & -10.865 $\pm$ 0.113 & -8.160 $\pm$ 0.071 & -11.145 $\pm$ 0.042 & -11.063 $\pm$ 0.034 & -10.147 $\pm$ 0.060 \\
+%         RetMol [42]    & -8.590 $\pm$ 0.475 & -5.448 $\pm$ 0.688 & -6.980 $\pm$ 0.740 & -8.811 $\pm$ 0.574 & -7.133 $\pm$ 0.242 \\
+%         GEAM [25]      & -12.891 $\pm$ 0.158 & -9.890 $\pm$ 0.116 & -12.374 $\pm$ 0.036 & -12.342 $\pm$ 0.095 & -11.816 $\pm$ 0.067 \\
+%         Genetic GFN [19] & -9.227 $\pm$ 0.644 & -7.288 $\pm$ 0.433 & -8.973 $\pm$ 0.804 & -8.719 $\pm$ 0.190 & -8.539 $\pm$ 0.592 \\
+%         \textit{f}-RAG  & \textbf{-12.945 $\pm$ 0.053} & \textbf{-9.899 $\pm$ 0.205} & \textbf{-12.670 $\pm$ 0.144} & \textbf{-12.390 $\pm$ 0.046} & \textbf{-11.842 $\pm$ 0.316} \\
+%         \hline
         
-        % --- 为您预留的两个空白行 ---
-        \textbf{FragGPT-GA } & & & & & \\
-        \textbf{Model 2} & & & & & \\
-        \hline
-    \end{tabular}
-\end{table*}
-
-
-
-
-
-
+%         % --- 为您预留的两个空白行 ---
+%         \textbf{FragGPT-GA } & & & & & \\
+%         \textbf{Model 2} & & & & & \\
+%         \hline
+%     \end{tabular}
+% \end{table*}
 
 Table~\ref{tab:performance} summarizes the final performance metrics... As shown, FragGPT-GA achieves the best docking score...
 \subsection{Ablation Studies}
@@ -331,8 +311,8 @@ Table~\ref{tab:selection_ablation} presents the performance comparison across di
         TOP-100$\downarrow$ & -12.014$\pm$0.168 & -12.635$\pm$0.090 & -12.301$\pm$0.260 \\
         TOP-10$\downarrow$ & -13.120$\pm$0.020 & -13.241$\pm$0.190 & -13.200$\pm$0.310 \\
         TOP-1$\downarrow$ & -13.253$\pm$0.130 & -13.458$\pm$0.442 & -13.314$\pm$0.512 \\
-        QED$\uparrow$ & 0.436$\pm$0.034 & \textbf{0.764$\pm$0.012} & 0.579$\pm$0.015 \\
-        SA$\downarrow$ & 3.145$\pm$0.153 & \textbf{2.014$\pm$0.015} & 2.645$\pm$0.176 \\
+        QED$\uparrow$ & 0.436$\pm$0.034 & 0.764$\pm$0.012 & 0.579$\pm$0.015 \\
+        SA$\downarrow$ & 3.145$\pm$0.153 & 2.014$\pm$0.015 & 2.645$\pm$0.176 \\
         \hline\hline
     \end{tabular}
 \end{table}
@@ -372,20 +352,10 @@ The authors would like to thank...
 % 参考文献 (References)
 % ====================================================================
 
-%[cite_start]% 您可以使用BibTeX来管理参考文献 [cite: 330, 331]
-% \bibliographystyle{IEEEtran}
-% \bibliography{your_bib_file}
-
-%[cite_start]% 或者手动在这里列出参考文献 [cite: 332, 334]
-\begin{thebibliography}{1}
-\bibitem{ref1}
-%[cite_start]% 示例 [cite: 335]
-Mathematics Into Type. American Mathematical Society. [Online]. Available: https://www.ams.org/arc/styleguide/mit-2.pdf
-\bibitem{ref2}
-%[cite_start]% 示例 [cite: 340]
-H. Sira-Ramirez, "On the sliding mode control of nonlinear systems." Syst. Control Lett., vol. 19, pp. 303-312, 1992.
-% ... 在这里添加您的参考文献
-\end{thebibliography}
+% Use BibTeX for references per IEEEtran guidelines
+\nocite{*} % Include all entries from the bib file
+\bibliographystyle{IEEEtran}
+\bibliography{references_1}
 \end{document}
 
 
@@ -832,73 +802,4 @@ You must declare a $\backslash${\tt{section}} before using any $\backslash${\tt{
 
 
 
-\section{References Section}
-You can use a bibliography generated by BibTeX as a .bbl file.
- BibTeX documentation can be easily obtained at:
- http://mirror.ctan.org/biblio/bibtex/contrib/doc/
- The IEEEtran BibTeX style support page is:
- http://www.michaelshell.org/tex/ieeetran/bibtex/
- 
- % argument is your BibTeX string definitions and bibliography database(s)
-%\bibliography{IEEEabrv,../bib/paper}
-%
-\section{Simple References}
-You can manually copy in the resultant .bbl file and set second argument of $\backslash${\tt{begin}} to the number of references
- (used to reserve space for the reference number labels box).
-
-\begin{thebibliography}{1}
-\bibliographystyle{IEEEtran}
-
-\bibitem{ref1}
-{\it{Mathematics Into Type}}. American Mathematical Society. [Online]. Available: https://www.ams.org/arc/styleguide/mit-2.pdf
-
-\bibitem{ref2}
-T. W. Chaundy, P. R. Barrett and C. Batey, {\it{The Printing of Mathematics}}. London, U.K., Oxford Univ. Press, 1954.
-
-\bibitem{ref3}
-F. Mittelbach and M. Goossens, {\it{The \LaTeX Companion}}, 2nd ed. Boston, MA, USA: Pearson, 2004.
-
-\bibitem{ref4}
-G. Gr\"atzer, {\it{More Math Into LaTeX}}, New York, NY, USA: Springer, 2007.
-
-\bibitem{ref5}M. Letourneau and J. W. Sharp, {\it{AMS-StyleGuide-online.pdf,}} American Mathematical Society, Providence, RI, USA, [Online]. Available: http://www.ams.org/arc/styleguide/index.html
-
-\bibitem{ref6}
-H. Sira-Ramirez, ``On the sliding mode control of nonlinear systems,'' \textit{Syst. Control Lett.}, vol. 19, pp. 303--312, 1992.
-
-\bibitem{ref7}
-A. Levant, ``Exact differentiation of signals with unbounded higher derivatives,''  in \textit{Proc. 45th IEEE Conf. Decis.
-Control}, San Diego, CA, USA, 2006, pp. 5585--5590. DOI: 10.1109/CDC.2006.377165.
-
-\bibitem{ref8}
-M. Fliess, C. Join, and H. Sira-Ramirez, ``Non-linear estimation is easy,'' \textit{Int. J. Model., Ident. Control}, vol. 4, no. 1, pp. 12--27, 2008.
-
-\bibitem{ref9}
-R. Ortega, A. Astolfi, G. Bastin, and H. Rodriguez, ``Stabilization of food-chain systems using a port-controlled Hamiltonian description,'' in \textit{Proc. Amer. Control Conf.}, Chicago, IL, USA,
-2000, pp. 2245--2249.
-
-\end{thebibliography}
-
-
-\newpage
-
-\section{Biography Section}
-If you have an EPS/PDF photo (graphicx package needed), extra braces are
- needed around the contents of the optional argument to biography to prevent
- the LaTeX parser from getting confused when it sees the complicated
- $\backslash${\tt{includegraphics}} command within an optional argument. (You can create
- your own custom macro containing the $\backslash${\tt{includegraphics}} command to make things
- simpler here.)
- 
-\vspace{11pt}
-
-% Biography templates removed; TEVC submissions typically omit author bios at initial submission.
-
-
-
-
-\vfill
-
-\end{document
-
-
+% (Template references and biography sections removed to avoid duplication with BibTeX references.)

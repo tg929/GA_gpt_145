@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.25)  25 AUG 2025 21:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.25)  25 AUG 2025 22:14
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -274,12 +274,7 @@ Package: cite 2015/02/27  v 5.5
 File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count305
 \l__pdf_internal_box=\box61
-)
-
-LaTeX Warning: Unused global option(s):
-    [lettersize].
-
-(./bare_jrnl_new_sample4.aux)
+) (./bare_jrnl_new_sample4.aux)
 \openout1 = `bare_jrnl_new_sample4.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 20.
@@ -370,41 +365,38 @@ File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 
 LaTeX Info: Symbol \textdownarrow not provided by
             font family ptm in TS1 encoding.
-            Default family used instead on input line 179.
+            Default family used instead on input line 165.
 
 LaTeX Font Warning: Font shape `TS1/cmr/m/sc' undefined
 (Font)              using `TS1/cmr/m/n' instead
-(Font)              for symbol `textdownarrow' on input line 179.
+(Font)              for symbol `textdownarrow' on input line 165.
 
 LaTeX Info: Symbol \textuparrow not provided by
             font family ptm in TS1 encoding.
-            Default family used instead on input line 209.
+            Default family used instead on input line 195.
 LaTeX Info: Symbol \textdownarrow not provided by
             font family ptm in TS1 encoding.
-            Default family used instead on input line 209.
+            Default family used instead on input line 195.
 
-Overfull \hbox (34.44226pt too wide) in paragraph at lines 215--235
+Overfull \hbox (34.44226pt too wide) in paragraph at lines 201--221
  [][] 
  []
 
-LaTeX Info: Symbol \textdownarrow not provided by
-            font family ptm in TS1 encoding.
-            Default family used instead on input line 241.
+
+LaTeX Warning: Reference `tab:performance' on page 3 undefined on input line 271.
+
 
 
 [3{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
 
 
-Underfull \hbox (badness 1831) in paragraph at lines 353--354
+Underfull \hbox (badness 1831) in paragraph at lines 333--334
 []\OT1/ptm/m/n/10 We in-spect top-ranking molecules to un-der-stand how
  []
 
+(./bare_jrnl_new_sample4.bbl
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-[4]
+[4])
 
 
 
@@ -419,17 +411,20 @@ L3 programming layer <2025-01-18>
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
+
+LaTeX Warning: There were undefined references.
+
  ) 
 Here is how much of TeX's memory you used:
- 4845 strings out of 473190
- 83620 string characters out of 5715806
- 504951 words of memory out of 5000000
- 28019 multiletter control sequences out of 15000+600000
- 603390 words of font info for 119 fonts, out of 8000000 for 9000
+ 4871 strings out of 473190
+ 84563 string characters out of 5715806
+ 495967 words of memory out of 5000000
+ 28044 multiletter control sequences out of 15000+600000
+ 601147 words of font info for 117 fonts, out of 8000000 for 9000
  1145 hyphenation exceptions out of 8191
  72i,11n,79p,1407b,403s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on bare_jrnl_new_sample4.pdf (5 pages, 356986 bytes).
+Output written on bare_jrnl_new_sample4.pdf (5 pages, 359007 bytes).
 PDF statistics:
  100 PDF objects out of 1000 (max. 8388607)
  60 compressed objects within 1 object stream

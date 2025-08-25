@@ -1,6 +1,14 @@
 # Fdb version 4
-["pdflatex"] 1756130098.88368 "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex" "bare_jrnl_new_sample4.pdf" "bare_jrnl_new_sample4" 1756130099.80962 0
-  "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex" 1756130097.63224 50210 147c893406f7c7fc5ae9f16e8aa76b00 ""
+["bibtex bare_jrnl_new_sample4"] 1756131244.03848 "bare_jrnl_new_sample4.aux" "bare_jrnl_new_sample4.bbl" "bare_jrnl_new_sample4" 1756131245.78173 0
+  "./references_1.bib" 1756130430.92637 12191 b3660ae603c5ee37a6ed4175adcc9c2b ""
+  "/usr/local/texlive/2025/texmf-dist/bibtex/bst/ieeetran/IEEEtran.bst" 1440712899 57748 7c8250ecf02814ce6ddc0cdbb63df1dd ""
+  "bare_jrnl_new_sample4.aux" 1756131245.4007 5988 db834ce0a283e5859ed9d9df8fc60b7f "pdflatex"
+  (generated)
+  "bare_jrnl_new_sample4.bbl"
+  "bare_jrnl_new_sample4.blg"
+  (rewritten before read)
+["pdflatex"] 1756131244.19476 "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex" "bare_jrnl_new_sample4.pdf" "bare_jrnl_new_sample4" 1756131245.782 0
+  "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex" 1756131240.40276 46654 42bd5cb8f7b1dd5c9cad5b0f466b2fb0 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -97,8 +105,9 @@
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1756102751 3345754 4f73532846c2a9db5b596a86d06761da ""
   "/usr/local/texlive/2025/texmf.cnf" 1756102458.05111 455 5b996dcaa0eb4ef14a83b026bc0a008c ""
   "IEEEtran.cls" 1756040877.26785 282108 7379a03af5f3d0dad26db23a43c3a726 ""
-  "bare_jrnl_new_sample4.aux" 1756130099.74421 5395 3b70a5eaf3624064d09bb78b6e893a94 "pdflatex"
-  "bare_jrnl_new_sample4.tex" 1756130097.63224 50210 147c893406f7c7fc5ae9f16e8aa76b00 ""
+  "bare_jrnl_new_sample4.aux" 1756131245.4007 5988 db834ce0a283e5859ed9d9df8fc60b7f "pdflatex"
+  "bare_jrnl_new_sample4.bbl" 1756131244.18872 7743 bf5e217d363ea46fead4c1a6183ce5bd "bibtex bare_jrnl_new_sample4"
+  "bare_jrnl_new_sample4.tex" 1756131240.40276 46654 42bd5cb8f7b1dd5c9cad5b0f466b2fb0 ""
   "model_pictures_01.png" 1756129934.55409 260002 c7d6039a4e3ea0792d4b6eff8af0438d ""
   (generated)
   "bare_jrnl_new_sample4.aux"

@@ -1,0 +1,85 @@
+This is BibTeX, Version 0.99d (TeX Live 2025)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: bare_jrnl_new_sample4.aux
+The style file: IEEEtran.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: references_1.bib
+-- IEEEtran.bst version 1.14 (2015/08/26) by Michael Shell.
+-- http://www.michaelshell.org/tex/ieeetran/bibtex/
+-- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--empty journal in abdelsayedAIDrivenPolypharmacologySmallMolecule2025
+Warning--empty year in abdelsayedAIDrivenPolypharmacologySmallMolecule2025
+Warning--empty journal in aiMTMolGPTNovoMultitarget2024
+Warning--empty year in aiMTMolGPTNovoMultitarget2024
+Warning--empty journal in cicirelloEvolutionaryComputationTheories2024
+Warning--empty year in cicirelloEvolutionaryComputationTheories2024
+Warning--empty journal in debFastElitistMultiobjective2002
+Warning--empty year in debFastElitistMultiobjective2002
+Warning--empty journal in fangAcceleratingMultiobjectiveOptimization2025
+Warning--empty year in fangAcceleratingMultiobjectiveOptimization2025
+Warning--empty journal in kadanGuidedMultiobjectiveGenerative2025
+Warning--empty year in kadanGuidedMultiobjectiveGenerative2025
+Warning--empty journal in khaterGenerativeArtificialIntelligence2025
+Warning--empty year in khaterGenerativeArtificialIntelligence2025
+Warning--empty journal in qingfuzhangMOEAMultiobjectiveEvolutionary2007
+Warning--empty year in qingfuzhangMOEAMultiobjectiveEvolutionary2007
+Warning--empty journal in tianCoevolutionaryFrameworkConstrained2021
+Warning--empty year in tianCoevolutionaryFrameworkConstrained2021
+Warning--empty journal in tranProteinDesignDirected
+Warning--empty year in tranProteinDesignDirected
+Warning--empty journal in xiaCMOMODeepMultiobjective2025
+Warning--empty year in xiaCMOMODeepMultiobjective2025
+Warning--empty journal in xiaEvolutionaryMultiobjectiveMolecule2024
+Warning--empty year in xiaEvolutionaryMultiobjectiveMolecule2024
+Warning--empty journal in yooPartWholeAIdriven2025
+Warning--empty year in yooPartWholeAIdriven2025
+Warning--empty journal in zhangDualStageDualPopulationAlgorithm2025
+Warning--empty year in zhangDualStageDualPopulationAlgorithm2025
+
+Done.
+You've used 20 entries,
+            4087 wiz_defined-function locations,
+            946 strings with 13227 characters,
+and the built_in function-call counts, 13932 in all, are:
+= -- 1085
+> -- 428
+< -- 84
++ -- 222
+- -- 97
+* -- 733
+:= -- 2102
+add.period$ -- 40
+call.type$ -- 20
+change.case$ -- 20
+chr.to.int$ -- 138
+cite$ -- 48
+duplicate$ -- 1025
+empty$ -- 977
+format.name$ -- 109
+if$ -- 3145
+int.to.chr$ -- 0
+int.to.str$ -- 20
+missing$ -- 221
+newline$ -- 121
+num.names$ -- 20
+pop$ -- 583
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 2
+skip$ -- 1040
+stack$ -- 0
+substring$ -- 434
+swap$ -- 819
+text.length$ -- 38
+text.prefix$ -- 0
+top$ -- 5
+type$ -- 20
+warning$ -- 28
+while$ -- 48
+width$ -- 22
+write$ -- 237
+(There were 28 warnings)
