@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1756126827.53215 "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex" "bare_jrnl_new_sample4.pdf" "bare_jrnl_new_sample4" 1756126828.27468 0
-  "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex" 1756126827.28775 52482 8da861169c7aad44aff92526202141dc ""
+["pdflatex"] 1756128858.12064 "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex" "bare_jrnl_new_sample4.pdf" "bare_jrnl_new_sample4" 1756128859.0644 0
+  "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex" 1756128856.8441 52377 e70e58452bac1f408db4ebe82751191c ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -97,8 +97,9 @@
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1756102751 3345754 4f73532846c2a9db5b596a86d06761da ""
   "/usr/local/texlive/2025/texmf.cnf" 1756102458.05111 455 5b996dcaa0eb4ef14a83b026bc0a008c ""
   "IEEEtran.cls" 1756040877.26785 282108 7379a03af5f3d0dad26db23a43c3a726 ""
-  "bare_jrnl_new_sample4.aux" 1756126828.19074 5208 2fd5c2b30c3969d41df1040da78361e3 "pdflatex"
-  "bare_jrnl_new_sample4.tex" 1756126827.28775 52482 8da861169c7aad44aff92526202141dc ""
+  "bare_jrnl_new_sample4.aux" 1756128858.87007 5208 8f0652d8d7364b48c921d4a2256ff4a9 "pdflatex"
+  "bare_jrnl_new_sample4.tex" 1756128856.8441 52377 e70e58452bac1f408db4ebe82751191c ""
+  "model_pictures.pdf" 1756128692.94214 101580 d535081fe513dddc72533dfd01a8bfab ""
   (generated)
   "bare_jrnl_new_sample4.aux"
   "bare_jrnl_new_sample4.log"
