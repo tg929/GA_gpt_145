@@ -238,7 +238,7 @@ GPT-Only &  kcal/mol &  &  \\
 %对比f-rag
 % 使用 table* 环境，并用 [t] 参数建议其置于页面顶部
 \begin{table*}[t]
-    %\caption{不同方法在五个不同靶点蛋白上的对接分数比较。数值越低越好。}
+    \caption{Docking scores across five protein targets on PMO benchmark (kcal/mol, \textdownarrow\ better).}
     \label{tab:target_protein_scores}
     \centering
     \small % 使用 small 字体以确保内容能良好地排列
@@ -457,42 +457,9 @@ In this section, we will consider three types of lists: simple unnumbered, numbe
 
 
 
-\subsection{Figures}
-Fig. 1 is an example of a floating figure using the graphicx package.
- Note that $\backslash${\tt{label}} must occur AFTER (or within) $\backslash${\tt{caption}}.
- For figures, $\backslash${\tt{caption}} should occur after the $\backslash${\tt{includegraphics}}.
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=2.5in]{fig1}
-\caption{Simulation results for the network.}
-\label{fig_1}
-\end{figure}
-
-Fig. 2(a) and 2(b) is an example of a double column floating figure using two subfigures.
- (The subfig.sty package must be loaded for this to work.)
- The subfigure $\backslash${\tt{label}} commands are set within each subfloat command,
- and the $\backslash${\tt{label}} for the overall figure must come after $\backslash${\tt{caption}}.
- $\backslash${\tt{hfil}} is used as a separator to get equal spacing.
- The combined width of all the parts of the figure should do not exceed the text width or a line break will occur.
-%
-\begin{figure*}[!t]
-\centering
-\subfloat[]{\includegraphics[width=2.5in]{fig1}%
-\label{fig_first_case}}
-\hfil
-\subfloat[]{\includegraphics[width=2.5in]{fig1}%
-\label{fig_second_case}}
-\caption{Dae. Ad quatur autat ut porepel itemoles dolor autem fuga. Bus quia con nessunti as remo di quatus non perum que nimus. (a) Case I. (b) Case II.}
-\label{fig_sim}
-\end{figure*}
-
-Note that often IEEE papers with multi-part figures do not place the labels within the image itself (using the optional argument to $\backslash${\tt{subfloat}}[]), but instead will
- reference/describe all of them (a), (b), etc., within the main caption.
- Be aware that for subfig.sty to generate the (a), (b), etc., subfigure
- labels, the optional argument to $\backslash${\tt{subfloat}} must be present. If a
- subcaption is not desired, leave its contents blank,
- e.g.,$\backslash${\tt{subfloat}}[].
+% \subsection{Figures}
+% The following template sample section and figures are removed to comply with TEVC formatting.
+% They referenced example images (fig1) that are not part of this manuscript.
 
 
  
@@ -925,18 +892,7 @@ If you have an EPS/PDF photo (graphicx package needed), extra braces are
  
 \vspace{11pt}
 
-\bf{If you include a photo:}\vspace{-33pt}
-\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{fig1}}]{Michael Shell}
-Use $\backslash${\tt{begin\{IEEEbiography\}}} and then for the 1st argument use $\backslash${\tt{includegraphics}} to declare and link the author photo.
-Use the author name as the 3rd argument followed by the biography text.
-\end{IEEEbiography}
-
-\vspace{11pt}
-
-\bf{If you will not include a photo:}\vspace{-33pt}
-\begin{IEEEbiographynophoto}{John Doe}
-Use $\backslash${\tt{begin\{IEEEbiographynophoto\}}} and the author name as the argument followed by the biography text.
-\end{IEEEbiographynophoto}
+% Biography templates removed; TEVC submissions typically omit author bios at initial submission.
 
 
 
