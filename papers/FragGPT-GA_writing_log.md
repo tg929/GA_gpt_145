@@ -27,6 +27,29 @@
   - 案例：从分子与结合模式角度解释改进来源（本轮新增）。
 - Conclusion：重申方法价值与未来方向（更多目标、任务自适应提示、跨蛋白迁移）。
 
+## 表格优化与消融实验扩展
+
+### Table II & Table III 拆分 (最新实施)
+- **改动内容**: 将原来的并列子表拆分为两个完全独立的表格
+  - Table II: 对接分数比较 (`tab:docking_scores`)，包含TOP-100、TOP-10、TOP-1指标
+  - Table III: 多样性和药物相似性指标 (`tab:diversity_metrics`)，包含Nov、Div、QED、SA指标
+- **原因**: 用户要求分别命名为Table 2和Table 3，更符合学术规范且便于引用
+
+### 消融实验：选择策略比较 (新增)
+- **新增内容**: 在Ablation Studies部分添加了选择策略对比子节
+- **包含表格**: Table IV (`tab:selection_ablation`) - 消融实验：选择策略比较
+- **三种策略及公式**:
+  1. **单目标选择**: $S_{\text{single}}(m) = -\text{DockingScore}(m)$
+  2. **多目标选择**: NSGA-II with $\mathbf{f}(m) = [-\text{DockingScore}(m), \text{QED}(m), -\text{SA}(m)]^T$
+  3. **综合评分**: $S_{\text{comp}}(m) = \alpha \cdot \frac{|\text{DockingScore}(m)|}{|\text{DS}_{\max}|} + \beta \cdot \text{QED}(m) + \gamma \cdot \frac{\text{SA}_{\max} - \text{SA}(m)}{\text{SA}_{\max}}$
+
+- **评估指标表示**: 全文统一使用$S(\cdot)$符号表示各评估指标值
+- **实验数据**: 采用用户提供的真实实验数据，包含三种策略的性能对比
+- **分析重点**: 
+  - 单目标选择：对接分数好但药物相似性差 ($S(\text{QED}) = 0.436$, $S(\text{SA}) = 3.145$)
+  - 多目标选择：最平衡的性能 ($S(\text{QED}) = 0.764$, $S(\text{SA}) = 2.014$)
+  - 综合评分：中等性能 ($S(\text{QED}) = 0.579$, $S(\text{SA}) = 2.645$)
+
 ## 后续计划
-1. 以真实实验结果替换占位表与图（性能表、收敛曲线、分子案例）。
+1. 以真实实验结果替换剩余占位表与图（收敛曲线、分子案例）。
 2. 若需压版，继续精简模板示例段落；统一整理参考文献。

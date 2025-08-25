@@ -292,6 +292,56 @@ GPT-Only &  kcal/mol &  &  \\
 
 Table~\ref{tab:performance} summarizes the final performance metrics... As shown, FragGPT-GA achieves the best docking score...
 \subsection{Ablation Studies}
+
+\subsubsection{Selection Strategy Comparison}
+To evaluate the impact of different selection strategies in our FragGPT-GA framework, we conduct ablation studies comparing three approaches: single-objective selection, multi-objective selection (NSGA-II), and our novel comprehensive scoring function $S(m)$. 
+
+For single-objective selection, we optimize only the docking score:
+\begin{equation}
+S_{\text{single}}(m) = -\text{DockingScore}(m)
+\end{equation}
+
+For multi-objective selection, we employ NSGA-II with three objectives:
+\begin{equation}
+    S_{\text{multi-obj}}(m) = \begin{bmatrix} -\text{DockingScore}(m) \\ \text{QED}(m) \\ -\text{SA}(m) \end{bmatrix}
+\end{equation}
+
+Our comprehensive scoring function follows the target property formulation used in previous works, integrating all objectives as a multiplicative composite score:
+\begin{equation}
+S_{\text{comp}}(m) =  \widehat{DS}(m) \times \text{QED}(m) \times \widehat{SA}(m) \in [0,1]
+\end{equation}
+where the normalized docking score and synthetic accessibility are computed as:
+\begin{align}
+\widehat{DS}(m) &= -\frac{\text{clip}(\text{DockingScore}(m))}{20} \in [0,1] \\
+\widehat{SA}(m) &= \frac{10 - \text{SA}(m)}{9} \in [0,1]
+\end{align}
+Here, $\text{clip}(\cdot)$ constrains the docking score to the range $[-20, 0]$ for normalization. This multiplicative formulation ensures that molecules must achieve reasonable performance across all three dimensions (binding affinity, drug-likeness, and synthetic feasibility) to obtain high composite scores.
+
+Table~\ref{tab:selection_ablation} presents the performance comparison across different metrics.
+
+\begin{table}[!t]
+    \caption{Ablation Study: Selection Strategy Comparison}
+    \label{tab:selection_ablation}
+    \centering    
+    \small
+    \setlength{\tabcolsep}{4pt}
+    
+    \begin{tabular}{l c c c}
+        \hline\hline
+        Metric & Single & Multi-obj & Comp Score \\
+        \hline
+        TOP-100$\downarrow$ & -12.014$\pm$0.168 & -12.635$\pm$0.090 & -12.301$\pm$0.260 \\
+        TOP-10$\downarrow$ & -13.120$\pm$0.020 & -13.241$\pm$0.190 & -13.200$\pm$0.310 \\
+        TOP-1$\downarrow$ & -13.253$\pm$0.130 & -13.458$\pm$0.442 & -13.314$\pm$0.512 \\
+        QED$\uparrow$ & 0.436$\pm$0.034 & \textbf{0.764$\pm$0.012} & 0.579$\pm$0.015 \\
+        SA$\downarrow$ & 3.145$\pm$0.153 & \textbf{2.014$\pm$0.015} & 2.645$\pm$0.176 \\
+        \hline\hline
+    \end{tabular}
+\end{table}
+
+The results reveal distinct trade-offs among the three strategies. Single-objective selection achieves competitive docking scores but suffers from poor drug-likeness metrics, with $S(\text{QED}) = 0.436$ and $S(\text{SA}) = 3.145$, confirming the limitation of focusing solely on binding affinity. Multi-objective selection using NSGA-II demonstrates the most balanced performance, achieving strong docking scores while maintaining excellent drug-likeness scores ($S(\text{QED}) = 0.764$, $S(\text{SA}) = 2.014$). Our comprehensive scoring function provides an intermediate solution with moderate performance across all metrics ($S(\text{TOP-1}) = -13.314$, $S(\text{QED}) = 0.579$, $S(\text{SA}) = 2.645$).
+
+\subsubsection{Component Contribution Analysis}
 To quantify the contribution of each module, we consider the following ablations: (i) \textit{No-GPT}: remove the GPT diversity operator while keeping GA, docking, and NSGA-II unchanged; (ii) \textit{Static-Mask}: replace dynamic masking with a fixed number of masked fragments per generation; (iii) \textit{Single-Objective}: use single-objective selection (docking only) instead of NSGA-II; (iv) \textit{No-Filter}: disable medicinal chemistry filters. We evaluate each ablation under identical initialization and docking protocols. We observe that removing GPT substantially reduces scaffold novelty and slows improvement in docking; disabling dynamic masking degrades late-stage refinement; single-objective selection yields strong docking but worse QED/SA, indicating overoptimization; removing filters increases invalid or impractical proposals. Overall, the full model strikes the best balance. Fig.~\ref{fig:convergence} illustrates representative convergence trajectories.
 %[cite_start]% 这是放置收敛曲线图的地方 [cite: 73, 78]
 \begin{figure}[!t]
