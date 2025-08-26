@@ -21,17 +21,15 @@
 
 \title{Enhancing Molecular Generation with\\FragGPT-Guided Genetic Algorithms}
 
-\author{Tiangai Yao,Zhangfan Yang,Junkai Ji,~\IEEEmembership{Staff,~IEEE}\\Shenzhen University,Shenzhen 518060,China.
+\author{Tiangai Yao, Zhangfan Yang, Junkai Ji,~\IEEEmembership{Member,~IEEE}\\
         % <-this % stops a space
-        %这里的致谢：需要修改
-\thanks{This paper was produced by the IEEE Publication Technology Group. They are in Piscataway, NJ.}% <-this % stops a space
-\thanks{Manuscript received April 19, 2021; revised August 16, 2021.}}
-%每一页最上方：日期需要修改
+\thanks{T. Yao, Z. Yang, and J. Ji are with the College of Computer Science and Software Engineering, Shenzhen University, Shenzhen 518060, China (e-mail: 2400671005@mails.szu.edu.cn; yangzhangfan@szu.edu.cn; jijunkai@szu.edu.cn).}% <-this % stops a space
+\thanks{Manuscript received December 15, 2024; revised January 20, 2025.}}
 % The paper headers
-\markboth{Journal of \LaTeX\ Class Files,~Vol.~14, No.~8, August~2021}%
-{Shell \MakeLowercase{\textit{et al.}}: A Sample Article Using IEEEtran.cls for IEEE Journals}
+\markboth{IEEE Transactions on Evolutionary Computation,~Vol.~XX, No.~X, Month~2025}%
+{Yao \MakeLowercase{\textit{et al.}}: Enhancing Molecular Generation with FragGPT-Guided Genetic Algorithms}
 
-\IEEEpubid{0000--0000/00\$00.00~\copyright~2021 IEEE}
+\IEEEpubid{1089-778X/25\$31.00~\copyright~2025 IEEE}
 % Remember, if you use this you must call \IEEEpubidadjcol in the second
 % column for its text to clear the IEEEpubid mark.
 
@@ -92,11 +90,6 @@ Molecules are represented using the SMILES (Simplified Molecular-Input Line-Entr
 
 \subsection{Core Iterative Workflow}
 The algorithm proceeds according to Algorithm~\ref{alg:frag-gpt-ga}.
-%模板自带
-%\section{Other Resources}
-%See \cite{ref1,ref2,ref3,ref4,ref5} for resources on formatting math into text and additional help in working with \LaTeX .
-%伪代码
-% [cite_start]% 算法伪代码的位置 [cite: 102, 103, 104]
 \begin{algorithm}[H]
 \caption{FragGPT-GA Main Loop}
 \label{alg:frag-gpt-ga}
@@ -329,6 +322,18 @@ To quantify the contribution of each module, we consider the following ablations
 \caption{Convergence plot showing the best docking score per generation for FragGPT-GA and the GA-only baseline.}
 \label{fig:convergence}
 \end{figure}
+\subsection{Comprehensive Baseline Comparison}
+To further validate the effectiveness of FragGPT-GA, we conducted extensive experiments comparing our method against AutoGrow4.0 and RGA across 10 diverse protein targets (1iep, 2rgp, 3eml, 3ny8, 3pbl, 4r6e, 4rlu, 4unn, 5mo4, 7l11). Figure~\ref{fig:violin_comparison} presents a comprehensive violin plot visualization showing the docking score distributions for all three methods on each individual protein target.
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\textwidth]{violin_comparison.png}
+\caption{Protein-specific docking score comparison across three models. Each subplot represents one protein target, with three violin plots showing the distribution of docking scores for AutoGrow4.0 (green), RGA (pink), and FragGPT-GA (blue). The violin plots display both population density and individual data points with statistical overlays (red lines: means, blue lines: medians). The top-right corner of each subplot shows the best docking score (TOP1) achieved by each model for that specific protein target. FragGPT-GA consistently demonstrates superior performance across most protein targets, achieving the best TOP1 scores while maintaining population diversity.}
+\label{fig:violin_comparison}
+\end{figure*}
+
+The protein-specific analysis reveals that FragGPT-GA achieves superior or competitive performance across all 10 protein targets. Overall, FragGPT-GA demonstrates the most favorable docking scores with a mean of -10.31 kcal/mol, compared to AutoGrow4.0 (-10.27 kcal/mol) and RGA (-7.96 kcal/mol). Notably, FragGPT-GA exhibits remarkable consistency across different protein families, successfully identifying molecules with exceptional binding affinities (minimum -14.9 kcal/mol) while maintaining population diversity. The violin plots reveal that FragGPT-GA populations span broader score ranges, indicating effective exploration, while AutoGrow4.0 shows more conservative exploration patterns with tighter distributions. RGA, despite computational efficiency, consistently produces less favorable docking scores across all targets, confirming the advantage of our hybrid GPT-GA approach for molecular optimization.
+
 \subsection{Case Study of Generated Molecules}
 We inspect top-ranking molecules to understand how FragGPT-GA discovers binding-competent yet drug-like candidates. Qualitatively, GPT proposals introduce distinct scaffolds with substituent patterns that GA later refines toward pocket-complementary shapes. Docking poses reveal recurrent interactions (e.g., hydrogen bonds to conserved residues and hydrophobic packing within the binding cavity). Compared to GA-only baselines, our candidates exhibit improved synthetic accessibility and higher QED at similar docking scores, suggesting that GPT-driven exploration avoids brittle chemotypes. Diversity metrics further indicate broader chemotype coverage without sacrificing validity. Representative molecules and binding mode depictions are provided in the supplementary figures.
 

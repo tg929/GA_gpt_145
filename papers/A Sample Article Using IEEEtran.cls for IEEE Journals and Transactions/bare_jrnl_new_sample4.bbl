@@ -20,6 +20,17 @@
 \providecommand{\BIBdecl}{\relax}
 \BIBdecl
 
+\bibitem{fuReinforcedGeneticAlgorithm}
+T.~Fu, W.~Gao, C.~W. Coley, and J.~Sun, ``Reinforced {{Genetic Algorithm}} for {{Structure-based Drug Design}}.''
+
+\bibitem{leeMoleculeGenerationFragment}
+S.~Lee, K.~Kreis, S.~P. Veccham, M.~Liu, D.~Reidenbach, S.~Paliwal, A.~Vahdat, and W.~Nie, ``Molecule {{Generation}} with {{Fragment Retrieval Augmentation}}.''
+
+\bibitem{spiegelAutoGrow4OpensourceGenetic2020}
+\BIBentryALTinterwordspacing
+J.~O. Spiegel and J.~D. Durrant, ``{{AutoGrow4}}: An open-source genetic algorithm for de novo drug design and lead optimization,'' vol.~12, no.~1, p.~25. [Online]. Available: \url{https://jcheminf.biomedcentral.com/articles/10.1186/s13321-020-00429-4}
+\BIBentrySTDinterwordspacing
+
 \bibitem{abdelsayedAIDrivenPolypharmacologySmallMolecule2025}
 \BIBentryALTinterwordspacing
 M.~Abdelsayed, ``{{AI-Driven Polypharmacology}} in {{Small-Molecule Drug Discovery}},'' vol.~26, no.~14, p. 6996. [Online]. Available: \url{https://www.mdpi.com/1422-0067/26/14/6996}

@@ -11,6 +11,12 @@ Database file #1: references_1.bib
 -- IEEEtran.bst version 1.14 (2015/08/26) by Michael Shell.
 -- http://www.michaelshell.org/tex/ieeetran/bibtex/
 -- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--empty journal in fuReinforcedGeneticAlgorithm
+Warning--empty year in fuReinforcedGeneticAlgorithm
+Warning--empty journal in leeMoleculeGenerationFragment
+Warning--empty year in leeMoleculeGenerationFragment
+Warning--empty journal in spiegelAutoGrow4OpensourceGenetic2020
+Warning--empty year in spiegelAutoGrow4OpensourceGenetic2020
 Warning--empty journal in abdelsayedAIDrivenPolypharmacologySmallMolecule2025
 Warning--empty year in abdelsayedAIDrivenPolypharmacologySmallMolecule2025
 Warning--empty journal in aiMTMolGPTNovoMultitarget2024
@@ -41,45 +47,45 @@ Warning--empty journal in zhangDualStageDualPopulationAlgorithm2025
 Warning--empty year in zhangDualStageDualPopulationAlgorithm2025
 
 Done.
-You've used 20 entries,
+You've used 23 entries,
             4087 wiz_defined-function locations,
-            946 strings with 13227 characters,
-and the built_in function-call counts, 13932 in all, are:
-= -- 1085
-> -- 428
-< -- 84
-+ -- 222
-- -- 97
-* -- 733
-:= -- 2102
-add.period$ -- 40
-call.type$ -- 20
-change.case$ -- 20
+            960 strings with 13957 characters,
+and the built_in function-call counts, 15421 in all, are:
+= -- 1183
+> -- 487
+< -- 87
++ -- 250
+- -- 111
+* -- 816
+:= -- 2333
+add.period$ -- 46
+call.type$ -- 23
+change.case$ -- 23
 chr.to.int$ -- 138
-cite$ -- 48
-duplicate$ -- 1025
-empty$ -- 977
-format.name$ -- 109
-if$ -- 3145
+cite$ -- 57
+duplicate$ -- 1151
+empty$ -- 1095
+format.name$ -- 126
+if$ -- 3473
 int.to.chr$ -- 0
-int.to.str$ -- 20
-missing$ -- 221
-newline$ -- 121
-num.names$ -- 20
-pop$ -- 583
+int.to.str$ -- 23
+missing$ -- 250
+newline$ -- 132
+num.names$ -- 23
+pop$ -- 668
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 2
-skip$ -- 1040
+skip$ -- 1144
 stack$ -- 0
-substring$ -- 434
-swap$ -- 819
-text.length$ -- 38
+substring$ -- 441
+swap$ -- 897
+text.length$ -- 41
 text.prefix$ -- 0
 top$ -- 5
-type$ -- 20
-warning$ -- 28
-while$ -- 48
-width$ -- 22
-write$ -- 237
-(There were 28 warnings)
+type$ -- 23
+warning$ -- 34
+while$ -- 52
+width$ -- 25
+write$ -- 261
+(There were 34 warnings)

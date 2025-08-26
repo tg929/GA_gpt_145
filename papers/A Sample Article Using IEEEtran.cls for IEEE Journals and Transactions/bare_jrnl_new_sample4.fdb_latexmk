@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex bare_jrnl_new_sample4"] 1756131244.03848 "bare_jrnl_new_sample4.aux" "bare_jrnl_new_sample4.bbl" "bare_jrnl_new_sample4" 1756131245.78173 0
-  "./references_1.bib" 1756130430.92637 12191 b3660ae603c5ee37a6ed4175adcc9c2b ""
+["bibtex bare_jrnl_new_sample4"] 1756176284.61517 "bare_jrnl_new_sample4.aux" "bare_jrnl_new_sample4.bbl" "bare_jrnl_new_sample4" 1756176641.87968 0
+  "./references_1.bib" 1756176280.46865 13295 6f61c9c1f4964b3c9ba7121576ce726c ""
   "/usr/local/texlive/2025/texmf-dist/bibtex/bst/ieeetran/IEEEtran.bst" 1440712899 57748 7c8250ecf02814ce6ddc0cdbb63df1dd ""
-  "bare_jrnl_new_sample4.aux" 1756131245.4007 5988 db834ce0a283e5859ed9d9df8fc60b7f "pdflatex"
+  "bare_jrnl_new_sample4.aux" 1756176640.98676 7084 5a2053ce1cc70ec8b17fd76e1a3db41a "pdflatex"
   (generated)
   "bare_jrnl_new_sample4.bbl"
   "bare_jrnl_new_sample4.blg"
   (rewritten before read)
-["pdflatex"] 1756131244.19476 "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex" "bare_jrnl_new_sample4.pdf" "bare_jrnl_new_sample4" 1756131245.782 0
-  "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex" 1756131240.40276 46654 42bd5cb8f7b1dd5c9cad5b0f466b2fb0 ""
+["pdflatex"] 1756176637.50331 "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex" "bare_jrnl_new_sample4.pdf" "bare_jrnl_new_sample4" 1756176641.87989 0
+  "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex" 1756176637.20281 48646 e6ba3935a2ca7fc96bbe2931de6b2ca9 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -105,10 +105,11 @@
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1756102751 3345754 4f73532846c2a9db5b596a86d06761da ""
   "/usr/local/texlive/2025/texmf.cnf" 1756102458.05111 455 5b996dcaa0eb4ef14a83b026bc0a008c ""
   "IEEEtran.cls" 1756040877.26785 282108 7379a03af5f3d0dad26db23a43c3a726 ""
-  "bare_jrnl_new_sample4.aux" 1756131245.4007 5988 db834ce0a283e5859ed9d9df8fc60b7f "pdflatex"
-  "bare_jrnl_new_sample4.bbl" 1756131244.18872 7743 bf5e217d363ea46fead4c1a6183ce5bd "bibtex bare_jrnl_new_sample4"
-  "bare_jrnl_new_sample4.tex" 1756131240.40276 46654 42bd5cb8f7b1dd5c9cad5b0f466b2fb0 ""
+  "bare_jrnl_new_sample4.aux" 1756176640.98676 7084 5a2053ce1cc70ec8b17fd76e1a3db41a "pdflatex"
+  "bare_jrnl_new_sample4.bbl" 1756176284.7746 8459 0f210791092aa4947839088b3b0ad2bc "bibtex bare_jrnl_new_sample4"
+  "bare_jrnl_new_sample4.tex" 1756176637.20281 48646 e6ba3935a2ca7fc96bbe2931de6b2ca9 ""
   "model_pictures_01.png" 1756129934.55409 260002 c7d6039a4e3ea0792d4b6eff8af0438d ""
+  "violin_comparison.png" 1756173332.38199 1462490 f34a79cc1c94e4ebd437c6e263aebba8 ""
   (generated)
   "bare_jrnl_new_sample4.aux"
   "bare_jrnl_new_sample4.log"
