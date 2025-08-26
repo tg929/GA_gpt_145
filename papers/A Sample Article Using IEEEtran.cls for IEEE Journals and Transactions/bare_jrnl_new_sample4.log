@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.25)  26 AUG 2025 10:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.25)  26 AUG 2025 13:34
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -363,60 +363,62 @@ LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 13
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
 
+
+Underfull \hbox (badness 6608) in paragraph at lines 158--159
+\OT1/ptm/b/n/10 RationaleRL: \OT1/ptm/m/n/10 Im-ple-ments pol-icy gra-di-ent op-ti-miza-tion
+ []
+
+
+
+[3]
 LaTeX Info: Symbol \textdownarrow not provided by
             font family ptm in TS1 encoding.
-            Default family used instead on input line 158.
+            Default family used instead on input line 175.
+
 
 LaTeX Font Warning: Font shape `TS1/cmr/m/sc' undefined
 (Font)              using `TS1/cmr/m/n' instead
-(Font)              for symbol `textdownarrow' on input line 158.
+(Font)              for symbol `textdownarrow' on input line 175.
 
 LaTeX Info: Symbol \textuparrow not provided by
             font family ptm in TS1 encoding.
-            Default family used instead on input line 188.
+            Default family used instead on input line 205.
 LaTeX Info: Symbol \textdownarrow not provided by
             font family ptm in TS1 encoding.
-            Default family used instead on input line 188.
+            Default family used instead on input line 205.
 
-Overfull \hbox (34.44226pt too wide) in paragraph at lines 194--214
+Overfull \hbox (34.44226pt too wide) in paragraph at lines 211--231
  [][] 
  []
 
 
-LaTeX Warning: Reference `tab:performance' on page 3 undefined on input line 264.
 
 
 
-[3{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
-
-
-Underfull \hbox (badness 1755) in paragraph at lines 326--327
+[4{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
+Underfull \hbox (badness 1755) in paragraph at lines 343--344
 []\OT1/ptm/m/n/10 To fur-ther val-i-date the ef-fec-tive-ness of FragGPT-GA,
  []
 
-<violin_comparison.png, id=29, 1437.4503pt x 713.7867pt>
+<violin_comparison.png, id=33, 1437.4503pt x 713.7867pt>
 File: violin_comparison.png Graphic file (type png)
 <use violin_comparison.png>
-Package pdftex.def Info: violin_comparison.png  used on input line 330.
+Package pdftex.def Info: violin_comparison.png  used on input line 347.
 (pdftex.def)             Requested size: 516.0pt x 256.2224pt.
 
-Underfull \hbox (badness 1831) in paragraph at lines 338--339
+Underfull \hbox (badness 1831) in paragraph at lines 355--356
 []\OT1/ptm/m/n/10 We in-spect top-ranking molecules to un-der-stand how
  []
 
 
 
-[4] (./bare_jrnl_new_sample4.bbl
+(./bare_jrnl_new_sample4.bbl
 
+[5]
 
+)
 
-[5 <./violin_comparison.png>])
-
-
-
-[6
-
-] (./bare_jrnl_new_sample4.aux)
+[6 <./violin_comparison.png>] (./bare_jrnl_new_sample4.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -425,20 +427,17 @@ L3 programming layer <2025-01-18>
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-
-LaTeX Warning: There were undefined references.
-
  ) 
 Here is how much of TeX's memory you used:
- 4883 strings out of 473190
- 84933 string characters out of 5715806
- 496001 words of memory out of 5000000
- 28057 multiletter control sequences out of 15000+600000
- 600069 words of font info for 116 fonts, out of 8000000 for 9000
+ 4884 strings out of 473190
+ 84940 string characters out of 5715806
+ 501001 words of memory out of 5000000
+ 28058 multiletter control sequences out of 15000+600000
+ 600383 words of font info for 117 fonts, out of 8000000 for 9000
  1145 hyphenation exceptions out of 8191
  72i,11n,79p,1407b,403s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on bare_jrnl_new_sample4.pdf (6 pages, 1615418 bytes).
+Output written on bare_jrnl_new_sample4.pdf (6 pages, 1620918 bytes).
 PDF statistics:
  105 PDF objects out of 1000 (max. 8388607)
  62 compressed objects within 1 object stream

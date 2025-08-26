@@ -146,6 +146,23 @@ We report: (i) docking score (lower is better); (ii) QED (higher is better); (ii
 \subsection{Implementation Details}
 Unless specified, the maximum generations are set to 25. We retain 120 elites per generation under NSGA-II to form the next parent population. Docking uses configuration defaults (e.g., Vina exhaustiveness and modes). Fragment-based GPT operates with a temperature of 1.0 and a fixed random seed for reproducibility; dynamic masking is enabled to gradually taper exploration. Reaction-aware mutation and BRICS-informed crossover follow chemically plausible rules. Full hyperparameters and configuration files are provided with the codebase for exact reproducibility.
 
+\subsection{Baseline Configuration and Experimental Protocol}
+\noindent To comprehensively evaluate our FragGPT-GA framework, we compare against established molecular optimization methods, each configured according to rigorous experimental standards derived from recent literature \cite{fuReinforcedGeneticAlgorithm}.
+
+\noindent \textbf{Genetic Algorithm with Discriminator (GA+D):} This approach integrates neural network guidance into genetic optimization by employing SELFIES molecular representation to guarantee chemical validity. The discriminator architecture consists of a two-layer fully connected network featuring ReLU activation functions and sigmoid output layer. Network parameters include 100 hidden units with input derived from comprehensive chemical and geometrical molecular descriptors. Evolution parameters specify population size of 300 individuals, maximum generation limit of 1000, and early stopping mechanism with patience threshold of 5 generations. Optimization utilizes Adam algorithm with learning rate 1e-3 and discriminator influence weight $\beta = 1$.
+
+\noindent \textbf{Graph-based Genetic Algorithm (Graph-GA):} Operates on direct molecular graph representations through specialized crossover and mutation operators designed for graph structures. Configuration parameters include population size of 120 individuals, offspring generation of 70 per iteration, and mutation probability of 0.067. This method demonstrates computational efficiency through its parameter-free design and straightforward implementation approach.
+
+\noindent \textbf{Deep Q-Network for Molecules (MolDQN):} Formulates molecular design as a sequential decision-making process using Markov Decision Process principles with atom-wise graph construction strategy. The Q-network employs multi-layer perceptron architecture with layer dimensions [1024, 512, 128, 32] and processes concatenated input features comprising 2048-bit Morgan fingerprints (radius 3) and remaining step information. Training configuration includes Adam optimizer (learning rate 1e-4), $\epsilon$-greedy exploration strategy (linearly annealed from 1.0 to 0.01), and discount factor 0.9.
+
+\noindent \textbf{RationaleRL:} Implements policy gradient optimization through message-passing neural networks for molecular graph generation. Architecture specifications include encoder and decoder message-passing networks with 400-dimensional hidden representations and 50-dimensional latent space encoding. Training employs dual-phase Adam optimization with pre-training learning rate 1e-3 and fine-tuning rate 5e-4.
+
+\noindent \textbf{MARS (Markov Molecular Sampling):} Executes Markov Chain Monte Carlo sampling enhanced with temperature annealing schemes for multi-objective molecular discovery. The proposal mechanism utilizes graph neural networks with six message-passing layers and 64-dimensional node embeddings. Temperature scheduling follows $T = 0.95^{\lfloor t/5 \rfloor}$ with basic building blocks derived from top-1000 frequent ZINC database fragments.
+
+\noindent \textbf{REINVENT:} Employs recurrent neural network architectures for SMILES-based molecular generation through reinforcement learning paradigms. The methodology incorporates pre-training on ZINC database followed by REINFORCE algorithm fine-tuning. Hyperparameters include learning rate 0.0005, batch size 64, and prior-reward balance parameter $\sigma = 60$ controlling the trade-off between exploration and exploitation.
+
+\noindent \textbf{Experimental Framework:} Our evaluation protocol adopts structure-based drug design principles with standardized target protein selection encompassing diverse therapeutic classes including G-protein coupled receptors and kinases from established benchmarks. Molecular docking evaluation employs AutoDock Vina with binding pocket dimensions standardized to (15.0, 15.0, 15.0) Angstroms. Performance assessment encompasses multiple evaluation dimensions: top-scoring molecular candidates (TOP-1, TOP-10, TOP-100), molecular novelty (fraction absent from training datasets), structural diversity (pairwise Tanimoto distance metrics), drug-likeness quantification (QED scores), and synthetic accessibility estimation (SA scores). Computational infrastructure maintains consistency across all methods using Intel Xeon E5-2690 processors with 256GB RAM and NVIDIA Pascal Titan X GPU acceleration.
+
 
 % V. 结果与讨论 (Results and Discussion)
 % ----------------------------------------------------
@@ -261,7 +278,7 @@ FragGPT-GA consistently improves docking scores while maintaining or enhancing Q
 %     \end{tabular}
 % \end{table*}
 
-Table~\ref{tab:performance} summarizes the final performance metrics... As shown, FragGPT-GA achieves the best docking score...
+Table~\ref{tab:docking_scores} summarizes the docking score comparison across different methods. As shown, FragGPT-GA achieves the best docking score with a TOP-1 value of -13.458 ± 0.442 kcal/mol, demonstrating superior binding affinity compared to all baseline methods including RGA (-12.869 ± 0.473 kcal/mol).
 \subsection{Ablation Studies}
 
 \subsubsection{Selection Strategy Comparison}
