@@ -61,74 +61,165 @@ This paper addresses the limitations of both approaches by proposing a tightly-c
 \end{enumerate}
 %相关工作
 \section{Related Work}
-\subsection{Evolutionary Algorithms in Molecular Design}
-Evolutionary algorithms (EAs), particularly genetic algorithms (GAs), have a long-standing footprint in de novo design and lead optimization. Classical GA frameworks encode molecules as graphs or strings (e.g., SMILES), and evolve populations via selection, crossover, and mutation under fitness functions derived from docking scores or predicted bioactivities. Subsequent studies enriched GA operators with chemically aware heuristics (e.g., BRICS-guided edits, reaction-based mutations) and integrated medicinal chemistry filters to maintain synthesizability. Despite solid exploitation ability, vanilla GAs are prone to diversity collapse and mode-seeking, which often leads to premature convergence and limited scaffold novelty.
-\subsection{Deep Generative Models for Molecules}
-Deep generative modeling provides a complementary exploration mechanism. Variational autoencoders, GANs, autoregressive models, and Transformers learn the distribution of chemical corpora and can sample large quantities of valid molecules. Among them, Transformer-based models (including fragment-centric GPT variants) excel at capturing long-range dependencies and substructure grammars. Nonetheless, steering generation toward multi-objective optima (e.g., binding affinity, drug-likeness, and synthetic accessibility) is nontrivial; purely generative approaches often require additional scoring-and-filtering or reinforcement learning, which can be sample-inefficient or unstable.
-\subsection{Hybrid Approaches for Molecular Generation}
-Hybrid paradigms combine the strengths of EAs and deep generators. Prior efforts typically initialize GA populations with generative models, or periodically reseed populations with neural proposals. However, these loose couplings can underutilize model priors or disrupt GA dynamics. Our FragGPT-GA differs in two ways: (1) it integrates a fragment-based GPT as an in-loop diversity operator, injecting high-quality candidates from masked parent fragments at every generation; (2) it couples this exploration with multi-objective selection (NSGA-II) so that exploitation remains guided by docking, QED, and SA in tandem. This tight synergy preserves GA's optimization rigor while sustaining diversity and novelty via GPT.
+
+De novo molecular design has emerged as a cornerstone of computational drug discovery, with various methodologies addressing the challenge of navigating vast chemical spaces to identify molecules with desired pharmacological properties. This section systematically reviews the evolutionary landscape of molecular optimization approaches, categorizing them by their core computational paradigms and analyzing their respective strengths and limitations.
+
+\subsection{Evolutionary Algorithms in Molecular Optimization}
+
+Evolutionary algorithms (EAs) have established themselves as robust optimization frameworks for molecular design, leveraging population-based search strategies to explore chemical space systematically. Traditional genetic algorithms encode molecules using string representations such as SMILES or graph-based structures, evolving populations through selection, crossover, and mutation operators guided by fitness functions derived from docking scores, bioactivity predictions, or multi-objective criteria.
+
+\noindent \textbf{Classical Genetic Approaches:} Early implementations like Graph-GA \cite{jensenGraphBasedGeneticAlgorithm2019} operate directly on molecular graph representations, employing specialized crossover and mutation operators designed for graph structures. These methods demonstrate computational efficiency through parameter-free designs but suffer from limited exploration diversity. Similarly, traditional GA frameworks often implement chemically-aware heuristics such as BRICS-guided edits and reaction-based mutations to maintain chemical validity and synthesizability.
+
+\noindent \textbf{Enhanced Evolutionary Strategies:} More sophisticated approaches integrate neural network guidance to address exploration limitations. The GA+D framework \cite{nigamAugmentingGeneticAlgorithms2020} augments genetic optimization with discriminator networks, employing SELFIES molecular representation to guarantee chemical validity while using neural networks to guide the evolutionary process. However, these discriminator-based approaches often require extensive hyperparameter tuning and may introduce computational overhead that limits scalability.
+
+\noindent \textbf{Limitations of Pure Evolutionary Approaches:} Despite their optimization prowess, vanilla genetic algorithms suffer from fundamental limitations: (1) \textit{diversity collapse} - populations tend to converge prematurely around local optima, reducing scaffold novelty; (2) \textit{mode-seeking behavior} - the selection pressure often drives populations toward similar chemical motifs, limiting exploration of diverse chemotypes; (3) \textit{limited generative capacity} - traditional crossover and mutation operators struggle to introduce genuinely novel structural patterns beyond local modifications of existing molecules.
+
+\subsection{Deep Generative Models for Molecular Design}
+
+The advent of deep learning has revolutionized molecular generation, with various generative modeling paradigms demonstrating remarkable capabilities in learning chemical distributions and sampling novel molecular structures.
+
+\noindent \textbf{Autoregressive and Variational Models:} Junction Tree Variational Autoencoders (JTVAE) \cite{jinJunctionTreeVariational2018} decompose molecules into chemically meaningful substructures, enabling structured generation while maintaining chemical validity. These approaches excel at capturing local chemical patterns but often struggle with long-range dependencies and complex multi-ring systems.
+
+\noindent \textbf{Reinforcement Learning Approaches:} REINVENT \cite{olivecronaMolecularDeNovoDesign2017} employs recurrent neural networks for SMILES-based generation through reinforcement learning paradigms, demonstrating the ability to optimize molecules toward specific objectives. However, these methods face challenges in balancing exploration and exploitation, often requiring careful reward engineering and suffering from training instability. More sophisticated approaches like MolDQN \cite{zhouOptimizationMolecularRep2019} formulate molecular design as sequential decision-making processes using Markov Decision Process principles, but they struggle with sample efficiency and may converge to suboptimal solutions.
+
+\noindent \textbf{Multi-Objective Generation:} Advanced frameworks address multi-objective optimization challenges. RationaleRL \cite{jinMultiObjectiveMoleculeGeneration2020} implements policy gradient optimization through message-passing neural networks for molecular graph generation, incorporating interpretable substructures. MARS \cite{xieMARS2021} executes Markov Chain Monte Carlo sampling with temperature annealing schemes for multi-objective molecular discovery, utilizing graph neural networks for proposal generation.
+
+\noindent \textbf{3D-Aware Generation:} Recent developments include 3D structure-aware approaches like Gen3D \cite{luoGraph2022}, which generates molecules considering three-dimensional constraints for structure-based drug design. While promising, these methods often require extensive computational resources and may struggle with complex binding pocket geometries.
+
+\noindent \textbf{Limitations of Pure Generative Approaches:} Despite impressive generative capabilities, deep learning models face significant challenges: (1) \textit{objective steering difficulty} - directing generation toward multi-objective optima (e.g., simultaneous optimization of binding affinity, drug-likeness, and synthetic accessibility) remains non-trivial; (2) \textit{sample inefficiency} - reinforcement learning-based approaches often require extensive sampling to achieve convergence; (3) \textit{training instability} - policy gradient methods and adversarial training can be unstable, leading to mode collapse or poor convergence; (4) \textit{limited exploitation} - purely generative approaches lack the systematic exploitation capabilities of evolutionary algorithms.
+
+\subsection{Hybrid and Multi-Strategy Approaches}
+
+Recognizing the complementary strengths of evolutionary and generative paradigms, recent research has explored hybrid methodologies that combine multiple optimization strategies.
+
+\noindent \textbf{Loose Coupling Strategies:} Early hybrid approaches typically employ loose coupling mechanisms, such as initializing GA populations with generative models or periodically reseeding populations with neural proposals. While these methods demonstrate some improvement over individual approaches, they often underutilize model priors and may disrupt established GA dynamics.
+
+\noindent \textbf{Guided Exploration Methods:} GEGL \cite{ahnGuidingDeepMolecular2020} represents a more sophisticated approach, guiding deep molecular optimization with genetic exploration. However, this method faces challenges in maintaining the balance between genetic algorithm rigour and neural network flexibility, often requiring extensive hyperparameter optimization.
+
+\noindent \textbf{Current Limitations of Hybrid Approaches:} Existing hybrid methodologies suffer from several key limitations: (1) \textit{integration depth} - most approaches implement shallow integration, failing to leverage the full potential of both paradigms; (2) \textit{dynamic balance} - maintaining optimal balance between exploration (generative) and exploitation (evolutionary) components throughout optimization remains challenging; (3) \textit{computational efficiency} - combining multiple complex algorithms often results in significant computational overhead; (4) \textit{objective coordination} - ensuring that both generative and evolutionary components work toward consistent multi-objective goals is non-trivial.
+
+\subsection{Fragment-Based Molecular Design}
+
+Fragment-based approaches have gained prominence in both traditional medicinal chemistry and computational drug design, leveraging the principle that complex molecules can be decomposed into smaller, chemically meaningful building blocks.
+
+\noindent \textbf{Traditional Fragment Approaches:} Classical fragment-based drug design relies on identifying small molecular fragments that bind to target proteins, subsequently linking or growing these fragments into larger, more potent compounds. This approach has proven successful in medicinal chemistry but often requires extensive manual intervention and domain expertise.
+
+\noindent \textbf{Computational Fragment Methods:} Recent computational approaches have attempted to automate fragment-based design, using techniques such as BRICS decomposition to break molecules into chemically sensible fragments. However, these methods often struggle with fragment recombination and may generate chemically implausible structures.
+
+Our FragGPT-GA framework addresses the limitations of existing approaches through several key innovations: (1) \textit{tight integration} - we implement deep integration between fragment-based GPT generation and genetic algorithm optimization, where the GPT operates as an intelligent diversity operator within the GA loop; (2) \textit{dynamic masking} - our approach employs dynamic fragment masking that adapts exploration intensity throughout the optimization process; (3) \textit{multi-objective coordination} - both generative and evolutionary components are coordinated toward consistent multi-objective goals through NSGA-II selection; (4) \textit{chemical validity preservation} - the fragment-based GPT approach ensures high chemical validity while maintaining synthetic accessibility.
 
 
 
 % III. 方法 (The Proposed FragGPT-GA Framework)
 % ----------------------------------------------------
 \section{The Proposed FragGPT-GA Framework}
-\subsection{Overall Architecture}
-The FragGPT-GA framework operates in an iterative loop, as depicted in Fig.~\ref{fig:flowchart}. At each generation, the population undergoes parallel processing through two main pathways: a conventional GA path for exploitation and a novel GPT-driven path for exploration. The offspring from both paths are then combined and evaluated, and a selection mechanism chooses the fittest individuals to form the next generation's parent population.
+
+\subsection{Framework Overview and Design Philosophy}
+
+The FragGPT-GA framework represents a paradigm shift in molecular optimization by establishing a tight integration between evolutionary algorithms and generative AI models. Unlike existing hybrid approaches that employ loose coupling strategies, our framework embeds a fragment-based GPT model as an intelligent diversity operator directly within the genetic algorithm's iterative loop. This deep integration enables the system to maintain the systematic optimization capabilities of evolutionary algorithms while leveraging the generative power and learned chemical knowledge of large language models.
+
+The core innovation lies in treating the GPT model not as an external generative component, but as an adaptive operator that intelligently expands the search space based on the current population's genetic material. This approach addresses the fundamental limitation of traditional GAs—diversity collapse—while maintaining the directed optimization pressure essential for convergence to high-quality solutions.
+
+\subsection{Architectural Components and Workflow}
+
+The FragGPT-GA framework operates through a sophisticated multi-stage iterative process, as depicted in Fig.~\ref{fig:flowchart}. Each generation cycle encompasses five interconnected phases: (1) \textit{fragment-based molecular decomposition}, (2) \textit{intelligent GPT-driven diversity generation}, (3) \textit{population-aware genetic operations}, (4) \textit{multi-objective fitness evaluation}, and (5) \textit{Pareto-optimal selection}. This design ensures that exploration and exploitation are balanced dynamically throughout the optimization process.
 
 % 流程图
 \begin{figure}[!t]
 \centering
 \includegraphics[width=3.5in]{model_pictures_01.png}
-\caption{The iterative workflow of the proposed FragGPT-GA framework. The process synergizes a Genetic Algorithm (GA) for optimization with a Generative Pre-trained Transformer (GPT) for diversity expansion.}
+\caption{The iterative workflow of the proposed FragGPT-GA framework. The process synergizes a Genetic Algorithm (GA) for optimization with a Generative Pre-trained Transformer (GPT) for diversity expansion, featuring dynamic fragment masking and multi-objective selection.}
 \label{fig:flowchart}
 \end{figure}
 
-%\begin{list}{}{}
-%\item{\url{http://www.latex-community.org/}} 
-%\item{\url{https://tex.stackexchange.com/} }
-%\end{list}
-\subsection{Molecular Representation and Fitness Function}
-Molecules are represented using the SMILES (Simplified Molecular-Input Line-Entry System) string format. The fitness of each molecule $m$ is evaluated using a multi-objective function. For single-objective optimization, we primarily use the docking score. For multi-objective optimization, we consider a vector of objectives $F(m) = [\text{DockingScore}(m), \text{QED}(m), \text{SA}(m)]$.
+\subsection{Fragment-Based Molecular Decomposition and Dynamic Masking}
 
-\subsection{Core Iterative Workflow}
-The algorithm proceeds according to Algorithm~\ref{alg:frag-gpt-ga}.
+The first critical component of our framework involves sophisticated molecular fragmentation using BRICS (Breaking of Retrosynthetically Interesting Chemical Substructures) decomposition. For each molecule $m_i$ in the current parent population $P_g$, we apply fragmentation to obtain a set of chemically meaningful fragments $F_i = \{f_1, f_2, \ldots, f_k\}$. This decomposition preserves chemical validity by breaking bonds at positions that correspond to common synthetic transformations.
+
+Our dynamic masking strategy represents a significant advancement over static approaches. The number of fragments to mask adapts throughout the optimization process according to:
+
+\begin{equation}
+n_{mask}(g) = n_{initial} + \frac{g-1}{G_{max}-1} \cdot (n_{final} - n_{initial})
+\end{equation}
+
+where $g$ represents the current generation, $G_{max}$ is the maximum number of generations, $n_{initial}$ and $n_{final}$ are the initial and final masking intensities, respectively. This adaptive strategy enables broad exploration in early generations (higher masking) while promoting targeted refinement in later stages (lower masking), thus maintaining an optimal exploration-exploitation balance throughout the evolutionary process.
+
+\subsection{GPT-Powered Intelligent Diversity Generation}
+
+The fragment-based GPT model serves as the core innovation of our framework, acting as an intelligent diversity operator that generates novel molecular candidates from masked fragment contexts. Unlike conventional genetic operators that perform local modifications, the GPT component can introduce entirely new structural motifs and scaffold families, effectively expanding the accessible chemical space.
+
+\noindent \textbf{GPT's Unique Advantages for Molecular Optimization:}
+
+\begin{enumerate}
+\item \textbf{Population Distribution Expansion:} The GPT model possesses the remarkable ability to generate molecules that lie outside the current population's distribution. While traditional GA operators (crossover and mutation) are inherently constrained to explore regions proximate to existing population members, the GPT model can propose structurally novel compounds that introduce entirely new chemical scaffolds and functional groups into the population.
+
+\item \textbf{Learned Chemical Knowledge Integration:} Having been pre-trained on extensive chemical databases, the GPT model encodes implicit knowledge about structure-activity relationships, pharmacophore patterns, and synthetic accessibility. This enables it to generate molecules that are not only novel but also chemically reasonable and potentially bioactive.
+
+\item \textbf{Accelerated Optimization Convergence:} By introducing high-quality, diverse candidates at each generation, the GPT component accelerates the optimization process. Rather than relying solely on gradual evolutionary improvements, the algorithm can make significant leaps in chemical space toward promising regions, reducing the number of generations required for convergence.
+
+\item \textbf{Scaffold Hopping Capability:} The GPT model excels at scaffold hopping—the ability to identify structurally distinct compounds with similar biological activities. This capability is particularly valuable in drug design, where exploring alternative scaffolds can lead to improved selectivity, reduced toxicity, or enhanced pharmacokinetic properties.
+\end{enumerate}
+
+The GPT generation process proceeds as follows: for each masked fragment sequence $M_i$, the model autoregressively generates completion candidates using temperature-controlled sampling. The generation temperature $T$ and top-k sampling parameters are carefully tuned to balance novelty and chemical validity.
+
+\subsection{Population-Aware Genetic Operations}
+
+Following GPT-based diversity generation, the framework performs sophisticated genetic operations on an expanded population pool $P_{expanded} = P_g \cup P_{GPT}$, where $P_{GPT}$ represents the set of GPT-generated molecules. This expanded pool serves as the input for both crossover and mutation operations, enabling the genetic operators to work with a more diverse and potentially higher-quality substrate.
+
+\noindent \textbf{Enhanced Crossover Operations:} Our crossover mechanism employs a fragment-aware approach that preserves chemically meaningful substructures while enabling recombination of beneficial motifs from different molecules. The process operates at the fragment level, ensuring that the resulting offspring maintain chemical validity and synthetic feasibility.
+
+\noindent \textbf{Chemical-Context Mutation:} The mutation operator incorporates chemical knowledge to perform context-appropriate modifications. Rather than random SMILES string manipulations, mutations are guided by chemical rules and synthetic feasibility constraints, increasing the likelihood of generating viable compounds.
+
+\subsection{Multi-Objective Fitness Evaluation and Optimization}
+
+The framework employs a comprehensive multi-objective fitness function that simultaneously optimizes three critical pharmaceutical properties:
+
+\begin{equation}
+F(m) = [DS(m), QED(m), SA(m)]
+\end{equation}
+
+where $DS(m)$ represents the docking score (to be minimized), $QED(m)$ quantifies drug-likeness (to be maximized), and $SA(m)$ measures synthetic accessibility (to be minimized). This multi-objective formulation ensures that optimization does not sacrifice drug-like properties or synthetic feasibility in pursuit of binding affinity alone.
+
+The docking evaluation employs AutoDock Vina with standardized protocols, utilizing grid-based molecular docking to assess binding affinity against target proteins. The QED (Quantitative Estimate of Drug-likeness) incorporates multiple pharmaceutical properties including molecular weight, lipophilicity, and topological polar surface area. The SA score estimates synthetic accessibility based on fragment contributions and structural complexity.
+
+\subsection{Pareto-Optimal Selection via NSGA-II}
+
+Selection operates under the NSGA-II (Non-dominated Sorting Genetic Algorithm II) framework, which maintains population diversity while driving convergence toward the Pareto-optimal front. The algorithm performs non-dominated sorting to identify solution fronts, followed by crowding distance calculation to preserve diversity within each front.
+
+The selection process ensures that the framework maintains a balanced portfolio of solutions representing different trade-offs between the three objectives. This approach prevents the optimization from converging to a single-objective optimum and provides medicinal chemists with diverse options for further development.
+
+\subsection{Algorithmic Implementation and Computational Efficiency}
+
+The complete FragGPT-GA algorithm is presented in Algorithm~\ref{alg:frag-gpt-ga}. The implementation features several efficiency optimizations: (1) \textit{parallel evaluation} of molecular properties using multiprocessing, (2) \textit{incremental learning} where the GPT model can optionally be fine-tuned on successful molecules from previous generations, and (3) \textit{adaptive resource allocation} that dynamically adjusts computational resources based on population convergence metrics.
+
 \begin{algorithm}[!t]
-\caption{FragGPT-GA Main Loop}
+\caption{FragGPT-GA Complete Framework}
 \label{alg:frag-gpt-ga}
 \begin{algorithmic}
-\STATE \textbf{Input:} Initial population $P_0$, number of generations $G_{max}$
-\STATE \textbf{Output:} Optimized population $P_{G_{max}}$
-\STATE Initialize population $P_0$
-\FOR{$g = 0$ to $G_{max}-1$}
-    \STATE Evaluate fitness of each individual in $P_g$
-    \STATE //--- GPT Diversity Generation ---
-    \STATE $M_g \leftarrow$ DecomposeAndMask($P_g$)
-    \STATE $P_{GPT} \leftarrow$ GPT\_Generate($M_g$)
-    \STATE //--- GA Optimization ---
-    \STATE $P_{GA\_pool} \leftarrow P_g \cup P_{GPT}$
-    \STATE $C_{crossover} \leftarrow$ Crossover($P_{GA\_pool}$)
-    \STATE $C_{mutation} \leftarrow$ Mutation($P_{GA\_pool}$)
-    \STATE $C_g \leftarrow$ Filter($C_{crossover} \cup C_{mutation}$)
-    \STATE Evaluate fitness of each individual in $C_g$
-    \STATE //--- Selection ---
-    \STATE $P_{g+1} \leftarrow$ Select($P_g \cup C_g$)
+\STATE \textbf{Input:} Initial population $P_0$, max generations $G_{max}$, GPT model $\theta$
+\STATE \textbf{Output:} Pareto-optimal population $P^*$
+\STATE Initialize population $P_0$ and evaluate $F(P_0)$
+\FOR{$g = 1$ to $G_{max}$}
+    \STATE // Fragment-based decomposition and masking
+    \STATE $n_{mask} \leftarrow$ CalculateDynamicMask($g$, $G_{max}$)
+    \STATE $M_g \leftarrow$ DecomposeAndMask($P_{g-1}$, $n_{mask}$)
+    \STATE // GPT-powered diversity generation
+    \STATE $P_{GPT} \leftarrow$ GPTGenerate($M_g$, $\theta$)
+    \STATE // Population-aware genetic operations
+    \STATE $P_{pool} \leftarrow P_{g-1} \cup P_{GPT}$
+    \STATE $C_{cross} \leftarrow$ FragmentAwareCrossover($P_{pool}$)
+    \STATE $C_{mut} \leftarrow$ ChemicalContextMutation($P_{pool}$)
+    \STATE $C_g \leftarrow$ ChemicalFilter($C_{cross} \cup C_{mut}$)
+    \STATE // Multi-objective evaluation
+    \STATE Evaluate $F(C_g)$ = $[DS(C_g), QED(C_g), SA(C_g)]$
+    \STATE // Pareto-optimal selection
+    \STATE $P_g \leftarrow$ NSGA-II-Select($P_{g-1} \cup C_g$)
 \ENDFOR
-\STATE \textbf{return} $P_{G_{max}}$
+\STATE \textbf{return} Non-dominated solutions from $P_{G_{max}}$
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{Fragment-Based GPT Generation}
-At each generation, we apply BRICS-like fragmentation to the current parent set and mask a subset of fragments. The fragment-based GPT is prompted with masked contexts to autoregressively complete chemically plausible candidates. Dynamic masking adjusts the number of masked fragments across generations to smoothly transition from broader exploration to targeted refinement. This design yields diverse yet synthesizable proposals and avoids drifting too far from evolutionarily promising regions.
-
-\subsection{Genetic Operators and Filtering}
-We merge GPT proposals with the current population and apply chemically aware crossover and mutation. After genetic edits, we enforce medicinal chemistry filters (Lipinski, PAINS, etc., as configured) to prune undesirable structures. The filtered offspring are then prepared for docking. This stage consolidates the benefits of population-based optimization with learned priors, ensuring that innovation is continuously injected without sacrificing feasibility.
-
-\subsection{Multi-Objective Selection via NSGA-II}
-Selection is performed under a multi-objective lens encompassing docking score (minimize), drug-likeness QED (maximize), and synthetic accessibility SA (minimize). We adopt NSGA-II with crowding distance to approximate the Pareto front and retain a well-spread set of elites. This balances exploitation of strongly binding candidates and maintenance of drug-like, synthetically tractable profiles, reducing the risk of overfitting to any single criterion.
-
-\subsection{Implementation Notes}
-Molecules are represented as SMILES for lightweight manipulation and interoperability with docking pipelines. Docking back-ends (e.g., AutoDock Vina) provide fitness signals. The framework is modular: GPT generation, GA operators, docking, and selection are decoupled components connected via on-disk artifacts, facilitating reproducibility and ablation studies.
+The modular architecture facilitates reproducibility and enables systematic ablation studies. Each component—fragment decomposition, GPT generation, genetic operations, evaluation, and selection—operates as an independent module with well-defined interfaces, allowing for easy customization and extension of the framework.
 
 
 % IV. 实验设置 (Experimental Setup)
@@ -138,22 +229,8 @@ Molecules are represented as SMILES for lightweight manipulation and interoperab
 We employ standard public chemical corpora for pretraining the fragment-based GPT and use curated compound sets to initialize the evolutionary process. In our configuration, the initial parent pool is read from \texttt{datasets/}, which contains diverse, drug-like scaffolds representative of the targeted chemical space.
 \subsection{Protein Target and Docking Protocol}
 Experiments focus on protein targets defined in the configuration. Unless otherwise stated, we use the default receptor PARP1 with grid parameters provided in the configuration file. Ligand preparation follows standard protocols via MGLTools; docking is performed with AutoDock Vina using typical settings (exhaustiveness and modes as in the configuration), yielding binding scores that serve as one objective in the multi-objective selection.
-\subsection{Baseline Configuration and Experimental Protocol}
-\noindent To comprehensively evaluate our FragGPT-GA framework, we compare against established molecular optimization methods, each configured according to rigorous experimental standards derived from recent literature \cite{fuReinforcedGeneticAlgorithm}.
-
-\noindent \textbf{Genetic Algorithm with Discriminator (GA+D):} This approach integrates neural network guidance into genetic optimization by employing SELFIES molecular representation to guarantee chemical validity \cite{nigamAugmentingGeneticAlgorithms2020}. The discriminator architecture consists of a two-layer fully connected network featuring ReLU activation functions and sigmoid output layer. Network parameters include 100 hidden units with input derived from comprehensive chemical and geometrical molecular descriptors. Evolution parameters specify population size of 300 individuals, maximum generation limit of 1000, and early stopping mechanism with patience threshold of 5 generations. Optimization utilizes Adam algorithm with learning rate 1e-3 and discriminator influence weight $\beta = 1$.
-
-\noindent \textbf{Graph-based Genetic Algorithm (Graph-GA):} Operates on direct molecular graph representations through specialized crossover and mutation operators designed for graph structures \cite{jensenGraphBasedGeneticAlgorithm2019}. Configuration parameters include population size of 120 individuals, offspring generation of 70 per iteration, and mutation probability of 0.067. This method demonstrates computational efficiency through its parameter-free design and straightforward implementation approach.
-
-\noindent \textbf{Deep Q-Network for Molecules (MolDQN):} Formulates molecular design as a sequential decision-making process using Markov Decision Process principles with atom-wise graph construction strategy \cite{zhouOptimizationMolecularRep2019}. The Q-network employs multi-layer perceptron architecture with layer dimensions [1024, 512, 128, 32] and processes concatenated input features comprising 2048-bit Morgan fingerprints (radius 3) and remaining step information. Training configuration includes Adam optimizer (learning rate 1e-4), $\epsilon$-greedy exploration strategy (linearly annealed from 1.0 to 0.01), and discount factor 0.9.
-
-\noindent \textbf{RationaleRL:} Implements policy gradient optimization through message-passing neural networks for molecular graph generation \cite{jinMultiObjectiveMoleculeGeneration2020}. Architecture specifications include encoder and decoder message-passing networks with 400-dimensional hidden representations and 50-dimensional latent space encoding. Training employs dual-phase Adam optimization with pre-training learning rate 1e-3 and fine-tuning rate 5e-4.
-
-\noindent \textbf{MARS (Markov Molecular Sampling):} Executes Markov Chain Monte Carlo sampling enhanced with temperature annealing schemes for multi-objective molecular discovery \cite{xieMARS2021}. The proposal mechanism utilizes graph neural networks with six message-passing layers and 64-dimensional node embeddings. Temperature scheduling follows $T = 0.95^{\lfloor t/5 \rfloor}$ with basic building blocks derived from top-1000 frequent ZINC database fragments \cite{sterlingZINCLigandDiscovery2015}.
-
-\noindent \textbf{REINVENT:} Employs recurrent neural network architectures for SMILES-based molecular generation through reinforcement learning paradigms \cite{olivecronaMolecularDeNovoDesign2017}. The methodology incorporates pre-training on ZINC database \cite{sterlingZINCLigandDiscovery2015} followed by REINFORCE algorithm fine-tuning. Hyperparameters include learning rate 0.0005, batch size 64, and prior-reward balance parameter $\sigma = 60$ controlling the trade-off between exploration and exploitation.
-
-\noindent \textbf{Experimental Framework:} Our evaluation protocol adopts structure-based drug design principles with standardized target protein selection encompassing diverse therapeutic classes including G-protein coupled receptors and kinases from established benchmarks. Molecular docking evaluation employs AutoDock Vina with binding pocket dimensions standardized to (15.0, 15.0, 15.0) Angstroms. Performance assessment encompasses multiple evaluation dimensions: top-scoring molecular candidates (TOP-1, TOP-10, TOP-100), molecular novelty (fraction absent from training datasets), structural diversity (pairwise Tanimoto distance metrics), drug-likeness quantification (QED scores), and synthetic accessibility estimation (SA scores). Computational infrastructure maintains consistency across all methods using Intel Xeon E5-2690 processors with 256GB RAM and NVIDIA Pascal Titan X GPU acceleration.
+\subsection{Baseline Methods}
+To evaluate the efficacy of our framework, we compare against established molecular optimization baselines covering different methodological paradigms. Our experimental protocol follows standardized configurations from recent literature \cite{fuReinforcedGeneticAlgorithm} to ensure fair comparison across evolutionary, generative, and hybrid approaches.
 \subsection{Evaluation Metrics}
 We report: (i) docking score (lower is better); (ii) QED (higher is better); (iii) SA score (lower is better); and (iv) diversity and novelty statistics computed from molecular fingerprints. Where applicable, we also summarize Pareto-front coverage and cardinality to reflect trade-offs among objectives.
 \subsection{Implementation Details}

@@ -1,9 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.25)  26 AUG 2025 14:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.25)  26 AUG 2025 14:53
 entering extended mode
  restricted \write18 enabled.
+ file:line:error style messages enabled.
  %&-line parsing enabled.
-**bare_jrnl_new_sample4.tex
-(./bare_jrnl_new_sample4.tex
+**"/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex"
+(/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (./IEEEtran.cls
@@ -17,8 +18,7 @@ Document Class: IEEEtran 2015/08/26 V1.8b by Michael Shell
 \@IEEEtrantmpcountB=\count197
 \@IEEEtrantmpcountC=\count198
 \@IEEEtrantmptoksA=\toks17
-LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 5
-03.
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 503.
 (/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
@@ -33,42 +33,34 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1086.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <5> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1086.
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1086.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <7> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1086.
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1086.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <8> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1086.
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1086.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <9> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1086.
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1086.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <10> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1086.
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <11> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1086.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <11> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1086.
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1086.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1086.
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <18> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1086.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <18> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1086.
-
 \IEEEquantizedlength=\dimen148
 \IEEEquantizedlengthdiff=\dimen149
 \IEEEquantizedtextheightdiff=\dimen150
@@ -105,32 +97,25 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <18> not available
 \@IEEEtranrubishbin=\box53
 ) (/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/rotating.sty
 Package: rotating 2016/08/11 v2.16d rotated objects in LaTeX
-
-(/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/graphicx.sty
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
-
-(/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/keyval.sty
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
 \KV@toks@=\toks18
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/graphics.sty
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/graphics.sty
 Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
-
-(/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/trig.sty
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/trig.sty
 Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 106.
-
-(/usr/local/texlive/2025/texmf-dist/tex/latex/graphics-def/pdftex.def
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/graphics-def/pdftex.def
 File: pdftex.def 2024/04/13 v1.2c Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen165
 \Gin@req@width=\dimen166
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/base/ifthen.sty
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/base/ifthen.sty
 Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
 )
 \c@r@tfl@t=\count277
@@ -138,25 +123,21 @@ Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
 \rotFPbot=\skip53
 \rot@float@box=\box54
 \rot@mess@toks=\toks19
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amsmath.sty
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2024/11/05 v2.17t AMS math features
 \@mathmargin=\skip54
 
 For additional information on amsmath, use the `?' option.
 (/usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amstext.sty
 Package: amstext 2021/08/26 v2.01 AMS text
-
-(/usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amsgen.sty
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
 \@emptytoks=\toks20
 \ex@=\dimen167
-))
-(/usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amsbsy.sty
+)) (/usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
 \pmbraise@=\dimen168
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amsopn.sty
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 2022/04/08 v2.04 operator names
 )
 \inf@bad=\count278
@@ -206,16 +187,14 @@ LaTeX Info: Redefining \Relbar on input line 970.
 \mathdisplay@stack=\toks24
 LaTeX Info: Redefining \[ on input line 2953.
 LaTeX Info: Redefining \] on input line 2954.
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/amsfonts.sty
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup4
 \symAMSb=\mathgroup5
 LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/algorithms/algorithmic.sty
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/algorithms/algorithmic.sty
 Package: algorithmic 2009/08/24 v0.1 Document Style `algorithmic'
 \c@ALC@unique=\count290
 \c@ALC@line=\count291
@@ -223,12 +202,9 @@ Package: algorithmic 2009/08/24 v0.1 Document Style `algorithmic'
 \c@ALC@depth=\count293
 \ALC@tlm=\skip57
 \algorithmicindent=\skip58
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/algorithms/algorithm.sty
-Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
-nment
-
-(/usr/local/texlive/2025/texmf-dist/tex/latex/float/float.sty
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/algorithms/algorithm.sty
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating environment
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/float/float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \c@float@type=\count294
 \float@exts=\toks25
@@ -238,8 +214,7 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 )
 \@float@every@algorithm=\toks27
 \c@algorithm=\count295
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/tools/array.sty
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/tools/array.sty
 Package: array 2024/10/17 v2.6g Tabular extension package (FMi)
 \col@sep=\dimen176
 \ar@mcellbox=\box59
@@ -248,11 +223,9 @@ Package: array 2024/10/17 v2.6g Tabular extension package (FMi)
 \extratabsurround=\skip59
 \backup@length=\skip60
 \ar@cellbox=\box60
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/subfig/subfig.sty
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/subfig/subfig.sty
 Package: subfig 2005/06/28 ver: 1.3 subfig package
-
-(/usr/local/texlive/2025/texmf-dist/tex/latex/caption/caption3.sty
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/caption/caption3.sty
 Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
 \caption@tempdima=\dimen178
 \captionmargin=\dimen179
@@ -264,17 +237,7 @@ Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
 \caption@hangindent=\dimen185
 Package caption Info: Unknown document class (or package),
 (caption)             standard defaults will be used.
-Package caption Info: \@makecaption = \long macro:#1#2->\ifx \@captype \@IEEEta
-blestring \footnotesize \bgroup \par \centering \@IEEEtabletopskipstrut {\norma
-lfont \footnotesize #1}\\{\normalfont \footnotesize \scshape #2}\par \addvspace
- {0.5\baselineskip }\egroup \@IEEEtablecaptionsepspace \else \@IEEEfigurecaptio
-nsepspace \setbox \@tempboxa \hbox {\normalfont \footnotesize {#1.}\nobreakspac
-e \nobreakspace #2}\ifdim \wd \@tempboxa >\hsize \setbox \@tempboxa \hbox {\nor
-malfont \footnotesize {#1.}\nobreakspace \nobreakspace }\parbox [t]{\hsize }{\n
-ormalfont \footnotesize \noindent \unhbox \@tempboxa #2}\else \ifCLASSOPTIONcon
-ference \hbox to\hsize {\normalfont \footnotesize \hfil \box \@tempboxa \hfil }
-\else \hbox to\hsize {\normalfont \footnotesize \box \@tempboxa \hfil }\fi \fi 
-\fi  on input line 1175.
+Package caption Info: \@makecaption = \long macro:#1#2->\ifx \@captype \@IEEEtablestring \footnotesize \bgroup \par \centering \@IEEEtabletopskipstrut {\normalfont \footnotesize #1}\\{\normalfont \footnotesize \scshape #2}\par \addvspace {0.5\baselineskip }\egroup \@IEEEtablecaptionsepspace \else \@IEEEfigurecaptionsepspace \setbox \@tempboxa \hbox {\normalfont \footnotesize {#1.}\nobreakspace \nobreakspace #2}\ifdim \wd \@tempboxa >\hsize \setbox \@tempboxa \hbox {\normalfont \footnotesize {#1.}\nobreakspace \nobreakspace }\parbox [t]{\hsize }{\normalfont \footnotesize \noindent \unhbox \@tempboxa #2}\else \ifCLASSOPTIONconference \hbox to\hsize {\normalfont \footnotesize \hfil \box \@tempboxa \hfil }\else \hbox to\hsize {\normalfont \footnotesize \box \@tempboxa \hfil }\fi \fi \fi  on input line 1175.
 )
 \c@KVtest=\count296
 \sf@farskip=\skip61
@@ -289,36 +252,28 @@ ference \hbox to\hsize {\normalfont \footnotesize \hfil \box \@tempboxa \hfil }
 \c@lotdepth=\count302
 \sf@top=\skip64
 \sf@bottom=\skip65
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/base/textcomp.sty
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/base/textcomp.sty
 Package: textcomp 2024/04/24 v2.1b Standard LaTeX package
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/sttools/stfloats.sty
-Package: stfloats 2017/03/27 v3.3 Improve float mechanism and baselineskip sett
-ings
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/sttools/stfloats.sty
+Package: stfloats 2017/03/27 v3.3 Improve float mechanism and baselineskip settings
 \@dblbotnum=\count303
 \c@dblbotnumber=\count304
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/url/url.sty
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip18
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/tools/verbatim.sty
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/tools/verbatim.sty
 Package: verbatim 2024-01-22 v1.5x LaTeX2e package for verbatim enhancements
 \every@verbatim=\toks29
 \verbatim@line=\toks30
 \verbatim@in@stream=\read2
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/cite/cite.sty
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/cite/cite.sty
 LaTeX Info: Redefining \cite on input line 302.
 LaTeX Info: Redefining \nocite on input line 332.
 Package: cite 2015/02/27  v 5.5
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/preprint/balance.sty
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/preprint/balance.sty
 Package: balance 1999/02/23 4.3 (PWD)
 \oldvsize=\dimen187
-)
-(/usr/local/texlive/2025/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count305
 \l__pdf_internal_box=\box61
@@ -361,143 +316,121 @@ LaTeX Font Info:    ... okay on input line 23.
 \everyMPtoPDFconversion=\toks32
 ) (/usr/local/texlive/2025/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
-Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
-85.
-
-(/usr/local/texlive/2025/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
-e
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: subfig package v1.3 is loaded.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    Trying to load font information for U+msa on input line 50.
-
-
-(/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
 LaTeX Font Info:    Trying to load font information for U+msb on input line 50.
-
-
-(/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 
 
 
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 7
-0.
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 74.
 (/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-) [1{/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr
-/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc}
+) [1{/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
 
 ]
-<model_pictures_01.png, id=12, 2890.8pt x 844.65562pt>
+Underfull \hbox (badness 2189) in paragraph at lines 85--86
+\OT1/ptm/b/n/10 Multi-Objective Gen-er-a-tion: \OT1/ptm/m/n/10 Ad-vanced frame-works ad-
+ []
+
+
+
+
+
+[2]
+<model_pictures_01.png, id=15, 2890.8pt x 844.65562pt>
 File: model_pictures_01.png Graphic file (type png)
 <use model_pictures_01.png>
-Package pdftex.def Info: model_pictures_01.png  used on input line 82.
+Package pdftex.def Info: model_pictures_01.png  used on input line 130.
 (pdftex.def)             Requested size: 252.94499pt x 73.90202pt.
 
-Overfull \hbox (0.94499pt too wide) in paragraph at lines 82--83
+Overfull \hbox (0.94499pt too wide) in paragraph at lines 130--131
  [][] 
  []
 
 
-Underfull \hbox (badness 1635) in paragraph at lines 92--93
-\OT1/ptm/m/n/10 mar-ily use the dock-ing score. For multi-objective op-ti-
- []
-
-
-Underfull \hbox (badness 1365) in paragraph at lines 92--93
-\OT1/ptm/m/n/10 miza-tion, we con-sider a vec-tor of ob-jec-tives $\OML/cmm/m/i
-t/10 F\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 m\OT1/cmr/m/n/10 ) =
- []
 
 
 
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 1
-38.
-(/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+[3 <./model_pictures_01.png>]
+
+
+
+[4]
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 229.
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
 
-[2 <./model_pictures_01.png>]
-Underfull \hbox (badness 6608) in paragraph at lines 150--151
-\OT1/ptm/b/n/10 RationaleRL: \OT1/ptm/m/n/10 Im-ple-ments pol-icy gra-di-ent op
--ti-miza-tion
- []
-
-
-
-
-
-[3]
 LaTeX Info: Symbol \textdownarrow not provided by
             font family ptm in TS1 encoding.
-            Default family used instead on input line 171.
-
+            Default family used instead on input line 248.
 
 LaTeX Font Warning: Font shape `TS1/cmr/m/sc' undefined
 (Font)              using `TS1/cmr/m/n' instead
-(Font)              for symbol `textdownarrow' on input line 171.
+(Font)              for symbol `textdownarrow' on input line 248.
 
 LaTeX Info: Symbol \textuparrow not provided by
             font family ptm in TS1 encoding.
-            Default family used instead on input line 201.
+            Default family used instead on input line 278.
 LaTeX Info: Symbol \textdownarrow not provided by
             font family ptm in TS1 encoding.
-            Default family used instead on input line 201.
+            Default family used instead on input line 278.
 
-Overfull \hbox (4.74786pt too wide) in paragraph at lines 207--227
+Overfull \hbox (4.74786pt too wide) in paragraph at lines 284--304
  [][] 
  []
 
 
 
+[5{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
 
 
-[4{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
-}]
-Underfull \hbox (badness 1755) in paragraph at lines 291--292
+Underfull \hbox (badness 1755) in paragraph at lines 368--369
 []\OT1/ptm/m/n/10 To fur-ther val-i-date the ef-fec-tive-ness of FragGPT-GA,
  []
 
-<violin_comparison.png, id=33, 1437.4503pt x 713.7867pt>
+<violin_comparison.png, id=35, 1437.4503pt x 713.7867pt>
 File: violin_comparison.png Graphic file (type png)
 <use violin_comparison.png>
-Package pdftex.def Info: violin_comparison.png  used on input line 295.
+Package pdftex.def Info: violin_comparison.png  used on input line 372.
 (pdftex.def)             Requested size: 516.0pt x 256.2224pt.
 
-Underfull \hbox (badness 1831) in paragraph at lines 303--304
+Underfull \hbox (badness 1831) in paragraph at lines 380--381
 []\OT1/ptm/m/n/10 We in-spect top-ranking molecules to un-der-stand how
  []
 
 
 
-(./bare_jrnl_new_sample4.bbl
-Underfull \hbox (badness 2617) in paragraph at lines 30--31
-[]\OT1/ptm/m/n/8 J. H. Jensen, ``A graph-based ge-netic al-go-rithm and gen-er-
-a-tive
+[6] (./bare_jrnl_new_sample4.bbl
+Underfull \hbox (badness 2617) in paragraph at lines 24--25
+[]\OT1/ptm/m/n/8 J. H. Jensen, ``A graph-based ge-netic al-go-rithm and gen-er-a-tive
  []
 
 
 
 
-Package balance Warning: You have called \balance in second column
-(balance)                Columns might not be balanced.
-
-[5]
-
-)
 
 
-Overfull \vbox (1.0979pt too high) has occurred while \output is active []
+Overfull \vbox (1.68831pt too high) has occurred while \output is active []
+
+ [7 <./violin_comparison.png>])
 
 
-[6 <./violin_comparison.png>] (./bare_jrnl_new_sample4.aux)
+
+[8] (./bare_jrnl_new_sample4.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -509,31 +442,17 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
  ) 
 Here is how much of TeX's memory you used:
  4923 strings out of 473190
- 85576 string characters out of 5715806
- 503436 words of memory out of 5000000
- 28094 multiletter control sequences out of 15000+600000
+ 85888 string characters out of 5715806
+ 496436 words of memory out of 5000000
+ 28093 multiletter control sequences out of 15000+600000
  600383 words of font info for 117 fonts, out of 8000000 for 9000
  1145 hyphenation exceptions out of 8191
- 72i,11n,79p,1295b,406s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
-></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
-</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></
-usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></us
-r/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/
-local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/loc
-al/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/loca
-l/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/
-texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/te
-xlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texl
-ive/2025/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2025
-/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2025/texmf-dis
-t/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/t
-ype1/urw/times/utmr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/t
-imes/utmri8a.pfb>
-Output written on bare_jrnl_new_sample4.pdf (6 pages, 1615629 bytes).
+ 72i,11n,79p,1407b,401s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on bare_jrnl_new_sample4.pdf (8 pages, 1624725 bytes).
 PDF statistics:
- 105 PDF objects out of 1000 (max. 8388607)
- 62 compressed objects within 1 object stream
+ 113 PDF objects out of 1000 (max. 8388607)
+ 68 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
