@@ -105,8 +105,9 @@ def main():
     fig, axes = plt.subplots(2, 5, figsize=(20, 10))
     axes = axes.flatten()  # 展平为一维数组便于索引
     
-    # 定义颜色（参考你提供的小提琴图配色）
-    colors = ['#82C182', '#FF9999', '#87CEEB']  # 绿色、粉色、蓝色
+    # 定义颜色（与模型图保持一致的配色方案）
+    # RGB: 浅绿色(197,224,180), 浅蓝色(157,195,230), 浅黄色(248,203,173)
+    colors = ['#C5E0B4', '#9DC3E6', '#F8CBAD']  # 浅绿色、浅蓝色、浅黄色
     model_order = ['AutoGrow4.0', 'RGA', 'FragGPT-GA']
     
     # 为每种蛋白质绘制子图

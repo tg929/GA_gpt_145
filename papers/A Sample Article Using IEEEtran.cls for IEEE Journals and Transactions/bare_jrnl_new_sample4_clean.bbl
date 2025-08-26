@@ -21,45 +21,15 @@
 \BIBdecl
 
 \bibitem{fuReinforcedGeneticAlgorithm}
-T.~Fu, W.~Gao, C.~W. Coley, and J.~Sun, ``Reinforced {{Genetic Algorithm}} for {{Structure-based Drug Design}},'' pp. 6759--6778.
+T.~Fu, W.~Gao, C.~W. Coley, and J.~Sun, ``Reinforced {{Genetic Algorithm}} for {{Structure-based Drug Design}}.''
 
-\bibitem{nigamAugmentingGeneticAlgorithms2020}
-A.~Nigam, P.~Friederich, M.~Krenn, and A.~Aspuru-Guzik, ``Augmenting genetic algorithms with deep neural networks for exploring the chemical space.''
-
-\bibitem{jensenGraphBasedGeneticAlgorithm2019}
-J.~H. Jensen, ``A graph-based genetic algorithm and generative model/monte carlo tree search for the exploration of chemical space,'' vol.~10, no.~12, pp. 3567--3572.
-
-\bibitem{zhouOptimizationMolecularRep2019}
-Z.~Zhou, S.~Kearnes, L.~Li, R.~N. Zare, and P.~Riley, ``Optimization of molecules via deep reinforcement learning,'' vol.~9, no.~1, p. 10752.
-
-\bibitem{jinMultiObjectiveMoleculeGeneration2020}
-W.~Jin, R.~Barzilay, and T.~Jaakkola, ``Multi-objective molecule generation using interpretable substructures,'' pp. 4849--4859.
-
-\bibitem{xieMARS2021}
-Y.~Xie, C.~Shi, H.~Zhou, Y.~Yang, W.~Zhang, Y.~Yu, and L.~Li, ``Mars: Markov molecular sampling for multi-objective drug discovery.''
-
-\bibitem{sterlingZINCLigandDiscovery2015}
-T.~Sterling and J.~J. Irwin, ``Zinc 15 – ligand discovery for everyone,'' vol.~55, no.~11, pp. 2324--2337.
-
-\bibitem{olivecronaMolecularDeNovoDesign2017}
-M.~Olivecrona, T.~Blaschke, O.~Engkvist, and H.~Chen, ``Molecular de-novo design through deep reinforcement learning,'' vol.~9, no.~1, p.~48.
-
-\bibitem{ahnGuidingDeepMolecular2020}
-S.~Ahn, J.~Kim, H.~Lee, and J.~Shin, ``Guiding deep molecular optimization with genetic exploration,'' vol.~33, pp. 12\,008--12\,021.
-
-\bibitem{jinJunctionTreeVariational2018}
-W.~Jin, R.~Barzilay, and T.~Jaakkola, ``Junction tree variational autoencoder for molecular graph generation,'' pp. 2323--2332.
-
-\bibitem{luoGraph2022}
-S.~Luo, J.~Guan, J.~Ma, and J.~Peng, ``A 3d generative model for structure-based drug design,'' vol.~34, pp. 6229--6239.
+\bibitem{leeMoleculeGenerationFragment}
+S.~Lee, K.~Kreis, S.~P. Veccham, M.~Liu, D.~Reidenbach, S.~Paliwal, A.~Vahdat, and W.~Nie, ``Molecule {{Generation}} with {{Fragment Retrieval Augmentation}}.''
 
 \bibitem{spiegelAutoGrow4OpensourceGenetic2020}
 \BIBentryALTinterwordspacing
 J.~O. Spiegel and J.~D. Durrant, ``{{AutoGrow4}}: An open-source genetic algorithm for de novo drug design and lead optimization,'' vol.~12, no.~1, p.~25. [Online]. Available: \url{https://jcheminf.biomedcentral.com/articles/10.1186/s13321-020-00429-4}
 \BIBentrySTDinterwordspacing
-
-\bibitem{leeMoleculeGenerationFragment}
-S.~Lee, K.~Kreis, S.~P. Veccham, M.~Liu, D.~Reidenbach, S.~Paliwal, A.~Vahdat, and W.~Nie, ``Molecule {{Generation}} with {{Fragment Retrieval Augmentation}}.''
 
 \bibitem{abdelsayedAIDrivenPolypharmacologySmallMolecule2025}
 \BIBentryALTinterwordspacing
