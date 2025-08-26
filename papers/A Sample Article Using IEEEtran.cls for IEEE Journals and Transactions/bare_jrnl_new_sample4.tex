@@ -229,8 +229,8 @@ The modular architecture facilitates reproducibility and enables systematic abla
 We employ standard public chemical corpora for pretraining the fragment-based GPT and use curated compound sets to initialize the evolutionary process. In our configuration, the initial parent pool is read from \texttt{datasets/}, which contains diverse, drug-like scaffolds representative of the targeted chemical space.
 \subsection{Protein Target and Docking Protocol}
 Experiments focus on protein targets defined in the configuration. Unless otherwise stated, we use the default receptor PARP1 with grid parameters provided in the configuration file. Ligand preparation follows standard protocols via MGLTools; docking is performed with AutoDock Vina using typical settings (exhaustiveness and modes as in the configuration), yielding binding scores that serve as one objective in the multi-objective selection.
-\subsection{Baseline Methods}
-To evaluate the efficacy of our framework, we compare against established molecular optimization baselines covering different methodological paradigms. Our experimental protocol follows standardized configurations from recent literature \cite{fuReinforcedGeneticAlgorithm} to ensure fair comparison across evolutionary, generative, and hybrid approaches.
+% \subsection{Baseline Methods}
+% To evaluate the efficacy of our framework, we compare against established molecular optimization baselines covering different methodological paradigms. Our experimental protocol follows standardized configurations from recent literature \cite{fuReinforcedGeneticAlgorithm} to ensure fair comparison across evolutionary, generative, and hybrid approaches.
 \subsection{Evaluation Metrics}
 We report: (i) docking score (lower is better); (ii) QED (higher is better); (iii) SA score (lower is better); and (iv) diversity and novelty statistics computed from molecular fingerprints. Where applicable, we also summarize Pareto-front coverage and cardinality to reflect trade-offs among objectives.
 \subsection{Implementation Details}

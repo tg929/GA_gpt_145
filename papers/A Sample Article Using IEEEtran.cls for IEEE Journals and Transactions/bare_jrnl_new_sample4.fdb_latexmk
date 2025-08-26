@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex bare_jrnl_new_sample4"] 1756191202.49001 "bare_jrnl_new_sample4.aux" "bare_jrnl_new_sample4.bbl" "bare_jrnl_new_sample4" 1756191206.8896 0
+["bibtex bare_jrnl_new_sample4"] 1756192018.06583 "bare_jrnl_new_sample4.aux" "bare_jrnl_new_sample4.bbl" "bare_jrnl_new_sample4" 1756192022.09423 0
   "./references_1.bib" 1756190015.61867 16766 9a98c96fc37851edaa6101d19160f44a ""
   "/usr/local/texlive/2025/texmf-dist/bibtex/bst/ieeetran/IEEEtran.bst" 1440712899 57748 7c8250ecf02814ce6ddc0cdbb63df1dd ""
-  "bare_jrnl_new_sample4.aux" 1756191206.01943 8898 1f9c0ffc25a82cfdc2569b386ecd288f "pdflatex"
+  "bare_jrnl_new_sample4.aux" 1756192021.64072 8739 6c6ddfad60dc340aa1bb476f96ee0bd6 "pdflatex"
   (generated)
   "bare_jrnl_new_sample4.bbl"
   "bare_jrnl_new_sample4.blg"
   (rewritten before read)
-["pdflatex"] 1756191202.83142 "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex" "bare_jrnl_new_sample4.pdf" "bare_jrnl_new_sample4" 1756191206.88987 0
-  "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex" 1756191198.00252 41510 347e2d8cddfc9e0952e2f708813a2a98 ""
+["pdflatex"] 1756192018.25475 "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex" "bare_jrnl_new_sample4.pdf" "bare_jrnl_new_sample4" 1756192022.09453 0
+  "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/bare_jrnl_new_sample4.tex" 1756192009.88086 41514 5467a1f7a5125def1b235a4decbfd65f ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -106,9 +106,9 @@
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1756102751 3345754 4f73532846c2a9db5b596a86d06761da ""
   "/usr/local/texlive/2025/texmf.cnf" 1756102458.05111 455 5b996dcaa0eb4ef14a83b026bc0a008c ""
   "IEEEtran.cls" 1756040877.26785 282108 7379a03af5f3d0dad26db23a43c3a726 ""
-  "bare_jrnl_new_sample4.aux" 1756191206.01943 8898 1f9c0ffc25a82cfdc2569b386ecd288f "pdflatex"
-  "bare_jrnl_new_sample4.bbl" 1756191202.74847 10240 ac3af9ebb63de158582b6098e41e1e98 "bibtex bare_jrnl_new_sample4"
-  "bare_jrnl_new_sample4.tex" 1756191198.00252 41510 347e2d8cddfc9e0952e2f708813a2a98 ""
+  "bare_jrnl_new_sample4.aux" 1756192021.64072 8739 6c6ddfad60dc340aa1bb476f96ee0bd6 "pdflatex"
+  "bare_jrnl_new_sample4.bbl" 1756192018.24776 10240 fed7853bdb1449f9e4971c6e5ff62f6e "bibtex bare_jrnl_new_sample4"
+  "bare_jrnl_new_sample4.tex" 1756192009.88086 41514 5467a1f7a5125def1b235a4decbfd65f ""
   "model_pictures_01.png" 1756129934.55409 260002 c7d6039a4e3ea0792d4b6eff8af0438d ""
   "violin_comparison.png" 1756187351.23235 1471217 285e3db44a95165bd0c37b6059f0f795 ""
   (generated)

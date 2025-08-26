@@ -47,13 +47,13 @@ S.~Luo, J.~Guan, J.~Ma, and J.~Peng, ``A 3d generative model for structure-based
 \bibitem{ahnGuidingDeepMolecular2020}
 S.~Ahn, J.~Kim, H.~Lee, and J.~Shin, ``Guiding deep molecular optimization with genetic exploration,'' vol.~33, pp. 12\,008--12\,021.
 
-\bibitem{fuReinforcedGeneticAlgorithm}
-T.~Fu, W.~Gao, C.~W. Coley, and J.~Sun, ``Reinforced {{Genetic Algorithm}} for {{Structure-based Drug Design}},'' pp. 6759--6778.
-
 \bibitem{spiegelAutoGrow4OpensourceGenetic2020}
 \BIBentryALTinterwordspacing
 J.~O. Spiegel and J.~D. Durrant, ``{{AutoGrow4}}: An open-source genetic algorithm for de novo drug design and lead optimization,'' vol.~12, no.~1, p.~25. [Online]. Available: \url{https://jcheminf.biomedcentral.com/articles/10.1186/s13321-020-00429-4}
 \BIBentrySTDinterwordspacing
+
+\bibitem{fuReinforcedGeneticAlgorithm}
+T.~Fu, W.~Gao, C.~W. Coley, and J.~Sun, ``Reinforced {{Genetic Algorithm}} for {{Structure-based Drug Design}},'' pp. 6759--6778.
 
 \bibitem{sterlingZINCLigandDiscovery2015}
 T.~Sterling and J.~J. Irwin, ``Zinc 15 – ligand discovery for everyone,'' vol.~55, no.~11, pp. 2324--2337.

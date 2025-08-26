@@ -27,7 +27,6 @@
 \newlabel{alg:frag-gpt-ga}{{1}{4}{}{algorithm.1}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-G}}Pareto-Optimal Selection via NSGA-II}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-H}}Algorithmic Implementation and Computational Efficiency}{4}{}\protected@file@percent }
-\citation{fuReinforcedGeneticAlgorithm}
 \citation{xieMARS2021}
 \citation{zhouOptimizationMolecularRep2019}
 \citation{ahnGuidingDeepMolecular2020}
@@ -43,15 +42,14 @@
 \@writefile{toc}{\contentsline {section}{\numberline {IV}Experimental Setup}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Datasets}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Protein Target and Docking Protocol}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Baseline Methods}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Evaluation Metrics}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}Implementation Details}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Evaluation Metrics}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Implementation Details}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {V}Results and Discussion}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Performance Comparison}{5}{}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Docking Score Comparison (kcal/mol, ↓ better)}}{5}{}\protected@file@percent }
 \newlabel{tab:docking_scores}{{I}{5}{}{table.1}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Diversity and Drug-likeness Metrics (↑ better except SA ↓ better)}}{5}{}\protected@file@percent }
 \newlabel{tab:diversity_metrics}{{II}{5}{}{table.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {V}Results and Discussion}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Performance Comparison}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Ablation Studies}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-B}1}Selection Strategy Comparison}{5}{}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Ablation Study: Selection Strategy Comparison}}{6}{}\protected@file@percent }
@@ -61,6 +59,7 @@
 \newlabel{fig:convergence}{{2}{6}{}{figure.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Comprehensive Baseline Comparison}{6}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Case Study of Generated Molecules}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{6}{}\protected@file@percent }
 \citation{*}
 \bibstyle{IEEEtran}
 \bibdata{references_1}
@@ -73,8 +72,8 @@
 \bibcite{xieMARS2021}{7}
 \bibcite{luoGraph2022}{8}
 \bibcite{ahnGuidingDeepMolecular2020}{9}
-\bibcite{fuReinforcedGeneticAlgorithm}{10}
-\bibcite{spiegelAutoGrow4OpensourceGenetic2020}{11}
+\bibcite{spiegelAutoGrow4OpensourceGenetic2020}{10}
+\bibcite{fuReinforcedGeneticAlgorithm}{11}
 \bibcite{sterlingZINCLigandDiscovery2015}{12}
 \bibcite{leeMoleculeGenerationFragment}{13}
 \bibcite{abdelsayedAIDrivenPolypharmacologySmallMolecule2025}{14}
@@ -85,14 +84,13 @@
 \bibcite{fangAcceleratingMultiobjectiveOptimization2025}{19}
 \bibcite{huangEvoXDistributedGPUaccelerated2024}{20}
 \bibcite{kadanGuidedMultiobjectiveGenerative2025}{21}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Protein-specific docking score comparison across three models. Each subplot represents one protein target, with three violin plots showing the distribution of docking scores for AutoGrow4.0 (green), RGA (pink), and FragGPT-GA (blue). The violin plots display both population density and individual data points with statistical overlays (red lines: means, blue lines: medians). The top-right corner of each subplot shows the best docking score (TOP1) achieved by each model for that specific protein target. FragGPT-GA consistently demonstrates superior performance across most protein targets, achieving the best TOP1 scores while maintaining population diversity.}}{7}{}\protected@file@percent }
-\newlabel{fig:violin_comparison}{{3}{7}{}{figure.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{7}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{Appendix: Proof of the Zonklar Equations}{7}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{References}{7}{}\protected@file@percent }
 \bibcite{khaterGenerativeArtificialIntelligence2025}{22}
 \bibcite{meyersFragGTFragmentbasedEvolutionary2024}{23}
 \bibcite{qingfuzhangMOEAMultiobjectiveEvolutionary2007}{24}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Protein-specific docking score comparison across three models. Each subplot represents one protein target, with three violin plots showing the distribution of docking scores for AutoGrow4.0 (green), RGA (pink), and FragGPT-GA (blue). The violin plots display both population density and individual data points with statistical overlays (red lines: means, blue lines: medians). The top-right corner of each subplot shows the best docking score (TOP1) achieved by each model for that specific protein target. FragGPT-GA consistently demonstrates superior performance across most protein targets, achieving the best TOP1 scores while maintaining population diversity.}}{7}{}\protected@file@percent }
+\newlabel{fig:violin_comparison}{{3}{7}{}{figure.3}{}}
+\@writefile{toc}{\contentsline {section}{Appendix: Proof of the Zonklar Equations}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{7}{}\protected@file@percent }
 \bibcite{tianCoevolutionaryFrameworkConstrained2021}{25}
 \bibcite{tranProteinDesignDirected}{26}
 \bibcite{wangSurveyLargeLanguage2025}{27}
