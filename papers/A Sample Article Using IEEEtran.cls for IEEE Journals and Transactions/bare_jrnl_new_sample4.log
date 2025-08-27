@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.25)  26 AUG 2025 15:06
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.25)  27 AUG 2025 17:18
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -331,36 +331,41 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 50.
  (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
+<paper_radar_chart.png, id=1, 246.6816pt x 199.7061pt>
+File: paper_radar_chart.png Graphic file (type png)
+<use paper_radar_chart.png>
+Package pdftex.def Info: paper_radar_chart.png  used on input line 59.
+(pdftex.def)             Requested size: 180.67499pt x 146.2718pt.
 
 
 
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 74.
+
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 75.
 (/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 ) [1{/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
 
-]
-Underfull \hbox (badness 2189) in paragraph at lines 85--86
+ <./paper_radar_chart.png>]
+
+
+Underfull \hbox (badness 2189) in paragraph at lines 94--95
 \OT1/ptm/b/n/10 Multi-Objective Gen-er-a-tion: \OT1/ptm/m/n/10 Ad-vanced frame-works ad-
  []
 
 
 
-
-
 [2]
-<model_pictures_01.png, id=15, 2890.8pt x 844.65562pt>
+
+<model_pictures_01.png, id=18, 2890.8pt x 844.65562pt>
 File: model_pictures_01.png Graphic file (type png)
 <use model_pictures_01.png>
-Package pdftex.def Info: model_pictures_01.png  used on input line 130.
+Package pdftex.def Info: model_pictures_01.png  used on input line 139.
 (pdftex.def)             Requested size: 252.94499pt x 73.90202pt.
 
-Overfull \hbox (0.94499pt too wide) in paragraph at lines 130--131
+Overfull \hbox (0.94499pt too wide) in paragraph at lines 139--140
  [][] 
  []
-
-
 
 
 
@@ -369,54 +374,61 @@ Overfull \hbox (0.94499pt too wide) in paragraph at lines 130--131
 
 
 [4]
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 229.
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 238.
  (/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
+
 LaTeX Info: Symbol \textdownarrow not provided by
             font family ptm in TS1 encoding.
-            Default family used instead on input line 248.
-
+            Default family used instead on input line 257.
 
 LaTeX Font Warning: Font shape `TS1/cmr/m/sc' undefined
 (Font)              using `TS1/cmr/m/n' instead
-(Font)              for symbol `textdownarrow' on input line 248.
+(Font)              for symbol `textdownarrow' on input line 257.
 
 LaTeX Info: Symbol \textuparrow not provided by
             font family ptm in TS1 encoding.
-            Default family used instead on input line 278.
+            Default family used instead on input line 287.
 LaTeX Info: Symbol \textdownarrow not provided by
             font family ptm in TS1 encoding.
-            Default family used instead on input line 278.
+            Default family used instead on input line 287.
 
-Overfull \hbox (4.74786pt too wide) in paragraph at lines 284--304
+Overfull \hbox (4.74786pt too wide) in paragraph at lines 293--313
  [][] 
  []
 
 
 
-
-
 [5{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
-Underfull \hbox (badness 1755) in paragraph at lines 368--369
+
+
+Underfull \hbox (badness 1755) in paragraph at lines 377--378
 []\OT1/ptm/m/n/10 To fur-ther val-i-date the ef-fec-tive-ness of FragGPT-GA,
  []
 
-
-
-<violin_comparison.png, id=36, 1437.4503pt x 713.7867pt>
+<violin_comparison.png, id=37, 1195.1049pt x 856.6404pt>
 File: violin_comparison.png Graphic file (type png)
 <use violin_comparison.png>
-Package pdftex.def Info: violin_comparison.png  used on input line 372.
-(pdftex.def)             Requested size: 516.0pt x 256.2224pt.
+Package pdftex.def Info: violin_comparison.png  used on input line 381.
+(pdftex.def)             Requested size: 516.0pt x 369.86446pt.
 
-Underfull \hbox (badness 1831) in paragraph at lines 380--381
+Underfull \hbox (badness 1831) in paragraph at lines 389--390
 []\OT1/ptm/m/n/10 We in-spect top-ranking molecules to un-der-stand how
  []
 
 
 
-[6] (./bare_jrnl_new_sample4.bbl
+[6]
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[7 <./violin_comparison.png>]
+
+(./bare_jrnl_new_sample4.bbl
 Underfull \hbox (badness 2617) in paragraph at lines 24--25
 []\OT1/ptm/m/n/8 J. H. Jensen, ``A graph-based ge-netic al-go-rithm and gen-er-a-tive
  []
@@ -424,15 +436,17 @@ Underfull \hbox (badness 2617) in paragraph at lines 24--25
 
 
 
+Package balance Warning: You have called \balance in second column
+(balance)                Columns might not be balanced.
+
+[8])
 
 
-Overfull \vbox (1.36334pt too high) has occurred while \output is active []
-
- [7 <./violin_comparison.png>])
 
 
+Overfull \vbox (1.73193pt too high) has occurred while \output is active []
 
-[8] (./bare_jrnl_new_sample4.aux)
+ [9] (./bare_jrnl_new_sample4.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -443,18 +457,18 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 4923 strings out of 473190
- 85888 string characters out of 5715806
- 498436 words of memory out of 5000000
- 28093 multiletter control sequences out of 15000+600000
+ 4931 strings out of 473190
+ 86105 string characters out of 5715806
+ 500458 words of memory out of 5000000
+ 28101 multiletter control sequences out of 15000+600000
  600383 words of font info for 117 fonts, out of 8000000 for 9000
  1145 hyphenation exceptions out of 8191
- 72i,11n,79p,1407b,401s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 72i,11n,79p,1632b,401s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on bare_jrnl_new_sample4.pdf (8 pages, 1624465 bytes).
+Output written on bare_jrnl_new_sample4.pdf (9 pages, 1771012 bytes).
 PDF statistics:
- 113 PDF objects out of 1000 (max. 8388607)
- 68 compressed objects within 1 object stream
+ 118 PDF objects out of 1000 (max. 8388607)
+ 70 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 11 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 16 words of extra memory for PDF output out of 10000 (max. 10000000)
 

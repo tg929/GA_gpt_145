@@ -101,8 +101,12 @@ def main():
     # 设置绘图风格
     plt.style.use('default')
     
-    # 创建子图 - 2行5列布局显示10种蛋白质
-    fig, axes = plt.subplots(2, 5, figsize=(20, 10))
+    # 设置全局字体为Times New Roman
+    plt.rcParams['font.family'] = 'Times New Roman'
+    plt.rcParams['font.size'] = 18
+    
+    # 创建子图 - 2行5列布局显示10种蛋白质 (按照IEEE论文标准尺寸)
+    fig, axes = plt.subplots(2, 5, figsize=(16, 10))
     axes = axes.flatten()  # 展平为一维数组便于索引
     
     # 定义颜色（与模型图保持一致的配色方案）
@@ -155,8 +159,8 @@ def main():
         
         # 设置子图属性
         ax.set_xticks(range(1, len(model_order) + 1))
-        ax.set_xticklabels(['AutoGrow4.0', 'RGA', 'FragGPT-GA'], fontsize=8, rotation=0)
-        ax.set_title(f'{protein.upper()}', fontsize=12, fontweight='bold', pad=10)
+        ax.set_xticklabels(['Auto', 'RGA', 'Ours'], fontsize=20, rotation=0, ha='center', fontfamily='Times New Roman')
+        ax.set_title(f'{protein.upper()}', fontsize=22, fontweight='normal', pad=15, fontfamily='Times New Roman')
         
         # 设置Y轴
         if len(protein_data) > 0:
@@ -164,46 +168,57 @@ def main():
             y_max = protein_data['Docking_Score'].max() + 0.5
             ax.set_ylim(y_min, y_max)
         
+        # 设置轴刻度标签字体
+        for label in ax.get_yticklabels():
+            label.set_fontfamily('Times New Roman')
+        for label in ax.get_xticklabels():
+            label.set_fontfamily('Times New Roman')
+        
         # 添加网格
         ax.grid(True, alpha=0.3, axis='y')
         ax.set_axisbelow(True)
         
-        # 只在左边列显示Y轴标签
-        if idx % 5 == 0:
-            ax.set_ylabel('Docking Score (kcal/mol)', fontsize=10)
+        # Y轴标签在后面统一设置
         
         # 添加TOP1统计信息（最佳分数，即最小值）
         stats_text = []
+        display_names = ['Auto', 'RGA', 'Ours']
         for i, model in enumerate(model_order):
             model_data = protein_data[protein_data['Model'] == model]['Docking_Score']
             if len(model_data) > 0:
                 top1_score = model_data.min()  # 对接分数越小越好，所以用min()
-                stats_text.append(f"{model[:4]}: {top1_score:.1f}")
+                stats_text.append(f"{display_names[i]}: {top1_score:.1f}")
         
         # 在右上角添加TOP1统计信息
         if stats_text:
             ax.text(0.98, 0.98, '\n'.join(stats_text), transform=ax.transAxes, 
-                    verticalalignment='top', horizontalalignment='right', fontsize=7,
+                    verticalalignment='top', horizontalalignment='right', fontsize=11,
                     bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8))
     
-    # 设置总标题
-    fig.suptitle('Docking Score Comparison Across Three Models for 10 Protein Targets', 
-                fontsize=16, fontweight='bold', y=0.95)
+    # 设置总标题（已移除）
+    # fig.suptitle('Docking Score Comparison Across Three Models for 10 Protein Targets', 
+    #             fontsize=16, fontweight='bold', y=0.95)
+    
+    # 添加全局Y轴标签（居中放置）
+    fig.text(0.02, 0.5, 'Docking Score (kcal/mol)', rotation=90, 
+             verticalalignment='center', horizontalalignment='center',
+             fontsize=28, fontfamily='Times New Roman')
     
     # 创建图例
+    legend_labels = ['Auto', 'RGA', 'Ours']
     legend_elements = [plt.Rectangle((0,0),1,1, facecolor=colors[i], alpha=0.7, 
-                                   edgecolor='black', label=model_order[i]) 
+                                   edgecolor='black', label=legend_labels[i]) 
                       for i in range(len(model_order))]
-    fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 0.02), 
-              ncol=3, fontsize=12)
+    fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 0.01), 
+              ncol=3, fontsize=24)
     
-    # 调整布局
+    # 调整布局 (紧凑布局，去除空白)
     plt.tight_layout()
-    plt.subplots_adjust(top=0.9, bottom=0.1, hspace=0.3, wspace=0.3)
+    plt.subplots_adjust(top=0.98, bottom=0.04, left=0.06, right=0.98, hspace=0.35, wspace=0.3)
     
-    # 保存图片
+    # 保存图片 (按IEEE论文标准)
     output_path = "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/violin_comparison.png"
-    plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
+    plt.savefig(output_path, dpi=300, bbox_inches='tight', pad_inches=0.5, facecolor='white', edgecolor='none')
     print(f"\nViolin plot saved to: {output_path}")
     
     # 显示图片
