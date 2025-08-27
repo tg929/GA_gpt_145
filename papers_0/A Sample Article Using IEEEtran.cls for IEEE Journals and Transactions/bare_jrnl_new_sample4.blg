@@ -1,0 +1,111 @@
+This is BibTeX, Version 0.99d (TeX Live 2025)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: bare_jrnl_new_sample4.aux
+The style file: IEEEtran.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: references_1.bib
+-- IEEEtran.bst version 1.14 (2015/08/26) by Michael Shell.
+-- http://www.michaelshell.org/tex/ieeetran/bibtex/
+-- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--empty journal in jensenGraphBasedGeneticAlgorithm2019
+Warning--empty year in jensenGraphBasedGeneticAlgorithm2019
+Warning--empty journal in nigamAugmentingGeneticAlgorithms2020
+Warning--empty year in nigamAugmentingGeneticAlgorithms2020
+Warning--empty journal in jinJunctionTreeVariational2018
+Warning--empty year in jinJunctionTreeVariational2018
+Warning--empty journal in olivecronaMolecularDeNovoDesign2017
+Warning--empty year in olivecronaMolecularDeNovoDesign2017
+Warning--empty journal in zhouOptimizationMolecularRep2019
+Warning--empty year in zhouOptimizationMolecularRep2019
+Warning--empty journal in jinMultiObjectiveMoleculeGeneration2020
+Warning--empty year in jinMultiObjectiveMoleculeGeneration2020
+Warning--empty journal in xieMARS2021
+Warning--empty year in xieMARS2021
+Warning--empty journal in luoGraph2022
+Warning--empty year in luoGraph2022
+Warning--empty journal in ahnGuidingDeepMolecular2020
+Warning--empty year in ahnGuidingDeepMolecular2020
+Warning--empty journal in spiegelAutoGrow4OpensourceGenetic2020
+Warning--empty year in spiegelAutoGrow4OpensourceGenetic2020
+Warning--empty journal in fuReinforcedGeneticAlgorithm
+Warning--empty year in fuReinforcedGeneticAlgorithm
+Warning--empty journal in sterlingZINCLigandDiscovery2015
+Warning--empty year in sterlingZINCLigandDiscovery2015
+Warning--empty journal in leeMoleculeGenerationFragment
+Warning--empty year in leeMoleculeGenerationFragment
+Warning--empty journal in abdelsayedAIDrivenPolypharmacologySmallMolecule2025
+Warning--empty year in abdelsayedAIDrivenPolypharmacologySmallMolecule2025
+Warning--empty journal in aiMTMolGPTNovoMultitarget2024
+Warning--empty year in aiMTMolGPTNovoMultitarget2024
+Warning--empty journal in cicirelloEvolutionaryComputationTheories2024
+Warning--empty year in cicirelloEvolutionaryComputationTheories2024
+Warning--empty journal in debFastElitistMultiobjective2002
+Warning--empty year in debFastElitistMultiobjective2002
+Warning--empty journal in fangAcceleratingMultiobjectiveOptimization2025
+Warning--empty year in fangAcceleratingMultiobjectiveOptimization2025
+Warning--empty journal in kadanGuidedMultiobjectiveGenerative2025
+Warning--empty year in kadanGuidedMultiobjectiveGenerative2025
+Warning--empty journal in khaterGenerativeArtificialIntelligence2025
+Warning--empty year in khaterGenerativeArtificialIntelligence2025
+Warning--empty journal in qingfuzhangMOEAMultiobjectiveEvolutionary2007
+Warning--empty year in qingfuzhangMOEAMultiobjectiveEvolutionary2007
+Warning--empty journal in tianCoevolutionaryFrameworkConstrained2021
+Warning--empty year in tianCoevolutionaryFrameworkConstrained2021
+Warning--empty journal in tranProteinDesignDirected
+Warning--empty year in tranProteinDesignDirected
+Warning--empty journal in xiaCMOMODeepMultiobjective2025
+Warning--empty year in xiaCMOMODeepMultiobjective2025
+Warning--empty journal in xiaEvolutionaryMultiobjectiveMolecule2024
+Warning--empty year in xiaEvolutionaryMultiobjectiveMolecule2024
+Warning--empty journal in yooPartWholeAIdriven2025
+Warning--empty year in yooPartWholeAIdriven2025
+Warning--empty journal in zhangDualStageDualPopulationAlgorithm2025
+Warning--empty year in zhangDualStageDualPopulationAlgorithm2025
+
+Done.
+You've used 33 entries,
+            4087 wiz_defined-function locations,
+            1011 strings with 15858 characters,
+and the built_in function-call counts, 23699 in all, are:
+= -- 1810
+> -- 716
+< -- 178
++ -- 386
+- -- 154
+* -- 1244
+:= -- 3422
+add.period$ -- 66
+call.type$ -- 33
+change.case$ -- 33
+chr.to.int$ -- 354
+cite$ -- 87
+duplicate$ -- 1730
+empty$ -- 1675
+format.name$ -- 172
+if$ -- 5389
+int.to.chr$ -- 0
+int.to.str$ -- 33
+missing$ -- 346
+newline$ -- 162
+num.names$ -- 33
+pop$ -- 920
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 2
+skip$ -- 1750
+stack$ -- 0
+substring$ -- 985
+swap$ -- 1399
+text.length$ -- 60
+text.prefix$ -- 0
+top$ -- 5
+type$ -- 33
+warning$ -- 54
+while$ -- 92
+width$ -- 35
+write$ -- 340
+(There were 54 warnings)
