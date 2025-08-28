@@ -496,7 +496,7 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             generation (int): 当前代数。
             
         Returns:
-            Optional[str]: 成功则返回子代对接结果文件路径，失败则返回None。
+            Optional[str]: 成功则返回子代对接结果文件路径 失败则返回None。
         """
         logger.info(f"第 {generation} 代: 开始子代评估...")
         gen_dir = self.output_dir / f"generation_{generation}"

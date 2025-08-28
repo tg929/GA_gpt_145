@@ -1,0 +1,89 @@
+\relax 
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Multi-objective performance comparison across key baseline methods. FragGPT-GA demonstrates superior performance with better balance across all metrics: binding affinity, drug-likeness (QED), synthetic accessibility, and novelty. The radar chart illustrates that FragGPT-GA achieves the best overall performance profile compared to RGA, AutoGrow4.0, and MARS baselines.}}{1}{}\protected@file@percent }
+\newlabel{fig:radar_comparison}{{1}{1}{}{figure.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{1}{}\protected@file@percent }
+\citation{jensenGraphBasedGeneticAlgorithm2019}
+\citation{nigamAugmentingGeneticAlgorithms2020}
+\citation{jinJunctionTreeVariational2018}
+\citation{olivecronaMolecularDeNovoDesign2017}
+\citation{zhouOptimizationMolecularRep2019}
+\citation{jinMultiObjectiveMoleculeGeneration2020}
+\citation{xieMARS2021}
+\citation{luoGraph2022}
+\citation{ahnGuidingDeepMolecular2020}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Evolutionary Algorithms in Molecular Optimization}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Deep Generative Models for Molecular Design}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Hybrid and Multi-Strategy Approaches}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}Fragment-Based Molecular Design}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {III}The Proposed FragGPT-GA}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Framework Overview}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Fragment-Based GPT and Dynamic Masking}{3}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The iterative workflow of the proposed FragGPT-GA framework. The process synergizes a Genetic Algorithm (GA) for optimization with a Generative Pre-trained Transformer (GPT) for diversity expansion, featuring dynamic fragment masking and multi-objective selection.}}{4}{}\protected@file@percent }
+\newlabel{fig:flowchart}{{2}{4}{}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Population-Aware Genetic Operations}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Multi-Objective Fitness Evaluation and Optimization}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-E}}Pareto-Optimal Selection via NSGA-II}{4}{}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces FragGPT-GA Complete Framework}}{5}{}\protected@file@percent }
+\newlabel{alg:frag-gpt-ga}{{1}{5}{}{algorithm.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-F}}Algorithmic Implementation and Computational Efficiency}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Experimental Setup}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Datasets and Docking Protocol}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Evaluation Metrics}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {V}Results and Discussion}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Performance Comparison}{5}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Docking Score Comparison (kcal/mol, ↓ better)}}{6}{}\protected@file@percent }
+\newlabel{tab:docking_scores}{{I}{6}{}{table.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Diversity and Drug-likeness Metrics (↑ better except SA ↓ better)}}{6}{}\protected@file@percent }
+\newlabel{tab:diversity_metrics}{{II}{6}{}{table.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Generalization Across Multiple Protein Targets}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Ablation Studies}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}1}Selection Strategy Comparison}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Protein-specific docking score comparison across three models. Each subplot represents one protein target, with three violin plots showing the distribution of docking scores for AutoGrow4.0 (green/Auto), RGA (pink), and FragGPT-GA (blue/Ours). The violin plots display both population density and individual data points with statistical overlays (red lines: means, blue lines: medians). The top-right corner of each subplot shows the best docking score (TOP1) achieved by each model for that specific protein target. FragGPT-GA consistently demonstrates superior performance across most protein targets, achieving the best TOP1 scores while maintaining population diversity.}}{7}{}\protected@file@percent }
+\newlabel{fig:violin_comparison}{{3}{7}{}{figure.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Ablation Study: Selection Strategy Comparison}}{7}{}\protected@file@percent }
+\newlabel{tab:selection_ablation}{{III}{7}{}{table.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-C}2}Component Contribution Analysis}{7}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Per-target iterative optimization of docking scores across generations for AutoGrow4.0 (green/Auto) and FragGPT-GA (blue/Ours). Each subplot corresponds to one protein target. The y-axis shows the best docking score (lower is better) achieved in each generation, illustrating the optimization dynamics and convergence behavior of both methods.}}{8}{}\protected@file@percent }
+\newlabel{fig:linewave_iterations}{{4}{8}{}{figure.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Case Study of Generated Molecules}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{8}{}\protected@file@percent }
+\citation{*}
+\bibstyle{IEEEtran}
+\bibdata{references_1}
+\bibcite{jensenGraphBasedGeneticAlgorithm2019}{1}
+\bibcite{nigamAugmentingGeneticAlgorithms2020}{2}
+\bibcite{jinJunctionTreeVariational2018}{3}
+\bibcite{olivecronaMolecularDeNovoDesign2017}{4}
+\bibcite{zhouOptimizationMolecularRep2019}{5}
+\bibcite{jinMultiObjectiveMoleculeGeneration2020}{6}
+\bibcite{xieMARS2021}{7}
+\bibcite{luoGraph2022}{8}
+\bibcite{ahnGuidingDeepMolecular2020}{9}
+\bibcite{fuReinforcedGeneticAlgorithm}{10}
+\bibcite{sterlingZINCLigandDiscovery2015}{11}
+\bibcite{leeMoleculeGenerationFragment}{12}
+\bibcite{spiegelAutoGrow4OpensourceGenetic2020}{13}
+\bibcite{abdelsayedAIDrivenPolypharmacologySmallMolecule2025}{14}
+\bibcite{aiMTMolGPTNovoMultitarget2024}{15}
+\bibcite{cerveiraEvaluationFrameworkAIdriven2024}{16}
+\bibcite{cicirelloEvolutionaryComputationTheories2024}{17}
+\bibcite{debFastElitistMultiobjective2002}{18}
+\bibcite{fangAcceleratingMultiobjectiveOptimization2025}{19}
+\@writefile{toc}{\contentsline {section}{Appendix: Proof of the Zonklar Equations}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{9}{}\protected@file@percent }
+\bibcite{huangEvoXDistributedGPUaccelerated2024}{20}
+\bibcite{kadanGuidedMultiobjectiveGenerative2025}{21}
+\bibcite{khaterGenerativeArtificialIntelligence2025}{22}
+\bibcite{meyersFragGTFragmentbasedEvolutionary2024}{23}
+\bibcite{qingfuzhangMOEAMultiobjectiveEvolutionary2007}{24}
+\bibcite{tianCoevolutionaryFrameworkConstrained2021}{25}
+\bibcite{tranProteinDesignDirected}{26}
+\bibcite{wangSurveyLargeLanguage2025}{27}
+\bibcite{wangWhenLargeLanguage2025}{28}
+\bibcite{wuEvolutionaryComputationEra2024}{29}
+\bibcite{xiaCMOMODeepMultiobjective2025}{30}
+\bibcite{xiaEvolutionaryMultiobjectiveMolecule2024}{31}
+\bibcite{yooPartWholeAIdriven2025}{32}
+\bibcite{zhangDualStageDualPopulationAlgorithm2025}{33}
+\gdef \@abspage@last{10}
