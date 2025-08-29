@@ -37,7 +37,8 @@ def parse_score_from_line(line: str, preferred_index: int) -> float:
 
 
 def collect_generation_scores(protein_dir: Path, pattern: str, gen_regex: re.Pattern,
-                              score_col_index: int, allow_nested: bool = False) -> Dict[int, List[float]]:
+                              score_col_index: int, allow_nested: bool = False,
+                              max_per_file: int = None) -> Dict[int, List[float]]:
     files = sorted(protein_dir.glob(pattern))
     if allow_nested:
         for d in sorted([d for d in protein_dir.glob('generation_*') if d.is_dir()]):
@@ -69,6 +70,7 @@ def collect_generation_scores(protein_dir: Path, pattern: str, gen_regex: re.Pat
         scores: List[float] = []
         try:
             with fpath.open('r') as f:
+                count = 0
                 for raw in f:
                     raw = raw.strip()
                     if not raw:
@@ -78,6 +80,9 @@ def collect_generation_scores(protein_dir: Path, pattern: str, gen_regex: re.Pat
                         scores.append(s)
                     except Exception:
                         continue
+                    count += 1
+                    if max_per_file is not None and count >= max_per_file:
+                        break
         except Exception as e:
             print(f"Warning: failed reading {fpath}: {e}")
             continue
@@ -141,7 +146,12 @@ def main():
                 gen_re,
                 score_col_index_map[model],
                 allow_nested=nested,
+                max_per_file=(110 if model == "FragGPT-GA" else None),
             )
+            if not scores_by_gen:
+                continue
+            # 仅保留 1..target_end_gen 代
+            scores_by_gen = {g: v for g, v in scores_by_gen.items() if 1 <= g <= target_end_gen}
             if not scores_by_gen:
                 continue
             gens = sorted(scores_by_gen.keys())

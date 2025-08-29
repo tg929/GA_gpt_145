@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex bare_jrnl_new_sample4"] 1756448365.48476 "bare_jrnl_new_sample4.aux" "bare_jrnl_new_sample4.bbl" "bare_jrnl_new_sample4" 1756448371.14448 0
+["bibtex bare_jrnl_new_sample4"] 1756448365.48476 "bare_jrnl_new_sample4.aux" "bare_jrnl_new_sample4.bbl" "bare_jrnl_new_sample4" 1756449263.139 0
   "./references_1.bib" 1756312620.94583 16766 9a98c96fc37851edaa6101d19160f44a ""
   "/usr/local/texlive/2025/texmf-dist/bibtex/bst/ieeetran/IEEEtran.bst" 1440712899 57748 7c8250ecf02814ce6ddc0cdbb63df1dd ""
-  "bare_jrnl_new_sample4.aux" 1756448370.82729 8944 7ba207b3b65ff9eddb2c6aef8be33ba0 "pdflatex"
+  "bare_jrnl_new_sample4.aux" 1756449262.75535 8944 7ba207b3b65ff9eddb2c6aef8be33ba0 "pdflatex"
   (generated)
   "bare_jrnl_new_sample4.bbl"
   "bare_jrnl_new_sample4.blg"
   (rewritten before read)
-["pdflatex"] 1756448365.64553 "/data1/ytg/medium_models/GA_gpt/Overleaf Projects/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms/bare_jrnl_new_sample4.tex" "bare_jrnl_new_sample4.pdf" "bare_jrnl_new_sample4" 1756448371.14473 0
+["pdflatex"] 1756449257.42114 "/data1/ytg/medium_models/GA_gpt/Overleaf Projects/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms/bare_jrnl_new_sample4.tex" "bare_jrnl_new_sample4.pdf" "bare_jrnl_new_sample4" 1756449263.13925 0
   "/data1/ytg/medium_models/GA_gpt/Overleaf Projects/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms/bare_jrnl_new_sample4.tex" 1756447465.94759 51328 8f03f2317d07e08fc76836b8cd9462ac ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
@@ -108,11 +108,11 @@
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1756102751 3345754 4f73532846c2a9db5b596a86d06761da ""
   "/usr/local/texlive/2025/texmf.cnf" 1756102458.05111 455 5b996dcaa0eb4ef14a83b026bc0a008c ""
   "IEEEtran.cls" 1756312620.96483 282108 7379a03af5f3d0dad26db23a43c3a726 ""
-  "bare_jrnl_new_sample4.aux" 1756448370.82729 8944 7ba207b3b65ff9eddb2c6aef8be33ba0 "pdflatex"
+  "bare_jrnl_new_sample4.aux" 1756449262.75535 8944 7ba207b3b65ff9eddb2c6aef8be33ba0 "pdflatex"
   "bare_jrnl_new_sample4.bbl" 1756448365.64035 10240 de2bda8aee97180eba5f050f75c916a4 "bibtex bare_jrnl_new_sample4"
   "bare_jrnl_new_sample4.tex" 1756447465.94759 51328 8f03f2317d07e08fc76836b8cd9462ac ""
   "linewave_iterations.png" 1756448359.51443 744615 da1c34a33c03ec877c1be16ea675f54e ""
-  "linewave_meanstd.png" 1756447909.5547 1139600 1aeab520dae984b786bb279e3b2a20a0 ""
+  "linewave_meanstd.png" 1756449256.81943 1130692 b1f61f09b86bb6c8fd1158c022b51d9b ""
   "model.png" 1756312620.90783 129747 66870e738875b1a798aaa567c650223d ""
   "radar.png" 1756312621.01983 401920 74586650f6fc80066702b50021c0f4ea ""
   "violin_new_new.png" 1756312621.24283 1366970 8673837a0d0e356d169ae5eab76ae9fe ""

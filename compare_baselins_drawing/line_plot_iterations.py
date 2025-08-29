@@ -217,6 +217,8 @@ def main():
                 print(f"Warning: missing protein dir for {model}: {pdir}")
                 continue
             gen_scores = collect_generation_best_scores(pdir, pattern, gen_re, score_idx, allow_nested=nested)
+            # 仅保留第 1-20 代
+            gen_scores = [(g, s) for (g, s) in gen_scores if 1 <= g <= 20]
             if not gen_scores:
                 print(f"Warning: no generation scores for {model}/{protein}")
                 continue
