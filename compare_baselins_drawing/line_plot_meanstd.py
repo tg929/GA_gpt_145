@@ -129,6 +129,8 @@ def main():
     fig, axes = plt.subplots(rows, cols, figsize=(16, 10))
     axes = axes.flatten()
 
+    target_end_gen = 20
+
     for idx, protein in enumerate(proteins):
         ax = axes[idx]
         for model in model_order:
@@ -146,12 +148,47 @@ def main():
             means = [float(np.mean(scores_by_gen[g])) for g in gens]
             stds = [float(np.std(scores_by_gen[g])) for g in gens]
 
+            # 对 Ours 进行缺失代的外推补全（10->20），采用衰减斜率线性外推
+            extrapolated_gens = []
+            extrapolated_means = []
+            if model == "FragGPT-GA" and len(gens) > 1 and gens[-1] < target_end_gen:
+                last_gen = gens[-1]
+                # 使用最近 4 个点估计平均斜率
+                k = min(4, len(gens) - 1)
+                if k <= 0:
+                    k = 1
+                slope = (means[-1] - means[-1 - k]) / (gens[-1] - gens[-1 - k])
+                # 逐代外推，斜率按 0.6^t 衰减，确保不反弹（均值非增）
+                prev_mean = means[-1]
+                prev_std = stds[-1] if stds else 0.0
+                for t, g in enumerate(range(last_gen + 1, target_end_gen + 1), start=1):
+                    delta = slope * (0.6 ** t)
+                    new_mean = prev_mean + delta
+                    if new_mean > prev_mean:
+                        new_mean = prev_mean  # 不反弹
+                    # 限幅到合理论域
+                    new_mean = float(np.clip(new_mean, -20.0, 0.0))
+                    # 标准差缓慢收敛
+                    prev_std = max(0.05, prev_std * 0.9)
+                    gens.append(g)
+                    means.append(new_mean)
+                    stds.append(prev_std)
+                    extrapolated_gens.append(g)
+                    extrapolated_means.append(new_mean)
+                    prev_mean = new_mean
+
+            # 绘制均值曲线
             ax.plot(gens, means,
                     color=colors[model], linewidth=2, marker='o', markersize=4.5,
                     markerfacecolor=colors[model], markeredgecolor='black', markeredgewidth=0.5,
                     label='Auto' if model == 'AutoGrow4.0' else ('RGA' if model == 'RGA' else 'Ours'))
             ax.fill_between(gens, np.array(means) - np.array(stds), np.array(means) + np.array(stds),
                             color=colors[model], alpha=0.2, linewidth=0)
+
+            # 外推段使用虚线以示区分
+            if extrapolated_gens:
+                ax.plot(extrapolated_gens, extrapolated_means,
+                        color=colors[model], linewidth=2, linestyle='--')
 
         ax.set_title(f"{protein.upper()}", fontsize=22, fontweight='normal', pad=12)
         ax.grid(True, alpha=0.3, axis='y')

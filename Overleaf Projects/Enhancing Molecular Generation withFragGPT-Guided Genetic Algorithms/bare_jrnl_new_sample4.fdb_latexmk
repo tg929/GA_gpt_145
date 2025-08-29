@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex bare_jrnl_new_sample4"] 1756438668.61705 "bare_jrnl_new_sample4.aux" "bare_jrnl_new_sample4.bbl" "bare_jrnl_new_sample4" 1756440552.25286 0
+["bibtex bare_jrnl_new_sample4"] 1756448365.48476 "bare_jrnl_new_sample4.aux" "bare_jrnl_new_sample4.bbl" "bare_jrnl_new_sample4" 1756448371.14448 0
   "./references_1.bib" 1756312620.94583 16766 9a98c96fc37851edaa6101d19160f44a ""
   "/usr/local/texlive/2025/texmf-dist/bibtex/bst/ieeetran/IEEEtran.bst" 1440712899 57748 7c8250ecf02814ce6ddc0cdbb63df1dd ""
-  "bare_jrnl_new_sample4.aux" 1756440551.88529 8478 b58ed04c3145af3988760424a741015a "pdflatex"
+  "bare_jrnl_new_sample4.aux" 1756448370.82729 8944 7ba207b3b65ff9eddb2c6aef8be33ba0 "pdflatex"
   (generated)
   "bare_jrnl_new_sample4.bbl"
   "bare_jrnl_new_sample4.blg"
   (rewritten before read)
-["pdflatex"] 1756440547.9038 "/data1/ytg/medium_models/GA_gpt/Overleaf Projects/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms/bare_jrnl_new_sample4.tex" "bare_jrnl_new_sample4.pdf" "bare_jrnl_new_sample4" 1756440552.25307 0
-  "/data1/ytg/medium_models/GA_gpt/Overleaf Projects/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms/bare_jrnl_new_sample4.tex" 1756438667.697 50818 94835b4f1d883859e5d32589c672cc2d ""
+["pdflatex"] 1756448365.64553 "/data1/ytg/medium_models/GA_gpt/Overleaf Projects/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms/bare_jrnl_new_sample4.tex" "bare_jrnl_new_sample4.pdf" "bare_jrnl_new_sample4" 1756448371.14473 0
+  "/data1/ytg/medium_models/GA_gpt/Overleaf Projects/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms/bare_jrnl_new_sample4.tex" 1756447465.94759 51328 8f03f2317d07e08fc76836b8cd9462ac ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -50,8 +50,10 @@
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb" 1248133631 36281 c355509802a035cadc5f15869451dcee ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1248133631 35752 024fb6c41858982481f6968b5fc26508 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb" 1248133631 32762 224316ccc9ad3ca0423a14971cfa7fc1 ""
+  "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb" 1248133631 32726 0a1aea6fcd6468ee2cf64d891f5c43c8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1248133631 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb" 1248133631 32716 08e384dc442464e7285e891af9f45947 ""
+  "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb" 1248133631 32626 4f5c1b83753b1dd3a97d1b399a005b4b ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb" 1248133631 32442 c975af247b6702f7ca0c299af3616b80 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb" 1215737283 164227 3df942b4ff2124425d8fb1b6d3e01c7a ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb" 1136849748 45758 19968a0990191524e34e1994d4a31cb6 ""
@@ -106,10 +108,11 @@
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1756102751 3345754 4f73532846c2a9db5b596a86d06761da ""
   "/usr/local/texlive/2025/texmf.cnf" 1756102458.05111 455 5b996dcaa0eb4ef14a83b026bc0a008c ""
   "IEEEtran.cls" 1756312620.96483 282108 7379a03af5f3d0dad26db23a43c3a726 ""
-  "bare_jrnl_new_sample4.aux" 1756440551.88529 8478 b58ed04c3145af3988760424a741015a "pdflatex"
-  "bare_jrnl_new_sample4.bbl" 1756438668.74099 10240 de2bda8aee97180eba5f050f75c916a4 "bibtex bare_jrnl_new_sample4"
-  "bare_jrnl_new_sample4.tex" 1756438667.697 50818 94835b4f1d883859e5d32589c672cc2d ""
-  "linewave_iterations.png" 1756440547.46735 741123 bc1ef577d421dfd513afba7978d68186 ""
+  "bare_jrnl_new_sample4.aux" 1756448370.82729 8944 7ba207b3b65ff9eddb2c6aef8be33ba0 "pdflatex"
+  "bare_jrnl_new_sample4.bbl" 1756448365.64035 10240 de2bda8aee97180eba5f050f75c916a4 "bibtex bare_jrnl_new_sample4"
+  "bare_jrnl_new_sample4.tex" 1756447465.94759 51328 8f03f2317d07e08fc76836b8cd9462ac ""
+  "linewave_iterations.png" 1756448359.51443 744615 da1c34a33c03ec877c1be16ea675f54e ""
+  "linewave_meanstd.png" 1756447909.5547 1139600 1aeab520dae984b786bb279e3b2a20a0 ""
   "model.png" 1756312620.90783 129747 66870e738875b1a798aaa567c650223d ""
   "radar.png" 1756312621.01983 401920 74586650f6fc80066702b50021c0f4ea ""
   "violin_new_new.png" 1756312621.24283 1366970 8673837a0d0e356d169ae5eab76ae9fe ""

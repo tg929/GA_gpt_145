@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.25)  29 AUG 2025 12:09
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.25)  29 AUG 2025 14:19
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -413,17 +413,22 @@ File: linewave_iterations.png Graphic file (type png)
 <use linewave_iterations.png>
 Package pdftex.def Info: linewave_iterations.png  used on input line 323.
 (pdftex.def)             Requested size: 516.0pt x 336.73254pt.
+<linewave_meanstd.png, id=37, 1153.1883pt x 759.5577pt>
+File: linewave_meanstd.png Graphic file (type png)
+<use linewave_meanstd.png>
+Package pdftex.def Info: linewave_meanstd.png  used on input line 331.
+(pdftex.def)             Requested size: 516.0pt x 339.88547pt.
 
 
 [6{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
 
 
-LaTeX Warning: Reference `fig:convergence' on page 7 undefined on input line 382.
+LaTeX Warning: Reference `fig:convergence' on page 7 undefined on input line 390.
 
 
 
 [7 <./violin_new_new.png>]
-Underfull \hbox (badness 1831) in paragraph at lines 393--394
+Underfull \hbox (badness 1831) in paragraph at lines 401--402
 []\OT1/ptm/m/n/10 We in-spect top-ranking molecules to un-der-stand how
  []
 
@@ -432,9 +437,18 @@ Underfull \hbox (badness 1831) in paragraph at lines 393--394
 
 
 [8 <./linewave_iterations.png>]
+Underfull \vbox (badness 2384) has occurred while \output is active []
 
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 418.
-(/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[9 <./linewave_meanstd.png>]
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 426.
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 ) (./bare_jrnl_new_sample4.bbl
 Underfull \hbox (badness 2617) in paragraph at lines 24--25
@@ -443,13 +457,7 @@ Underfull \hbox (badness 2617) in paragraph at lines 24--25
 
 
 
-
-Package balance Warning: You have called \balance in second column
-(balance)                Columns might not be balanced.
-
-[9])
-
-
+)
 
 [10] (./bare_jrnl_new_sample4.aux)
  ***********
@@ -465,18 +473,18 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 4939 strings out of 473190
- 86177 string characters out of 5715806
- 501460 words of memory out of 5000000
- 28109 multiletter control sequences out of 15000+600000
+ 4947 strings out of 473190
+ 86387 string characters out of 5715806
+ 519661 words of memory out of 5000000
+ 28117 multiletter control sequences out of 15000+600000
  600383 words of font info for 117 fonts, out of 8000000 for 9000
  1145 hyphenation exceptions out of 8191
  72i,11n,79p,1641b,401s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on bare_jrnl_new_sample4.pdf (10 pages, 2348370 bytes).
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on bare_jrnl_new_sample4.pdf (10 pages, 3202783 bytes).
 PDF statistics:
- 123 PDF objects out of 1000 (max. 8388607)
- 72 compressed objects within 1 object stream
+ 135 PDF objects out of 1000 (max. 8388607)
+ 78 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 21 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 26 words of extra memory for PDF output out of 10000 (max. 10000000)
 
