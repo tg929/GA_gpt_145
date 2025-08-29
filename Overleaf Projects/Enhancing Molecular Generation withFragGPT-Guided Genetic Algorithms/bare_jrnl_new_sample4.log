@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.25)  28 AUG 2025 19:31
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.25)  29 AUG 2025 12:09
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -408,11 +408,11 @@ File: violin_new_new.png Graphic file (type png)
 <use violin_new_new.png>
 Package pdftex.def Info: violin_new_new.png  used on input line 315.
 (pdftex.def)             Requested size: 516.0pt x 354.26276pt.
-<linewave_iterations.png, id=36, 1196.5503pt x 781.2387pt>
+<linewave_iterations.png, id=36, 1138.4934pt x 742.9356pt>
 File: linewave_iterations.png Graphic file (type png)
 <use linewave_iterations.png>
 Package pdftex.def Info: linewave_iterations.png  used on input line 323.
-(pdftex.def)             Requested size: 516.0pt x 336.9036pt.
+(pdftex.def)             Requested size: 516.0pt x 336.73254pt.
 
 
 [6{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
@@ -473,7 +473,7 @@ Here is how much of TeX's memory you used:
  1145 hyphenation exceptions out of 8191
  72i,11n,79p,1641b,401s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on bare_jrnl_new_sample4.pdf (10 pages, 2309354 bytes).
+Output written on bare_jrnl_new_sample4.pdf (10 pages, 2348370 bytes).
 PDF statistics:
  123 PDF objects out of 1000 (max. 8388607)
  72 compressed objects within 1 object stream

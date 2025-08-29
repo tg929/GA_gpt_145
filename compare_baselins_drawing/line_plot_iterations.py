@@ -150,18 +150,21 @@ def main():
     model_dirs = {
         "AutoGrow4.0": base_dir / "autogrow",
         "FragGPT-GA": base_dir / "ours",
+        "RGA": base_dir / "RGA",
     }
 
     # 期望的分数列索引（与 violin_plot_comparison.py 中保持一致）
     score_col_index_map = {
         "AutoGrow4.0": 4,  # 第5列
         "FragGPT-GA": 1,   # 第2列
+        "RGA": 2,          # 第3列（预览结果文件：SMILES, ID, SCORE, [files]）
     }
 
     # 文件名与正则
     file_pattern_map = {
         "AutoGrow4.0": ("generation_*_ranked.smi", re.compile(r"^generation_(\d+)_ranked\.smi$"), False),
         "FragGPT-GA": ("generation_*.smi", re.compile(r"^generation_(\d+)"), True),
+        "RGA": ("results_gen*_*.txt", re.compile(r"^results_gen(\d+)_.*\.txt$"), False),
     }
 
     # 统一的蛋白质列表（取两个模型目录交集，确保每个子图都有两条曲线或至少一条）
@@ -185,10 +188,11 @@ def main():
     plt.rcParams['font.size'] = 18
 
     # 颜色与模型顺序（与小提琴图保持视觉一致：Auto 绿色，Ours 蓝色）
-    model_order = ["AutoGrow4.0", "FragGPT-GA"]
+    model_order = ["AutoGrow4.0", "RGA", "FragGPT-GA"]
     line_colors = {
-        "AutoGrow4.0": "#C5E0B4",  # 浅绿
-        "FragGPT-GA": "#9DC3E6",   # 浅蓝
+        "AutoGrow4.0": "#C5E0B4",  # 浅绿（与小提琴图一致）
+        "RGA": "#F4B6C2",         # 粉色（与论文描述一致）
+        "FragGPT-GA": "#9DC3E6",   # 浅蓝（与小提琴图/论文一致）
     }
 
     # 创建 2x5 子图布局
@@ -251,6 +255,12 @@ def main():
             pad = 0.5
             ax.set_ylim(y_min - pad, y_max + pad)
 
+        # 固定横轴刻度为 1、10、20
+        try:
+            ax.set_xticks([1, 10, 20])
+        except Exception:
+            pass
+
         # 字体
         for label in ax.get_xticklabels():
             label.set_fontfamily('Times New Roman')
@@ -259,7 +269,7 @@ def main():
 
         # 右上角 TOP1（全代最优）注释
         stats_text = []
-        label_map = {"AutoGrow4.0": "Auto", "FragGPT-GA": "Ours"}
+        label_map = {"AutoGrow4.0": "Auto", "RGA": "RGA", "FragGPT-GA": "Ours"}
         for model in model_order:
             # 找到对应曲线的数据
             for line in ax.get_lines():
@@ -299,7 +309,7 @@ def main():
     fig.text(
         0.5,
         0.01,
-        'Generation',
+        'Generations',
         va='center',
         ha='center',
         fontsize=24,
@@ -311,6 +321,9 @@ def main():
         plt.Line2D([0], [0], color=line_colors['AutoGrow4.0'], lw=3, marker='o', markersize=6,
                    markerfacecolor=line_colors['AutoGrow4.0'], markeredgecolor='black', markeredgewidth=0.5,
                    label='Auto'),
+        plt.Line2D([0], [0], color=line_colors['RGA'], lw=3, marker='o', markersize=6,
+                   markerfacecolor=line_colors['RGA'], markeredgecolor='black', markeredgewidth=0.5,
+                   label='RGA'),
         plt.Line2D([0], [0], color=line_colors['FragGPT-GA'], lw=3, marker='o', markersize=6,
                    markerfacecolor=line_colors['FragGPT-GA'], markeredgecolor='black', markeredgewidth=0.5,
                    label='Ours'),
@@ -318,19 +331,19 @@ def main():
     fig.legend(
         handles=legend_elements,
         loc='upper center',
-        bbox_to_anchor=(0.5, 0.99),
-        ncol=2,
+        bbox_to_anchor=(0.5, 1.017),
+        ncol=3,
         fontsize=20,
     )
 
     plt.tight_layout()
-    plt.subplots_adjust(top=0.93, bottom=0.06, left=0.08, right=0.98, hspace=0.35, wspace=0.3)
+    plt.subplots_adjust(top=0.88, bottom=0.06, left=0.06, right=0.98, hspace=0.25, wspace=0.3)
 
     # 保存图片
     out_dir = Path('/data1/ytg/medium_models/GA_gpt/Overleaf Projects/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms')
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / 'linewave_iterations.png'
-    plt.savefig(str(out_path), dpi=300, bbox_inches='tight', pad_inches=0.5, facecolor='white', edgecolor='none')
+    plt.savefig(str(out_path), dpi=300, bbox_inches='tight', pad_inches=0.1, facecolor='white', edgecolor='none')
     print(f"Saved figure to: {out_path}")
 
     # 交互环境下可显示
