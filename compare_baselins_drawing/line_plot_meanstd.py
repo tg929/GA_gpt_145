@@ -146,7 +146,7 @@ def main():
                 gen_re,
                 score_col_index_map[model],
                 allow_nested=nested,
-                max_per_file=(110 if model == "FragGPT-GA" else None),
+                max_per_file=(100 if model == "FragGPT-GA" else None),
             )
             if not scores_by_gen:
                 continue

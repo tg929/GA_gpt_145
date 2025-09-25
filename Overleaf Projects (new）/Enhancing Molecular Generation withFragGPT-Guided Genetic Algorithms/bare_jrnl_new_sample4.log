@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.25)  19 SEP 2025 12:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.25)  25 SEP 2025 13:39
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**"/data1/ytg/medium_models/GA_gpt/Overleaf Projects/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms/bare_jrnl_new_sample4.tex"
-(/data1/ytg/medium_models/GA_gpt/Overleaf Projects/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms/bare_jrnl_new_sample4.tex
+**"/data1/ytg/medium_models/GA_gpt/Overleaf Projects (new）/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms/bare_jrnl_new_sample4.tex"
+(/data1/ytg/medium_models/GA_gpt/Overleaf Projects (new）/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms/bare_jrnl_new_sample4.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (./IEEEtran.cls
@@ -362,11 +362,11 @@ Underfull \hbox (badness 2189) in paragraph at lines 94--95
 
 [2]
 
-<model.png, id=18, 928.4286pt x 257.763pt>
-File: model.png Graphic file (type png)
-<use model.png>
-Package pdftex.def Info: model.png  used on input line 133.
-(pdftex.def)             Requested size: 516.0pt x 143.26468pt.
+<model.pdf, id=18, 882.05536pt x 256.07669pt>
+File: model.pdf Graphic file (type pdf)
+<use model.pdf>
+Package pdftex.def Info: model.pdf  used on input line 133.
+(pdftex.def)             Requested size: 516.0pt x 149.81012pt.
 
 Underfull \hbox (badness 2376) in paragraph at lines 140--141
 []\OT1/ptm/m/n/10 FragGPT-GA op-er-ates by first rep-re-sent-ing molecules
@@ -378,7 +378,7 @@ Underfull \hbox (badness 2376) in paragraph at lines 140--141
 
 
 
-[4 <./model.png>]
+[4 <./model.pdf>]
 
 LaTeX Info: Symbol \textdownarrow not provided by
             font family ptm in TS1 encoding.
@@ -403,51 +403,34 @@ Overfull \hbox (4.74786pt too wide) in paragraph at lines 281--301
 
 [5]
 
-<violin_new_new.png, id=35, 1195.1049pt x 820.5054pt>
+<violin_new_new.png, id=72, 1195.1049pt x 820.5054pt>
 File: violin_new_new.png Graphic file (type png)
 <use violin_new_new.png>
 Package pdftex.def Info: violin_new_new.png  used on input line 315.
 (pdftex.def)             Requested size: 516.0pt x 354.26276pt.
-<linewave_iterations.png, id=36, 1138.4934pt x 742.9356pt>
-File: linewave_iterations.png Graphic file (type png)
-<use linewave_iterations.png>
-Package pdftex.def Info: linewave_iterations.png  used on input line 323.
-(pdftex.def)             Requested size: 516.0pt x 336.73254pt.
-<linewave_meanstd.png, id=37, 1153.1883pt x 759.5577pt>
-File: linewave_meanstd.png Graphic file (type png)
-<use linewave_meanstd.png>
-Package pdftex.def Info: linewave_meanstd.png  used on input line 331.
-(pdftex.def)             Requested size: 516.0pt x 339.88547pt.
 
 
 [6{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
 
 
-LaTeX Warning: Reference `fig:convergence' on page 7 undefined on input line 390.
+LaTeX Warning: Reference `fig:convergence' on page 7 undefined on input line 422.
 
 
-
-[7 <./violin_new_new.png>]
-Underfull \hbox (badness 1831) in paragraph at lines 401--402
+Underfull \hbox (badness 1831) in paragraph at lines 433--434
 []\OT1/ptm/m/n/10 We in-spect top-ranking molecules to un-der-stand how
  []
-
-
-
-
-
-[8 <./linewave_iterations.png>]
-Underfull \vbox (badness 2384) has occurred while \output is active []
-
-
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[9 <./linewave_meanstd.png>]
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 426.
+[7 <./violin_new_new.png>]
+
+
+
+[8]
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 458.
  (/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 ) (./bare_jrnl_new_sample4.bbl
@@ -457,9 +440,19 @@ Underfull \hbox (badness 2617) in paragraph at lines 24--25
 
 
 
-)
 
-[10] (./bare_jrnl_new_sample4.aux)
+
+
+Overfull \vbox (9.45892pt too high) has occurred while \output is active []
+
+ [9])
+
+
+
+
+Overfull \vbox (1.73193pt too high) has occurred while \output is active []
+
+ [10] (./bare_jrnl_new_sample4.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -473,18 +466,18 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 4947 strings out of 473190
- 86387 string characters out of 5715806
- 519661 words of memory out of 5000000
- 28117 multiletter control sequences out of 15000+600000
- 600383 words of font info for 117 fonts, out of 8000000 for 9000
+ 4935 strings out of 473190
+ 86081 string characters out of 5715806
+ 518275 words of memory out of 5000000
+ 28104 multiletter control sequences out of 15000+600000
+ 601519 words of font info for 118 fonts, out of 8000000 for 9000
  1145 hyphenation exceptions out of 8191
- 72i,11n,79p,1641b,401s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on bare_jrnl_new_sample4.pdf (10 pages, 3051086 bytes).
+ 72i,11n,79p,1649b,401s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on bare_jrnl_new_sample4.pdf (10 pages, 1903015 bytes).
 PDF statistics:
- 135 PDF objects out of 1000 (max. 8388607)
- 78 compressed objects within 1 object stream
+ 158 PDF objects out of 1000 (max. 8388607)
+ 87 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 26 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 16 words of extra memory for PDF output out of 10000 (max. 10000000)
 
