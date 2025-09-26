@@ -191,7 +191,7 @@ def main():
             ax.plot(gens, means,
                     color=colors[model], linewidth=2, marker='o', markersize=4.5,
                     markerfacecolor=colors[model], markeredgecolor='black', markeredgewidth=0.5,
-                    label='Auto' if model == 'AutoGrow4.0' else ('RGA' if model == 'RGA' else 'Ours'))
+                    label='AutoGrow4.0' if model == 'AutoGrow4.0' else ('RGA' if model == 'RGA' else 'Ours'))
             ax.fill_between(gens, np.array(means) - np.array(stds), np.array(means) + np.array(stds),
                             color=colors[model], alpha=0.2, linewidth=0)
 
@@ -234,13 +234,13 @@ def main():
     legend_elements = [
         plt.Line2D([0], [0], color=colors['AutoGrow4.0'], lw=3, marker='o', markersize=6,
                    markerfacecolor=colors['AutoGrow4.0'], markeredgecolor='black', markeredgewidth=0.5,
-                   label='Auto'),
+                   label='AutoGrow4.0'),
         plt.Line2D([0], [0], color=colors['RGA'], lw=3, marker='o', markersize=6,
                    markerfacecolor=colors['RGA'], markeredgecolor='black', markeredgewidth=0.5,
                    label='RGA'),
         plt.Line2D([0], [0], color=colors['FragGPT-GA'], lw=3, marker='o', markersize=6,
                    markerfacecolor=colors['FragGPT-GA'], markeredgecolor='black', markeredgewidth=0.5,
-                   label='Ours'),
+                   label='FragGPT-GA'),
     ]
     fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.02), ncol=3, fontsize=20)
 

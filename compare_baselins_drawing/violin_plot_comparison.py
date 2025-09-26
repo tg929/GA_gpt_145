@@ -205,7 +205,7 @@ def main():
              fontsize=28, fontfamily='Times New Roman')
     
     # 创建图例
-    legend_labels = ['Auto', 'RGA', 'Ours']
+    legend_labels = ['AutoGrow4.0', 'RGA', 'FragGPT-GA']
     legend_elements = [plt.Rectangle((0,0),1,1, facecolor=colors[i], alpha=0.7, 
                                    edgecolor='black', label=legend_labels[i]) 
                       for i in range(len(model_order))]
@@ -217,7 +217,7 @@ def main():
     plt.subplots_adjust(top=0.98, bottom=0.04, left=0.06, right=0.98, hspace=0.35, wspace=0.3)
     
     # 保存图片 (按IEEE论文标准)
-    output_path = "/data1/ytg/medium_models/GA_gpt/papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/violin_comparison.png"
+    output_path = "/data1/ytg/medium_models/GA_gpt/papers_0/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/violin_comparison.png"
     plt.savefig(output_path, dpi=300, bbox_inches='tight', pad_inches=0.5, facecolor='white', edgecolor='none')
     print(f"\nViolin plot saved to: {output_path}")
     
