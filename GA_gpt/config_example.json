@@ -189,7 +189,7 @@
       "single_objective",
       "multi_objective"
     ],
-    "selection_mode": "single_objective",
+    "selection_mode": "multi_objective",
     "single_objective_settings": {
       "description": "Parameters for single-objective selection based on docking score.",
       "available_selectors": [
