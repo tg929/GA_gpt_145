@@ -398,10 +398,12 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
             labels,
             loc="upper center",
             ncol=max(1, len(handles)),
-            frameon=False,
-            bbox_to_anchor=(0.5, 0.995),
+            frameon=True,
+            fancybox=True,
+            framealpha=1.0,
+            bbox_to_anchor=(0.5, 0.965),
         )
-    fig.tight_layout(rect=(0, 0, 1, 0.9))
+    fig.tight_layout(rect=(0, 0, 1, 0.92))
     fig.savefig(output_path, dpi=300)
     plt.close(fig)
 
