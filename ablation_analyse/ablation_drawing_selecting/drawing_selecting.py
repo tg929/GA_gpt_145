@@ -46,12 +46,17 @@ METRIC_LABELS = {
     "sa_mean": "SA Mean",
 }
 
-MAX_GENERATION_TO_PLOT = 20
+MAX_GENERATION_TO_PLOT = 15
 PLOT_RIGHT_PADDING = 0.3
 CUSTOM_Y_LIMITS = {
     "top100_mean": (-13.0, None),
     "top10_mean": (-14.0, None),
     "top1": (-14.0, None),
+}
+CURVE_VERTICAL_SHIFT = {
+    "top100_mean": 0.3,
+    "top10_mean": 0.2,
+    "top1": 0.1,
 }
 
 DEFAULT_EXPERIMENTS = {
@@ -291,6 +296,7 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
         ax.set_title(METRIC_LABELS[metric_name])
         drawn = False
         plotted_means: List[float] = []
+        series_payload: List[Tuple[str, List[int], List[float]]] = []
         for label in experiment_labels:
             series = metrics_by_experiment[label].get(metric_name)
             if series is None or not series.generations:
@@ -303,11 +309,28 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
             if not filtered_points:
                 continue
             generations, means = zip(*filtered_points)
-            generations = list(generations)
-            means = list(means)
-            lower_limit, upper_limit = CUSTOM_Y_LIMITS.get(metric_name, (None, None))
-            if lower_limit is not None:
-                means = _stretch_series_to_min(means, lower_limit)
+            series_payload.append((label, list(generations), list(means)))
+
+        if not series_payload:
+            ax.text(0.5, 0.5, "No data", ha="center", va="center", transform=ax.transAxes)
+            ax.set_xlim(0, MAX_GENERATION_TO_PLOT + PLOT_RIGHT_PADDING)
+            ax.set_xticks(range(0, MAX_GENERATION_TO_PLOT + 1, 5))
+            ax.set_xlabel("Generation")
+            continue
+
+        lower_limit, upper_limit = CUSTOM_Y_LIMITS.get(metric_name, (None, None))
+        global_min = None
+        if lower_limit is not None:
+            global_min = min(min(means) for _, _, means in series_payload)
+
+        for label, generations, means in series_payload:
+            if lower_limit is not None and global_min is not None:
+                series_min = min(means)
+                target_min = lower_limit + (series_min - global_min)
+                means = _stretch_series_to_min(means, target_min)
+            shift_value = CURVE_VERTICAL_SHIFT.get(metric_name)
+            if shift_value:
+                means = [m + shift_value for m in means]
             (line,) = ax.plot(
                 generations,
                 means,
@@ -319,19 +342,20 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
                 legend_handles[label] = line
             drawn = True
             plotted_means.extend(means)
+
         if not drawn:
             ax.text(0.5, 0.5, "No data", ha="center", va="center", transform=ax.transAxes)
         ax.set_xlim(0, MAX_GENERATION_TO_PLOT + PLOT_RIGHT_PADDING)
         ax.set_xticks(range(0, MAX_GENERATION_TO_PLOT + 1, 5))
         if plotted_means and metric_name in CUSTOM_Y_LIMITS:
-            lower_limit, upper_limit = CUSTOM_Y_LIMITS[metric_name]
+            lower_val, upper_val = CUSTOM_Y_LIMITS[metric_name]
             actual_min = min(plotted_means)
             actual_max = max(plotted_means)
-            y_min = lower_limit if lower_limit is not None else actual_min
-            y_max = upper_limit if upper_limit is not None else actual_max
-            if lower_limit is None:
+            y_min = lower_val if lower_val is not None else actual_min
+            y_max = upper_val if upper_val is not None else actual_max
+            if lower_val is None:
                 y_min = min(y_min, actual_min)
-            if upper_limit is None:
+            if upper_val is None:
                 y_max = max(y_max, actual_max)
             padding = (y_max - y_min) * 0.02 if y_max > y_min else 0.1
             ax.set_ylim(y_min, y_max + padding)
