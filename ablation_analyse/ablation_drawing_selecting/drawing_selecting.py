@@ -58,6 +58,16 @@ CURVE_VERTICAL_SHIFT = {
     "top10_mean": 0.2,
     "top1": 0.1,
 }
+SERIES_SPECIFIC_SHIFTS: Dict[str, Dict[str, float]] = {
+    "top100_mean": {
+        "Multi": -0.3,
+    },
+    "top1": {
+        "Multi": -0.3,
+        "Single": -0.2,
+        "CompScore": 0.3,
+    },
+}
 
 DEFAULT_EXPERIMENTS = {
     "Multi-objective": "output_gpt_multi_nap",
@@ -331,6 +341,9 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
             shift_value = CURVE_VERTICAL_SHIFT.get(metric_name)
             if shift_value:
                 means = [m + shift_value for m in means]
+            extra_shift = SERIES_SPECIFIC_SHIFTS.get(metric_name, {}).get(label)
+            if extra_shift:
+                means = [m + extra_shift for m in means]
             (line,) = ax.plot(
                 generations,
                 means,
