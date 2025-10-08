@@ -46,7 +46,7 @@ METRIC_LABELS = {
     "sa_mean": "SA Mean",
 }
 
-MAX_GENERATION_TO_PLOT = 15
+MAX_GENERATION_TO_PLOT = 20
 PLOT_RIGHT_PADDING = 0.3
 CUSTOM_Y_LIMITS = {
     "top100_mean": (-13.0, None),
