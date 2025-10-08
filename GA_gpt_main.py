@@ -19,7 +19,7 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PROJECT_ROOT)
 
 # --- 模块导入 ---
-from operations.operations_execute_GAgpt_finetune import GAGPTWorkflowExecutor
+from operations.operations_execute_GAgpt_demo import GAGPTWorkflowExecutor
 from utils.cpu_utils import get_available_cpu_cores, calculate_optimal_workers
 
 # --- 日志配置 ---
@@ -143,8 +143,7 @@ def main():
         logger.info("=" * 60)
         
         # 动态检测可用CPU资源
-        available_cores, cpu_usage = get_available_cpu_cores()
-        
+        available_cores, cpu_usage = get_available_cpu_cores()        
         # 计算最优并行配置
         if max_workers_config == -1 and inner_processors_config == -1:
             # 全自动模式
@@ -176,7 +175,7 @@ def main():
         successful_runs = []
         failed_runs = []
         
-        # 启动并行执行,增加超时和死锁保护
+        # 启动并行执行
         with ProcessPoolExecutor(max_workers=max_workers) as executor:
             futures = {
                 executor.submit(
@@ -188,43 +187,12 @@ def main():
                 ): receptor_name for receptor_name in receptors_to_run
             }
             
-            # 添加超时机制，防止进程无限等待
-            import concurrent.futures
-            try:
-                # 使用 as_completed 来获取已完成的结果
-                for future in as_completed(futures, timeout=7200):  # 2小时总超时
-                    receptor_name = futures[future]
-                    try:
-                        # 获取结果，这里可以设置一个短超时，但通常不是必须的
-                        receptor_display_name, success = future.result()
-                        if success:
-                            successful_runs.append(receptor_display_name)
-                        else:
-                            failed_runs.append(receptor_display_name)
-                    except Exception as exc:
-                        logger.error(f"受体 '{receptor_name}' 在执行期间生成了异常: {exc}", exc_info=True)
-                        failed_runs.append(receptor_name)
-
-            except concurrent.futures.TimeoutError:
-                logger.error("并行执行总超时(2小时),可能存在死锁。正在强制终止所有剩余的子进程...")
-                # 强制关闭进程池并取消所有正在运行和等待的任务
-                # cancel_futures=True 是Python 3.9+的新特性，可以终止正在运行的任务
-                executor.shutdown(wait=False, cancel_futures=True)
-                
-                # 记录所有尚未完成的任务为失败
-                for future, receptor_name in futures.items():
-                    if not future.done():
-                        # 不需要调用 future.cancel()，因为 shutdown 已经处理了
-                        failed_runs.append(receptor_name if receptor_name else "default")
-            
-            # 再次检查并确保所有未记录的结果都被标记
-            completed_receptors = set(successful_runs + failed_runs)
-            all_receptors = set(receptors_to_run)
-            missing_receptors = all_receptors - completed_receptors
-            if missing_receptors:
-                logger.warning(f"以下受体未返回明确结果，标记为失败: {list(missing_receptors)}")
-                failed_runs.extend(list(missing_receptors))
-
+            for future in as_completed(futures):
+                receptor_display_name, success = future.result()
+                if success:
+                    successful_runs.append(receptor_display_name)
+                else:
+                    failed_runs.append(receptor_display_name)
 
     # --- 3. 最终总结报告 ---
     logger.info("=" * 80)
@@ -241,8 +209,7 @@ def main():
 if __name__ == "__main__":
     # 在Windows或macOS上，有必要将multiprocessing的启动方法设置为'spawn'或'forkserver'
     # 对于Linux, 'fork'通常是默认且可以工作的，但'spawn'更安全。
-    # 为防止在多线程+多进程混合编程中出现死锁（如此次遇到的情况），
-    # 我们统一将启动方法强制设置为'spawn'，以保证在所有平台上的稳定运行。
-    multiprocessing.set_start_method('spawn', force=True)
+    if sys.platform.startswith('win') or sys.platform.startswith('darwin'):
+        multiprocessing.set_start_method('spawn', force=True)
     
     main()
