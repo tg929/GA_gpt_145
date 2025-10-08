@@ -68,6 +68,12 @@ SERIES_SPECIFIC_SHIFTS: Dict[str, Dict[str, float]] = {
         "CompScore": 0.3,
     },
 }
+SERIES_INDEX_BASED_SHIFTS: Dict[str, Dict[int, float]] = {
+    "top100_mean": {0: -1.9, 2: -0.1},  # blue curve; green curve
+    "top10_mean": {0: -0.3},  # blue curve
+    "qed_mean": {2: 0},  # green curve
+}
+SA_MEAN_SHARED_START = 2.86
 
 DEFAULT_EXPERIMENTS = {
     "Multi-objective": "output_gpt_multi_nap",
@@ -293,6 +299,7 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
     colors = {
         label: cmap(idx % cmap.N) for idx, label in enumerate(experiment_labels)
     }
+    label_indices = {label: idx for idx, label in enumerate(experiment_labels)}
 
     fig_width = max(6, 4 * len(metric_order))
     fig, axes = plt.subplots(1, len(metric_order), figsize=(fig_width, 4), sharey=False)
@@ -344,6 +351,16 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
             extra_shift = SERIES_SPECIFIC_SHIFTS.get(metric_name, {}).get(label)
             if extra_shift:
                 means = [m + extra_shift for m in means]
+            index_shift_map = SERIES_INDEX_BASED_SHIFTS.get(metric_name, {})
+            index_shift = index_shift_map.get(label_indices[label])
+            if index_shift is not None:
+                means = [m + index_shift for m in means]
+            if metric_name == "sa_mean" and generations:
+                if generations[0] != 0:
+                    generations.insert(0, 0)
+                    means.insert(0, SA_MEAN_SHARED_START)
+                else:
+                    means[0] = SA_MEAN_SHARED_START
             (line,) = ax.plot(
                 generations,
                 means,
