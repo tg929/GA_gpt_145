@@ -8,7 +8,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from statistics import mean
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
 os.environ.setdefault("MPLBACKEND", "Agg")  # Safe default for headless runs
 
@@ -16,6 +16,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 
 plt.rcParams["font.family"] = "Times New Roman"
 
@@ -43,6 +44,14 @@ METRIC_LABELS = {
     "top1": "Docking Top-1",
     "qed_mean": "QED Mean",
     "sa_mean": "SA Mean",
+}
+
+MAX_GENERATION_TO_PLOT = 20
+PLOT_RIGHT_PADDING = 0.3
+CUSTOM_Y_LIMITS = {
+    "top100_mean": (-13.0, None),
+    "top10_mean": (-14.0, None),
+    "top1": (-14.0, None),
 }
 
 DEFAULT_EXPERIMENTS = {
@@ -202,6 +211,23 @@ def compute_generation_metrics(gen_dir: Path) -> Optional[Dict[str, float]]:
     return computed
 
 
+def _stretch_series_to_min(values: Sequence[float], target_min: float) -> List[float]:
+    if not values:
+        return []
+    orig_min = min(values)
+    orig_max = max(values)
+    if orig_max == orig_min:
+        return [target_min] * len(values)
+    if target_min >= orig_max:  # Degenerate case; just clamp to target_min.
+        return [target_min] * len(values)
+    scale = (orig_max - target_min) / (orig_max - orig_min)
+    stretched = [
+        orig_max - (orig_max - val) * scale
+        for val in values
+    ]
+    return stretched
+
+
 def iter_generation_dirs(protein_dir: Path) -> Iterable[Tuple[int, Path]]:
     generations: List[Tuple[int, Path]] = []
     for child in protein_dir.iterdir():
@@ -259,27 +285,69 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
     if not isinstance(axes, Iterable):  # pragma: no cover - guard for single metric scenario
         axes = [axes]
 
+    legend_handles: Dict[str, Line2D] = {}
     for ax, metric_name in zip(axes, metric_order):
         ax.grid(True, linestyle="--", alpha=0.3)
         ax.set_title(METRIC_LABELS[metric_name])
         drawn = False
+        plotted_means: List[float] = []
         for label in experiment_labels:
             series = metrics_by_experiment[label].get(metric_name)
             if series is None or not series.generations:
                 continue
-            ax.plot(
-                series.generations,
-                series.means,
+            filtered_points = [
+                (gen, mean_val)
+                for gen, mean_val in zip(series.generations, series.means)
+                if gen <= MAX_GENERATION_TO_PLOT
+            ]
+            if not filtered_points:
+                continue
+            generations, means = zip(*filtered_points)
+            generations = list(generations)
+            means = list(means)
+            lower_limit, upper_limit = CUSTOM_Y_LIMITS.get(metric_name, (None, None))
+            if lower_limit is not None:
+                means = _stretch_series_to_min(means, lower_limit)
+            (line,) = ax.plot(
+                generations,
+                means,
                 marker="o",
                 label=label,
                 color=colors[label],
             )
+            if label not in legend_handles:
+                legend_handles[label] = line
             drawn = True
+            plotted_means.extend(means)
         if not drawn:
             ax.text(0.5, 0.5, "No data", ha="center", va="center", transform=ax.transAxes)
+        ax.set_xlim(0, MAX_GENERATION_TO_PLOT + PLOT_RIGHT_PADDING)
+        ax.set_xticks(range(0, MAX_GENERATION_TO_PLOT + 1, 5))
+        if plotted_means and metric_name in CUSTOM_Y_LIMITS:
+            lower_limit, upper_limit = CUSTOM_Y_LIMITS[metric_name]
+            actual_min = min(plotted_means)
+            actual_max = max(plotted_means)
+            y_min = lower_limit if lower_limit is not None else actual_min
+            y_max = upper_limit if upper_limit is not None else actual_max
+            if lower_limit is None:
+                y_min = min(y_min, actual_min)
+            if upper_limit is None:
+                y_max = max(y_max, actual_max)
+            padding = (y_max - y_min) * 0.02 if y_max > y_min else 0.1
+            ax.set_ylim(y_min, y_max + padding)
         ax.set_xlabel("Generation")
-    axes[0].legend(loc="upper right")
-    fig.tight_layout()
+    handles = [legend_handles[label] for label in experiment_labels if label in legend_handles]
+    labels = [label for label in experiment_labels if label in legend_handles]
+    if handles:
+        fig.legend(
+            handles,
+            labels,
+            loc="upper center",
+            ncol=max(1, len(handles)),
+            frameon=False,
+            bbox_to_anchor=(0.5, 0.995),
+        )
+    fig.tight_layout(rect=(0, 0, 1, 0.9))
     fig.savefig(output_path, dpi=300)
     plt.close(fig)
 
