@@ -17,12 +17,17 @@ import json
 import subprocess
 import logging
 from pathlib import Path
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict, Optional, Tuple, Set
 import threading
 import queue
+import csv
+import hashlib
 from operations.stating.config_snapshot_generator import save_config_snapshot #保存参数（快照）
 import multiprocessing  
 import shutil  
+from rdkit import Chem
+from rdkit.Chem import QED
+from fragment_GPT.utils import sascorer
 
 # 移除全局日志配置，避免多进程日志冲突
 # logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -57,7 +62,18 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             
         self.run_params = {}
         self._setup_parameters_and_paths(receptor_name, output_dir_override)
-        self._save_run_parameters()        
+        self._save_run_parameters()
+        self.lineage_tracker_path = self.output_dir / "lineage_tracker.json"
+        self.lineage_tracker = self._load_lineage_tracker()
+        self.history_paths: Dict[str, str] = {}
+        self.smiles_to_history: Dict[str, str] = {}
+        self.history_records: Dict[str, Dict] = {}
+        self.removed_history_records: Dict[str, Dict] = {}
+        self.current_active_histories: Set[str] = set()
+        self.history_root_counter = 0
+        self.placeholder_roots: Dict[int, str] = {}
+        self.last_offspring_histories: Set[str] = set()
+        self.last_offspring_smiles: Set[str] = set()
         logger.info(f"GA-GPT工作流初始化完成, 输出目录: {self.output_dir}")
         logger.info(f"最大迭代代数: {self.max_generations}")
 
@@ -137,6 +153,303 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             logger.info(f"完整的执行配置快照已保存到: {snapshot_file_path}")
         else:
             logger.error("保存执行配置快照失败")
+    def _load_lineage_tracker(self) -> Dict[str, List[Dict]]:
+        """从磁盘加载既有的血统记录。"""
+        if self.output_dir and hasattr(self, "output_dir"):
+            path = getattr(self, "lineage_tracker_path", None)
+        else:
+            path = None
+        if path and path.exists():
+            try:
+                with open(path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                if isinstance(data, dict):
+                    return data
+                logger.warning("血统跟踪文件格式异常，已忽略原有记录。")
+            except Exception as exc:
+                logger.warning(f"无法加载血统跟踪文件 {path}: {exc}")
+        return {}
+    def _save_lineage_tracker(self) -> None:
+        """将血统跟踪记录持久化到磁盘。"""
+        try:
+            with open(self.lineage_tracker_path, 'w', encoding='utf-8') as f:
+                json.dump(self.lineage_tracker, f, indent=2, ensure_ascii=False)
+        except Exception as exc:
+            logger.error(f"保存血统跟踪文件失败: {exc}")
+    def _write_jsonl(self, output_path: Path, entries: List[Dict]) -> None:
+        """将记录写入 JSONL 文件。"""
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(output_path, 'w', encoding='utf-8') as f:
+            for item in entries:
+                f.write(json.dumps(item, ensure_ascii=False) + '\n')
+    def _read_jsonl(self, input_path: Path) -> List[Dict]:
+        """读取 JSONL 文件并返回字典列表。"""
+        if not input_path or not input_path.exists():
+            return []
+        entries: List[Dict] = []
+        try:
+            with open(input_path, 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        entries.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        logger.warning(f"无法解析血统记录: {line}")
+        except Exception as exc:
+            logger.warning(f"读取血统文件 {input_path} 失败: {exc}")
+        return entries
+    def _read_smiles_from_file(self, file_path: Path, first_column_only: bool = True) -> List[str]:
+        """读取SMILES文件，默认只返回第一列。"""
+        smiles: List[str] = []
+        if not file_path or not file_path.exists():
+            return smiles
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    parts = line.split()
+                    if not parts:
+                        continue
+                    smiles.append(parts[0] if first_column_only else parts)
+        except Exception as exc:
+            logger.warning(f"读取文件 {file_path} 时发生错误: {exc}")
+        return smiles
+    def _update_lineage_tracker(self, lineage_entries: List[Dict]) -> None:
+        """更新内存中的血统跟踪数据并同步到磁盘。"""
+        if not lineage_entries:
+            return
+        for entry in lineage_entries:
+            child = entry.get("child")
+            if not child:
+                continue
+            history = self.lineage_tracker.setdefault(child, [])
+            history.append({
+                "generation": entry.get("generation"),
+                "sources": entry.get("sources", [])
+            })
+        self._save_lineage_tracker()
+    def _record_initial_population(self, formatted_file: Path) -> None:
+        """记录初代种群的血统来源。"""
+        smiles_list = self._read_smiles_from_file(formatted_file)
+        if not smiles_list:
+            return
+        entries: List[Dict] = []
+        for smi in smiles_list:
+            self._ensure_history(smi, generation=0)
+            history = self.lineage_tracker.get(smi)
+            if history:
+                continue
+            sources = [{
+                "operation": "initial_population",
+                "parents": []
+            }]
+            self.lineage_tracker.setdefault(smi, []).append({
+                "generation": 0,
+                "sources": sources
+            })
+            entries.append({
+                "generation": 0,
+                "child": smi,
+                "sources": sources
+            })
+        if entries:
+            lineage_file = formatted_file.parent / "initial_population_lineage.jsonl"
+            self._write_jsonl(lineage_file, entries)
+            self._save_lineage_tracker()
+            logger.info(f"初代种群血统记录已保存到: {lineage_file}")
+    def _short_hash(self, value: str) -> str:
+        return hashlib.md5(value.encode('utf-8')).hexdigest()[:6]
+    def _register_history(self, smiles: str, history: str) -> None:
+        self.history_paths[smiles] = history
+        self.smiles_to_history[smiles] = history
+    def _create_root_history(self, smiles: str) -> str:
+        if smiles in self.smiles_to_history:
+            return self.smiles_to_history[smiles]
+        token = f"ROOT-{self.history_root_counter}"
+        self.history_root_counter += 1
+        history = token
+        self._register_history(smiles, history)
+        return history
+    def _ensure_history(self, smiles: str, generation: Optional[int] = None) -> str:
+        history = self.smiles_to_history.get(smiles)
+        if history:
+            return history
+        return self._create_root_history(smiles)
+    def _create_generation_placeholder_root(self, generation: int) -> str:
+        placeholder = self.placeholder_roots.get(generation)
+        if placeholder is None:
+            placeholder = f"GEN{generation}-ROOT"
+            self.placeholder_roots[generation] = placeholder
+        return placeholder
+    def _build_operation_token(self, operation: str, parents: List[str], generation: int) -> str:
+        op = (operation or "GEN").upper()
+        parent_ids = []
+        for parent in parents:
+            parent_history = self.smiles_to_history.get(parent)
+            if not parent_history:
+                parent_history = self._ensure_history(parent, generation=generation)
+            parent_ids.append(self._short_hash(parent_history))
+        if not parent_ids:
+            parent_ids.append(f"G{generation}")
+        return f"{op}-{'_'.join(parent_ids)}"
+    def _derive_history(self, smiles: str, generation: int, sources: List[Dict]) -> str:
+        existing = self.smiles_to_history.get(smiles)
+        if existing:
+            return existing
+        parent_history = None
+        op_tokens: List[str] = []
+        if sources:
+            for source in sources:
+                operation = source.get("operation", "GEN")
+                parents = source.get("parents") or []
+                if parent_history is None and parents:
+                    for parent in parents:
+                        parent_history = self.smiles_to_history.get(parent)
+                        if parent_history:
+                            break
+                op_tokens.append(self._build_operation_token(operation, parents, generation))
+            if parent_history is None and sources[0].get("parents"):
+                first_parent = sources[0]["parents"][0]
+                parent_history = self._ensure_history(first_parent, generation=generation)
+        if parent_history is None:
+            parent_history = self._create_generation_placeholder_root(generation)
+        if not op_tokens:
+            op_tokens.append(self._build_operation_token("GEN", [], generation))
+        history = f"{parent_history}|{'_'.join(op_tokens)}"
+        self._register_history(smiles, history)
+        return history
+    def _assign_histories_to_offspring(self, generation: int, lineage_entries: List[Dict]) -> Dict[str, str]:
+        mapping: Dict[str, str] = {}
+        for entry in lineage_entries:
+            child = entry.get("child")
+            if not child:
+                continue
+            history = self._derive_history(child, generation, entry.get("sources", []))
+            entry["history_data"] = history
+            mapping[child] = history
+        return mapping
+    def _compute_metrics(self, smiles: str, docking_score: Optional[float]) -> Dict[str, Optional[float]]:
+        metrics: Dict[str, Optional[float]] = {
+            "docking_score": docking_score,
+            "total": docking_score
+        }
+        mol = Chem.MolFromSmiles(smiles)
+        if mol is None:
+            metrics["qed"] = None
+            metrics["sa"] = None
+            return metrics
+        try:
+            metrics["qed"] = float(QED.qed(mol))
+        except Exception:
+            metrics["qed"] = None
+        try:
+            metrics["sa"] = float(sascorer.calculateScore(mol))
+        except Exception:
+            metrics["sa"] = None
+        return metrics
+    def _upsert_history_record(self, history: str, smiles: str, generation: int, docking_score: Optional[float], mark_active: bool) -> None:
+        record = self.history_records.get(history, {
+            "smiles": smiles,
+            "history_data": history,
+            "generation_created": generation,
+            "status": "inactive"
+        })
+        metrics = self._compute_metrics(smiles, docking_score)
+        record["smiles"] = smiles
+        record["history_data"] = history
+        record.setdefault("generation_created", generation)
+        record["last_generation"] = generation
+        record["metrics"] = metrics
+        record["docking_score"] = docking_score
+        if mark_active:
+            record["status"] = "active"
+        elif record.get("status") not in ("removed", "active"):
+            record["status"] = "inactive"
+        self.history_records[history] = record
+    def _ingest_population_metrics(self, docked_file: Path, generation: int, mark_active: bool = False) -> Dict[str, str]:
+        mapping: Dict[str, str] = {}
+        path_obj = Path(docked_file)
+        if not path_obj.exists():
+            return mapping
+        with open(path_obj, 'r', encoding='utf-8') as f:
+            for line in f:
+                parts = line.strip().split()
+                if not parts:
+                    continue
+                smiles = parts[0]
+                docking_score: Optional[float] = None
+                if len(parts) >= 2:
+                    try:
+                        docking_score = float(parts[1])
+                    except ValueError:
+                        docking_score = None
+                history = self._ensure_history(smiles, generation=generation)
+                mapping[smiles] = history
+                self._upsert_history_record(history, smiles, generation, docking_score, mark_active)
+        return mapping
+    def _mark_histories_active(self, histories: Set[str], generation: int) -> None:
+        for history in histories:
+            record = self.history_records.get(history)
+            if not record:
+                continue
+            record["status"] = "active"
+            record["last_generation"] = generation
+            self.history_records[history] = record
+        self.current_active_histories = set(histories)
+    def _mark_histories_removed(self, histories: Set[str], generation: int) -> None:
+        for history in histories:
+            record = self.history_records.get(history)
+            if not record:
+                continue
+            if record.get("status") == "removed":
+                continue
+            record["status"] = "removed"
+            record["removed_generation"] = generation
+            self.history_records[history] = record
+            self.removed_history_records[history] = record
+    def _format_float(self, value: Optional[float]) -> str:
+        if value is None:
+            return ""
+        try:
+            return f"{float(value):.6f}"
+        except Exception:
+            return ""
+    def _export_evomo_files(self) -> None:
+        pop_file = self.output_dir / "pop.csv"
+        removed_file = self.output_dir / "removed_ind_act_history.csv"
+        pop_headers = ["smiles", "total", "qed", "sa", "docking_score", "history_data"]
+        with open(pop_file, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow(pop_headers)
+            for history, record in sorted(self.history_records.items()):
+                if record.get("status") != "active":
+                    continue
+                metrics = record.get("metrics", {})
+                writer.writerow([
+                    record.get("smiles", ""),
+                    self._format_float(metrics.get("total")),
+                    self._format_float(metrics.get("qed")),
+                    self._format_float(metrics.get("sa")),
+                    self._format_float(metrics.get("docking_score")),
+                    record.get("history_data", history)
+                ])
+        with open(removed_file, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow(["history_data", "total", "qed", "sa", "docking_score", "smiles"])
+            for history, record in sorted(self.removed_history_records.items()):
+                metrics = record.get("metrics", {})
+                writer.writerow([
+                    record.get("history_data", history),
+                    self._format_float(metrics.get("total")),
+                    self._format_float(metrics.get("qed")),
+                    self._format_float(metrics.get("sa")),
+                    self._format_float(metrics.get("docking_score")),
+                    record.get("smiles", "")
+                ])
 
     def _run_script(self, script_path: str, args: List[str]) -> bool:
         """
@@ -304,31 +617,62 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             logger.error(f"从 {docked_file} 提取SMILES时出错: {e}")
             return False
 
-    def _execute_ga_stage(self, ga_op_name: str, ga_script: str, input_pool_file: str, raw_output_file: str, filtered_output_file: str) -> bool:
-        """辅助函数，用于运行一个GA阶段（如交叉）及其后续的过滤。"""
+    def _execute_ga_stage(
+        self,
+        ga_op_name: str,
+        ga_script: str,
+        input_pool_file: str,
+        raw_output_file: Path,
+        filtered_output_file: Path,
+        raw_lineage_file: Path,
+        filtered_lineage_file: Path
+    ) -> Optional[Path]:
+        """辅助函数，用于运行一个GA阶段（如交叉）及其后续的过滤，并返回过滤后的血统文件路径。"""
         logger.info(f"开始执行 {ga_op_name}...")
         
         # 运行GA操作
         ga_succeeded = self._run_script(ga_script, [
             '--smiles_file', input_pool_file,
-            '--output_file', raw_output_file,
+            '--output_file', str(raw_output_file),
+            '--lineage_file', str(raw_lineage_file),
             '--config_file', self.config_path
         ])
         if not ga_succeeded:
             logger.error(f"'{ga_op_name}' 脚本执行失败。")
-            return False
+            return None
 
         # 运行过滤器
         filter_succeeded = self._run_script('operations/filter/filter_demo.py', [
-            '--smiles_file', raw_output_file,
-            '--output_file', filtered_output_file
+            '--smiles_file', str(raw_output_file),
+            '--output_file', str(filtered_output_file)
         ])
         if not filter_succeeded:
             logger.error(f"'{ga_op_name}' 过滤失败。")
-            return False
-            
-        logger.info(f"'{ga_op_name}' 操作完成, 生成 {self._count_molecules(filtered_output_file)} 个过滤后的分子。")
-        return True
+            return None
+
+        filtered_entries = self._filter_lineage_entries(raw_lineage_file, filtered_output_file)
+        self._write_jsonl(filtered_lineage_file, filtered_entries)
+        logger.info(f"'{ga_op_name}' 操作完成, 生成 {self._count_molecules(str(filtered_output_file))} 个过滤后的分子。")
+        return filtered_lineage_file
+    def _filter_lineage_entries(self, raw_lineage_file: Path, filtered_output_file: Path) -> List[Dict]:
+        """根据过滤后的SMILES保留有效的血统记录。"""
+        raw_entries = self._read_jsonl(raw_lineage_file)
+        if not raw_entries:
+            return []
+        filtered_smiles = set(self._read_smiles_from_file(filtered_output_file))
+        if not filtered_smiles:
+            return []
+        kept_entries: List[Dict] = []
+        for entry in raw_entries:
+            child = entry.get("child")
+            if not child or child not in filtered_smiles:
+                continue
+            kept_entries.append({
+                "child": child,
+                "operation": entry.get("operation"),
+                "parents": entry.get("parents", [])
+            })
+        return kept_entries
 
     def run_decomposition_and_masking(self, parent_smiles_file: str, generation: int) -> Optional[str]:
         """
@@ -410,7 +754,15 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             logger.warning(f"第 {generation} 代: GPT生成了0个有效分子。")
             # 不认为是致命错误，可以继续执行GA
             return None
-            
+        gpt_smiles = self._read_smiles_from_file(gpt_generated_file)
+        placeholder_root = self._create_generation_placeholder_root(generation)
+        for smi in gpt_smiles:
+            if smi in self.smiles_to_history:
+                continue
+            op_token = f"GPT-{generation}-{self._short_hash(smi)}"
+            history = f"{placeholder_root}|{op_token}"
+            self._register_history(smi, history)
+            self._upsert_history_record(history, smi, generation, None, mark_active=False)
         logger.info(f"第 {generation} 代: GPT生成完成,产出 {generated_count} 个新分子。")
         return str(gpt_generated_file)
     def _combine_files(self, file_list: List[str], output_file: str) -> bool:
@@ -429,7 +781,7 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
         except Exception as e:
             logger.error(f"合并文件时发生错误: {e}")
             return False
-    def run_ga_operations(self, parent_smiles_file: str, gpt_generated_file: Optional[str], generation: int) -> Optional[Tuple[str, str]]:
+    def run_ga_operations(self, parent_smiles_file: str, gpt_generated_file: Optional[str], generation: int) -> Optional[Tuple[str, str, Optional[str], Optional[str]]]:
         """
         串行执行遗传算法操作（交叉和突变）以避免死锁。
         
@@ -439,7 +791,8 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             generation (int): 当前代数。
             
         Returns:
-            Optional[Tuple[str, str]]: 成功则返回(交叉后代文件, 突变后代文件),失败则返回None。
+            Optional[Tuple[str, str, Optional[str], Optional[str]]]: 
+                成功则返回 (交叉后代文件, 突变后代文件, 交叉血统文件, 突变血统文件)。
         """
         logger.info(f"第 {generation} 代: 开始串行执行遗传算法操作...")
         gen_dir = self.output_dir / f"generation_{generation}"
@@ -458,45 +811,65 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
         # 2. 串行执行交叉和突变以避免死锁
         crossover_raw_file = gen_dir / "crossover_raw.smi"
         crossover_filtered_file = gen_dir / "crossover_filtered.smi"
+        crossover_raw_lineage = gen_dir / "crossover_raw_lineage.jsonl"
+        crossover_filtered_lineage = gen_dir / "crossover_filtered_lineage.jsonl"
         mutation_raw_file = gen_dir / "mutation_raw.smi"
         mutation_filtered_file = gen_dir / "mutation_filtered.smi"
+        mutation_raw_lineage = gen_dir / "mutation_raw_lineage.jsonl"
+        mutation_filtered_lineage = gen_dir / "mutation_filtered_lineage.jsonl"
 
         # 执行交叉操作
         logger.info(f"第 {generation} 代: 开始交叉操作...")
-        crossover_success = self._execute_ga_stage(
+        crossover_lineage_path = self._execute_ga_stage(
             "交叉", 'operations/crossover/crossover_demo_finetune.py',
-            str(ga_input_pool_file), str(crossover_raw_file), str(crossover_filtered_file)
+            str(ga_input_pool_file), crossover_raw_file, crossover_filtered_file,
+            crossover_raw_lineage, crossover_filtered_lineage
         )
         
-        if not crossover_success:
+        if not crossover_lineage_path:
             logger.error(f"第 {generation} 代: 交叉操作失败。")
             return None
 
         # 执行变异操作
         logger.info(f"第 {generation} 代: 开始变异操作...")
-        mutation_success = self._execute_ga_stage(
+        mutation_lineage_path = self._execute_ga_stage(
             "突变", 'operations/mutation/mutation_demo_finetune.py',
-            str(ga_input_pool_file), str(mutation_raw_file), str(mutation_filtered_file)
+            str(ga_input_pool_file), mutation_raw_file, mutation_filtered_file,
+            mutation_raw_lineage, mutation_filtered_lineage
         )
         
-        if not mutation_success:
+        if not mutation_lineage_path:
             logger.error(f"第 {generation} 代: 变异操作失败。")
             return None
 
         logger.info(f"第 {generation} 代: 交叉和变异操作串行完成。")
-        return str(crossover_filtered_file), str(mutation_filtered_file)
+        return (
+            str(crossover_filtered_file),
+            str(mutation_filtered_file),
+            str(crossover_lineage_path) if crossover_lineage_path else None,
+            str(mutation_lineage_path) if mutation_lineage_path else None
+        )
 
-    def run_offspring_evaluation(self, crossover_file: str, mutation_file: str, generation: int) -> Optional[str]:
+    def run_offspring_evaluation(
+        self,
+        crossover_file: str,
+        mutation_file: str,
+        generation: int,
+        crossover_lineage_file: Optional[str] = None,
+        mutation_lineage_file: Optional[str] = None
+    ) -> Optional[Tuple[str, Optional[str]]]:
         """
-        执行子代种群的评估（对接）。
+        执行子代种群的评估（对接），并生成血统记录。
         
         Args:
             crossover_file (str): 交叉后代文件路径。
             mutation_file (str): 突变后代文件路径。
             generation (int): 当前代数。
+            crossover_lineage_file (Optional[str]): 交叉产出对应的血统文件。
+            mutation_lineage_file (Optional[str]): 突变产出对应的血统文件。
             
         Returns:
-            Optional[str]: 成功则返回子代对接结果文件路径 失败则返回None。
+            Optional[Tuple[str, Optional[str]]]: (子代对接结果文件路径, 血统记录文件路径)。
         """
         logger.info(f"第 {generation} 代: 开始子代评估...")
         gen_dir = self.output_dir / f"generation_{generation}"
@@ -513,12 +886,31 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             str(offspring_raw_file), 
             str(offspring_formatted_file)
         )
+        offspring_lineage_file = gen_dir / "offspring_lineage.jsonl"
         if offspring_count == 0:
             logger.warning(f"第 {generation} 代: 经过滤和去重后，无有效子代分子。")
-            # 创建一个空的对接文件，避免后续对接步骤
+            # 创建一个空的对接文件和血统文件，避免后续步骤报错
             offspring_docked_file = gen_dir / "offspring_docked.smi"
-            open(offspring_docked_file, 'a').close()  # 创建一个空文件
-            return str(offspring_docked_file)
+            open(offspring_docked_file, 'a').close()
+            self._write_jsonl(offspring_lineage_file, [])
+            self.last_offspring_histories = set()
+            self.last_offspring_smiles = set()
+            return str(offspring_docked_file), str(offspring_lineage_file)
+
+        unique_smiles = self._read_smiles_from_file(offspring_formatted_file)
+        crossover_entries = self._read_jsonl(Path(crossover_lineage_file)) if crossover_lineage_file else []
+        mutation_entries = self._read_jsonl(Path(mutation_lineage_file)) if mutation_lineage_file else []
+        offspring_lineage_entries = self._combine_lineage_records(
+            generation,
+            unique_smiles,
+            crossover_entries,
+            mutation_entries
+        )
+        history_mapping = self._assign_histories_to_offspring(generation, offspring_lineage_entries)
+        self.last_offspring_histories = set(history_mapping.values())
+        self.last_offspring_smiles = set(history_mapping.keys())
+        self._write_jsonl(offspring_lineage_file, offspring_lineage_entries)
+        self._update_lineage_tracker(offspring_lineage_entries)
 
         logger.info(f"子代格式化完成: 共 {offspring_count} 个独特分子准备对接。")
 
@@ -548,7 +940,71 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
         docked_count = self._count_molecules(str(offspring_docked_file))
         logger.info(f"第 {generation} 代: 子代评估完成，{docked_count} 个分子已对接。")
 
-        return str(offspring_docked_file)
+        self._ingest_population_metrics(offspring_docked_file, generation, mark_active=False)
+
+        return str(offspring_docked_file), str(offspring_lineage_file)
+    def _combine_lineage_records(
+        self,
+        generation: int,
+        unique_smiles: List[str],
+        crossover_entries: List[Dict],
+        mutation_entries: List[Dict]
+    ) -> List[Dict]:
+        """合并交叉与突变的血统记录，并对齐到去重后的子代集合。"""
+        lineage_map: Dict[str, List[Dict]] = {}
+        for entry in crossover_entries + mutation_entries:
+            child = entry.get("child")
+            if not child:
+                continue
+            source_info = {
+                "operation": entry.get("operation"),
+                "parents": entry.get("parents", [])
+            }
+            sources = lineage_map.setdefault(child, [])
+            if source_info not in sources:
+                sources.append(source_info)
+
+        lineage_entries: List[Dict] = []
+        for smi in unique_smiles:
+            sources = lineage_map.get(smi)
+            if not sources:
+                continue
+            lineage_entries.append({
+                "generation": generation,
+                "child": smi,
+                "sources": sources
+            })
+        return lineage_entries
+    def _save_next_generation_lineage(self, generation: int, next_parents_file: str, offspring_lineage_file: Optional[str]) -> None:
+        """保存下一代父代的血统信息，便于追踪分子来源。"""
+        if not next_parents_file:
+            return
+        gen_dir = self.output_dir / f"generation_{generation}"
+        output_path = gen_dir / "next_generation_parents_lineage.jsonl"
+        parents_smiles = self._read_smiles_from_file(Path(next_parents_file))
+        offspring_entries = self._read_jsonl(Path(offspring_lineage_file)) if offspring_lineage_file else []
+        offspring_map = {entry.get("child"): entry for entry in offspring_entries}
+
+        records: List[Dict] = []
+        for smi in parents_smiles:
+            history = self.lineage_tracker.get(smi, [])
+            latest_sources: List[Dict] = []
+            origin = "unknown"
+            if history:
+                latest_event = history[-1]
+                latest_sources = latest_event.get("sources", [])
+                origin = "offspring" if latest_event.get("generation") == generation else "carryover"
+            elif smi in offspring_map:
+                latest_sources = offspring_map[smi].get("sources", [])
+                origin = "offspring"
+            records.append({
+                "generation": generation,
+                "child": smi,
+                "origin": origin,
+                "sources": latest_sources
+            })
+
+        self._write_jsonl(output_path, records)
 
     def run_selection(self, parent_docked_file: str, offspring_docked_file: str, generation: int) -> Optional[str]:
         """
@@ -657,6 +1113,7 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
         logger.info("GA-GPT工作流程全部完成!")
         logger.info(f"最终优化种群保存在: {current_parents_docked_file}")
         logger.info("=" * 60)
+        self._export_evomo_files()
         
         return True
 
@@ -686,6 +1143,9 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
         if unique_count == 0:
             logger.error("初始种群文件为空或处理失败。")
             return None
+
+        # 记录初代种群血统信息
+        self._record_initial_population(initial_formatted_file)
         
         # 3. 对初代种群进行对接
         initial_docked_file = gen_dir / "initial_population_docked.smi"
@@ -712,6 +1172,8 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
         if not docking_succeeded or docked_count == 0:
             logger.error("初代种群对接失败或未生成任何有效对接结果。")
             return None
+        mapping = self._ingest_population_metrics(initial_docked_file, generation=0, mark_active=True)
+        self._mark_histories_active(set(mapping.values()), generation=0)
         
         logger.info(f"初代种群对接完成: {docked_count} 个分子已评分。")
         return str(initial_docked_file)
@@ -745,13 +1207,20 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             logger.error(f"第{generation}代: 遗传操作失败，工作流终止。")
             return None
         
-        crossover_file, mutation_file = ga_children_files
+        crossover_file, mutation_file, crossover_lineage, mutation_lineage = ga_children_files
 
-        # 5. 子代评估（对接，但不进行评分分析）
-        offspring_docked_file = self.run_offspring_evaluation(crossover_file, mutation_file, generation)
-        if offspring_docked_file is None:
-             logger.error(f"第{generation}代: 子代评估失败，工作流终止。")
-             return None
+        # 5. 子代评估（对接，同时生成血统记录）
+        offspring_result = self.run_offspring_evaluation(
+            crossover_file,
+            mutation_file,
+            generation,
+            crossover_lineage,
+            mutation_lineage
+        )
+        if not offspring_result:
+            logger.error(f"第{generation}代: 子代评估失败，工作流终止。")
+            return None
+        offspring_docked_file, offspring_lineage_file = offspring_result
 
         # 6. 选择
         next_parents_docked_file = self.run_selection(
@@ -762,6 +1231,25 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
         if not next_parents_docked_file:
             logger.error(f"第{generation}代: 选择操作失败，工作流终止。")
             return None
+
+        selected_mapping = self._ingest_population_metrics(next_parents_docked_file, generation, mark_active=True)
+        new_active_histories = set(selected_mapping.values())
+        candidate_histories = set(self.current_active_histories)
+        candidate_histories.update(self.last_offspring_histories)
+        removed_histories = candidate_histories - new_active_histories
+        if removed_histories:
+            self._mark_histories_removed(removed_histories, generation)
+        self._mark_histories_active(new_active_histories, generation)
+        self.last_offspring_histories = set()
+        self.last_offspring_smiles = set()
+
+        
+        # 保存下一代父代的血统信息，便于追踪
+        self._save_next_generation_lineage(
+            generation,
+            next_parents_docked_file,
+            offspring_lineage_file
+        )
 
         # 7. 对选择后的精英种群进行评分分析（这是新的逻辑）
         self.run_selected_population_evaluation(next_parents_docked_file, generation)

@@ -7,7 +7,7 @@ import argparse
 import random
 import logging
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Tuple
 from contextlib import contextmanager
 from tqdm import tqdm
 from rdkit import Chem
@@ -53,6 +53,7 @@ class MutationExecutor:
             'Structure_check': lambda mol: mol is not None
         }        
         self.mutator = SmilesClickChem(rxn_library_vars, [], self.filter_object_dict)
+        self.lineage_records: List[Dict] = []
     def run_mutation_generation(self, parent_smiles: List[str], additional_smiles: List[str] = None) -> List[str]:
         if additional_smiles is None:
             additional_smiles = []            
@@ -109,6 +110,11 @@ class MutationExecutor:
                             new_smi not in total_population):
                             
                             mutation_results.append(new_smi)
+                            self.lineage_records.append({
+                                "child": new_smi,
+                                "operation": "mutation",
+                                "parents": [parent]
+                            })
                             self.logger.debug(f"成功生成新分子: {new_smi}")                            
                             # 更新进度条
                             if progress_bar:
@@ -139,28 +145,34 @@ class MutationExecutor:
         
         self.logger.info(f"变异完成: 目标 {num_mutations}, 实际生成 {len(unique_results)} 个独特分子")
         self.logger.info(f"总尝试次数: {attempts}, 成功率: {success_rate:.1f}%, 无法变异的分子数: {len(failed_molecules)}")
+
+        if len(unique_results) != len(self.lineage_records):
+            unique_set = set(unique_results)
+            self.lineage_records = [record for record in self.lineage_records if record.get("child") in unique_set]
         
         if len(unique_results) == 0:
             self.logger.warning("未能生成任何新分子，请检查输入分子是否包含可变异的官能团")
             
         return unique_results
 
-def run_mutation_simple(config: Dict, parent_smiles: List[str], additional_smiles: List[str] = None) -> List[str]:
+def run_mutation_simple(config: Dict, parent_smiles: List[str], additional_smiles: List[str] = None) -> Tuple[List[str], List[Dict]]:
     """
     简化的变异操作函数
     """
     try:
         executor = MutationExecutor(config)
-        return executor.run_mutation_generation(parent_smiles, additional_smiles or [])
+        results = executor.run_mutation_generation(parent_smiles, additional_smiles or [])
+        return results, executor.lineage_records
     except Exception as e:
         logger.error(f"变异操作主函数出错: {e}", exc_info=True)
-        return []
+        return [], []
 
 def main():
     parser = argparse.ArgumentParser(description='分子变异操作')
     parser.add_argument('--smiles_file', type=str, required=True, help='输入SMILES文件路径')
     parser.add_argument('--output_file', type=str, required=True, help='输出SMILES文件路径')
     parser.add_argument('--config_file', type=str, default='GA_gpt/config_example.json', help='配置文件路径')
+    parser.add_argument('--lineage_file', type=str, default=None, help='血统记录输出文件(JSONL)')
     
     args = parser.parse_args()
     
@@ -186,7 +198,7 @@ def main():
     parent_smiles = list(set(parent_smiles))
     logger.info(f"开始变异操作: {len(parent_smiles)} 个父代分子（已去重）")
     
-    mutated_smiles = run_mutation_simple(config, parent_smiles)
+    mutated_smiles, lineage_records = run_mutation_simple(config, parent_smiles)
     
     try:
         with open(args.output_file, 'w') as f:
@@ -194,7 +206,15 @@ def main():
         logger.info(f"变异结果已保存到: {args.output_file} ({len(mutated_smiles)} 个分子)")
     except Exception as e:
         logger.error(f"无法保存结果到 {args.output_file}: {e}")
+    
+    if args.lineage_file:
+        try:
+            with open(args.lineage_file, 'w', encoding='utf-8') as lineage_f:
+                for record in lineage_records:
+                    lineage_f.write(json.dumps(record, ensure_ascii=False) + '\n')
+            logger.info(f"血统记录已保存到: {args.lineage_file}")
+        except Exception as e:
+            logger.error(f"无法保存血统记录到 {args.lineage_file}: {e}")
 
 if __name__ == "__main__":
     main()
-

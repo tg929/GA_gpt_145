@@ -56,6 +56,8 @@ def run_workflow_for_receptor(config_path: str, receptor_name: str, output_dir: 
         success = executor.run_complete_workflow()        
         if success:
             logger.info(f"子进程成功完成: 受体 '{receptor_display_name}' (PID: {os.getpid()})")
+            logger.info(f"血统追踪记录位于: {executor.lineage_tracker_path}")
+            logger.info(f"EvoMol 导出文件: {executor.output_dir}/pop.csv, {executor.output_dir}/removed_ind_act_history.csv")
         else:
             logger.error(f"子进程失败: 受体 '{receptor_display_name}' (PID: {os.getpid()})")            
         return receptor_display_name, success

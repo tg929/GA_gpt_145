@@ -30,7 +30,9 @@ def main():
                       default=os.path.join(PROJECT_ROOT, "output/generation_crossover_0.smi"),
                       help="输出文件路径")
     parser.add_argument('--config_file', type=str, default='GA_gpt/config_example.json', 
-                      help='配置文件路径')    
+                      help='配置文件路径')
+    parser.add_argument('--lineage_file', type=str, default=None,
+                      help='可选的血统记录输出文件(JSONL)')
     args = parser.parse_args()    
     # 加载配置
     try:
@@ -68,6 +70,7 @@ def main():
     
     logger.info(f"开始交叉操作，本轮目标生成 {crossover_attempts} 个新分子")
     crossed_population = []
+    lineage_records = []
     attempts = 0
     max_attempts = crossover_attempts * max_attempts_multiplier
     
@@ -91,6 +94,11 @@ def main():
                 
             if Filter.run_filter_on_just_smiles(ligand_new_smiles, vars['filter_object_dict']):
                 crossed_population.append(ligand_new_smiles)
+                lineage_records.append({
+                    "child": ligand_new_smiles,
+                    "operation": "crossover",
+                    "parents": [parent1, parent2]
+                })
                 
         except Exception as e:
             logger.warning(f"交叉操作出错: {str(e)}")
@@ -106,6 +114,12 @@ def main():
         for smi in crossed_population:
             f.write(f"{smi}\n")
     logger.info(f"最终结果已保存至: {args.output_file} (仅包含新生成的分子)")
+
+    if args.lineage_file:
+        with open(args.lineage_file, 'w', encoding='utf-8') as lineage_f:
+            for record in lineage_records:
+                lineage_f.write(json.dumps(record, ensure_ascii=False) + '\n')
+        logger.info(f"血统记录已写入: {args.lineage_file}")
 
 if __name__ == "__main__":
     main() 
