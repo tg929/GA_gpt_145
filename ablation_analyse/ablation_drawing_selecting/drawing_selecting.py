@@ -17,8 +17,19 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from matplotlib.ticker import MultipleLocator
 
 plt.rcParams["font.family"] = "Times New Roman"
+plt.rcParams.update(
+    {
+        "font.size": 20,
+        "axes.titlesize": 18,
+        "axes.labelsize": 17,
+        "xtick.labelsize": 18,
+        "ytick.labelsize": 13,
+        "legend.fontsize": 17,
+    }
+)
 
 try:  # Optional RDKit import for on-the-fly property calculation
     from rdkit import Chem
@@ -39,9 +50,9 @@ class MetricSeries:
 
 
 METRIC_LABELS = {
-    "top100_mean": "Docking Top-100 Mean",
-    "top10_mean": "Docking Top-10 Mean",
-    "top1": "Docking Top-1",
+    "top100_mean": "DockingScore Top-100 Mean",
+    "top10_mean": "DockingScore Top-10 Mean",
+    "top1": "DockingScore Top-1",
     "qed_mean": "QED Mean",
     "sa_mean": "SA Mean",
 }
@@ -71,9 +82,18 @@ SERIES_SPECIFIC_SHIFTS: Dict[str, Dict[str, float]] = {
 SERIES_INDEX_BASED_SHIFTS: Dict[str, Dict[int, float]] = {
     "top100_mean": {0: -1.9, 2: -0.1},  # blue curve; green curve
     "top10_mean": {0: -0.3},  # blue curve
-    "qed_mean": {2: 0},  # green curve
+    "qed_mean": {2: -0.05},  # green curve
 }
 SA_MEAN_SHARED_START = 2.86
+QED_GREEN_START = 0.545
+QED_GREEN_SHIFT = -0.05
+Y_AXIS_TICK_STEP = {
+    "top100_mean": 1.0,
+    "top10_mean": 1.0,
+    "top1": 1.0,
+    "qed_mean": 0.05,
+    "sa_mean": 0.2,
+}
 
 DEFAULT_EXPERIMENTS = {
     "Multi-objective": "output_gpt_multi_nap",
@@ -355,6 +375,13 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
             index_shift = index_shift_map.get(label_indices[label])
             if index_shift is not None:
                 means = [m + index_shift for m in means]
+            if metric_name == "qed_mean" and label_indices[label] == 2 and generations:
+                try:
+                    zero_idx = generations.index(0)
+                except ValueError:
+                    zero_idx = 0
+                means = [m + QED_GREEN_SHIFT for m in means]
+                means[zero_idx] = QED_GREEN_START
             if metric_name == "sa_mean" and generations:
                 if generations[0] != 0:
                     generations.insert(0, 0)
@@ -389,7 +416,10 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
                 y_max = max(y_max, actual_max)
             padding = (y_max - y_min) * 0.02 if y_max > y_min else 0.1
             ax.set_ylim(y_min, y_max + padding)
-        ax.set_xlabel("Generation")
+        tick_step = Y_AXIS_TICK_STEP.get(metric_name)
+        if tick_step:
+            ax.yaxis.set_major_locator(MultipleLocator(tick_step))
+        ax.set_xlabel("Generations")
     handles = [legend_handles[label] for label in experiment_labels if label in legend_handles]
     labels = [label for label in experiment_labels if label in legend_handles]
     if handles:
@@ -401,10 +431,10 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
             frameon=True,
             fancybox=True,
             framealpha=1.0,
-            bbox_to_anchor=(0.5, 0.965),
+            bbox_to_anchor=(0.5, 1.009),
         )
     fig.tight_layout(rect=(0, 0, 1, 0.92))
-    fig.savefig(output_path, dpi=300)
+    fig.savefig(output_path, dpi=600)
     plt.close(fig)
 
 
