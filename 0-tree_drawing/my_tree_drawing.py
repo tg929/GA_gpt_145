@@ -10,9 +10,40 @@ import csv
 from collections import Counter
 from pathlib import Path
 from packaging import version
+import matplotlib
 import matplotlib.pyplot as plt
 
 plt.rcParams['font.family'] = ['Times New Roman']
+
+# ========= 关键修改 1：关闭 constrained_layout 干扰 =========
+# 某些绘图函数内部会开启 constrained_layout=True 或者最终 tight_layout()
+# 会把色标挤开，导致你调 pad/fraction 没效果。这里用猴补丁统一关闭。
+_orig_subplots = plt.subplots
+def _subplots_patched(*args, **kwargs):
+    kwargs['constrained_layout'] = False  # 无论内部怎么传，都强制关闭
+    return _orig_subplots(*args, **kwargs)
+plt.subplots = _subplots_patched
+
+# ========= 关键修改 2：强制压缩 colorbar 与主图的间距 =========
+# 同时补丁 pyplot.colorbar 和 Figure.colorbar，确保 pad 生效且更小
+from matplotlib.figure import Figure as _Figure
+_orig_pyplot_colorbar = plt.colorbar
+def _pyplot_colorbar_patched(mappable=None, *args, **kwargs):
+    # 你可以把 0.02 改为 0.01 再更贴一点
+    kwargs['pad'] = 0.005
+    # 可选：一起细一点的色标厚度
+    # kwargs['fraction'] = 0.05
+    return _orig_pyplot_colorbar(mappable, *args, **kwargs)
+plt.colorbar = _pyplot_colorbar_patched
+
+_orig_fig_colorbar = _Figure.colorbar
+def _fig_colorbar_patched(self, mappable, *args, **kwargs):
+    kwargs['pad'] = 0.005
+    # 可选：
+    # kwargs['fraction'] = 0.05
+    return _orig_fig_colorbar(self, mappable, *args, **kwargs)
+_Figure.colorbar = _fig_colorbar_patched
+# ==========================================================
 
 # 确保可以导入 EvoMol 包
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -226,8 +257,6 @@ def main() -> None:
         print("显示的操作类型:", allowed_ops)
 
     # 确认 Matplotlib 版本兼容（EvoMol 推荐 3.5.x）
-    import matplotlib
-    from packaging import version
     if version.parse(matplotlib.__version__) >= version.parse("3.6"):
         sys.exit(
             f"检测到 Matplotlib {matplotlib.__version__}，请安装 3.5.x "
@@ -236,6 +265,8 @@ def main() -> None:
 
     from evomol.plot_exploration import exploration_graph  # type: ignore
 
+    # 重要：不使用 tight_layout / constrained_layout，让我们的 pad 生效
+    #（若内部调用，我们的补丁会将其效果抵消）
     exploration_graph(
         model_path=str(model_path),
         layout=args.layout,
