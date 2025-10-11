@@ -9,6 +9,12 @@ import sys
 from pathlib import Path
 from packaging import version
 
+# 确保可以导入 EvoMol 包
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = (SCRIPT_DIR.parent / "EvoMol-master").resolve()
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -23,8 +29,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output_dir",
         type=Path,
-        default=Path("/data1/ytg/medium_models/GA_gpt/EvoMol-master/my_tree_drawing"),
-        help="指定输出目录，将生成的图像复制到此处（默认: /data1/.../my_tree_drawing）"
+        default=Path("/data1/ytg/medium_models/GA_gpt/0-tree_drawing/my_tree_drawing"),
+        help="指定输出目录，将生成的图像复制到此处（默认: 0-tree_drawing/my_tree_drawing）"
     )
     parser.add_argument(
         "--layout",
