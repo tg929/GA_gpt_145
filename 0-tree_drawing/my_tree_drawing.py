@@ -186,7 +186,8 @@ def main() -> None:
         mols_per_row=args.mols_per_row,
         draw_n_mols=None if args.draw_n_mols < 0 else args.draw_n_mols,
         cmap=args.cmap,
-        graphviz_args=args.graphviz_args
+        graphviz_args=args.graphviz_args,
+        normalize_prop=args.prop.lower() == "sa"
     )
 
     output_dir = args.output_dir.resolve()
