@@ -10,6 +10,9 @@ import csv
 from collections import Counter
 from pathlib import Path
 from packaging import version
+import matplotlib.pyplot as plt
+
+plt.rcParams['font.family'] = ['Times New Roman']
 
 # 确保可以导入 EvoMol 包
 SCRIPT_DIR = Path(__file__).resolve().parent

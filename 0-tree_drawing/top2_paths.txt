@@ -1,0 +1,21 @@
+[Docking Score Rank 1] history: GEN1-ROOT|GPT-1-07e3aa|CROSSOVER-780206_e03f5e|MUTATION-2b1c11|CROSSOVER-c5f8f3_23e12f|MUTATION-dbb305|CROSSOVER-016144_e5a02b
+Final docking_score: -13.9
+Evolution path (history_data | docking_score | smiles):
+  GEN1-ROOT | N/A | N/A
+  GEN1-ROOT|GPT-1-07e3aa | N/A | N/A
+  GEN1-ROOT|GPT-1-07e3aa|CROSSOVER-780206_e03f5e | -11.2 | [H]Oc1nc(C(=O)N2C([H])([H])C([H])([H])N(C([H])([H])c3nc(C([H])([H])[H])c(C([H])([H])[H])n3[H])C([H])([H])C2([H])[H])c([H])c2c([H])c([H])c([H])c([H])c12
+  GEN1-ROOT|GPT-1-07e3aa|CROSSOVER-780206_e03f5e|MUTATION-2b1c11 | -11.2 | Cc1nc(CN2CCN(C(=O)c3cc4ccccc4c(C#N)n3)CC2)[nH]c1C
+  GEN1-ROOT|GPT-1-07e3aa|CROSSOVER-780206_e03f5e|MUTATION-2b1c11|CROSSOVER-c5f8f3_23e12f | -13.1 | [H]Oc1nc(C(=O)N2C([H])([H])C([H])([H])N(C([H])([H])c3nc(C([H])([H])[H])c(C([H])([H])[H])n3C(=O)N3C([H])([H])C([H])([H])C(=O)C([H])([H])C3([H])[H])C([H])([H])C2([H])[H])c([H])c2c([H])c([H])c([H])c([H])c12
+  GEN1-ROOT|GPT-1-07e3aa|CROSSOVER-780206_e03f5e|MUTATION-2b1c11|CROSSOVER-c5f8f3_23e12f|MUTATION-dbb305 | -12.8 | Cc1nc(CN2CCN(C(=O)c3cc4ccccc4c(C#N)n3)CC2)n(C(=O)N2CCC(=O)CC2)c1C
+  GEN1-ROOT|GPT-1-07e3aa|CROSSOVER-780206_e03f5e|MUTATION-2b1c11|CROSSOVER-c5f8f3_23e12f|MUTATION-dbb305|CROSSOVER-016144_e5a02b | -13.9 | [H]c1c([H])c([H])c2c([H])c(C(=O)N3C([H])([H])C([H])([H])N(C([H])([H])c4nc(C([H])([H])[H])c(C([H])([H])[H])n4C(=O)N4C([H])([H])C([H])([H])C(=O)C([H])([H])C4([H])[H])C([H])([H])C3([H])[H])nc(C#N)c2c1[H]
+
+[Docking Score Rank 2] history: GEN1-ROOT|GPT-1-07e3aa|CROSSOVER-780206_e03f5e|MUTATION-2b1c11|MUTATION-c5f8f3|CROSSOVER-222484_3ad4e9
+Final docking_score: -13.5
+Evolution path (history_data | docking_score | smiles):
+  GEN1-ROOT | N/A | N/A
+  GEN1-ROOT|GPT-1-07e3aa | N/A | N/A
+  GEN1-ROOT|GPT-1-07e3aa|CROSSOVER-780206_e03f5e | -11.2 | [H]Oc1nc(C(=O)N2C([H])([H])C([H])([H])N(C([H])([H])c3nc(C([H])([H])[H])c(C([H])([H])[H])n3[H])C([H])([H])C2([H])[H])c([H])c2c([H])c([H])c([H])c([H])c12
+  GEN1-ROOT|GPT-1-07e3aa|CROSSOVER-780206_e03f5e|MUTATION-2b1c11 | -11.2 | Cc1nc(CN2CCN(C(=O)c3cc4ccccc4c(C#N)n3)CC2)[nH]c1C
+  GEN1-ROOT|GPT-1-07e3aa|CROSSOVER-780206_e03f5e|MUTATION-2b1c11|MUTATION-c5f8f3 | -12.4 | Cc1nc(CN2CCN(C(=O)c3cc4ccccc4c(C#N)n3)CC2)n(C(=O)CNC(=O)C2CC2)c1C
+  GEN1-ROOT|GPT-1-07e3aa|CROSSOVER-780206_e03f5e|MUTATION-2b1c11|MUTATION-c5f8f3|CROSSOVER-222484_3ad4e9 | -13.5 | [H]Oc1nc(C(=O)N2C([H])([H])C([H])([H])N(C([H])([H])c3nc(C([H])([H])[H])c(C([H])([H])[H])n3C(=O)N3C([H])([H])c4c(nc5c([H])c([H])c(C([H])([H])[H])c([H])c5c4[H])C([H])([H])C3([H])[H])C([H])([H])C2([H])[H])c([H])c2c([H])c([H])c([H])c([H])c12
+
