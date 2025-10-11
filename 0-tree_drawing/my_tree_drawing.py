@@ -6,6 +6,8 @@
 """
 import argparse
 import sys
+import csv
+from collections import Counter
 from pathlib import Path
 from packaging import version
 
@@ -142,6 +144,23 @@ def parse_args() -> argparse.Namespace:
         default="-Grankdir=LR -Gnodesep=0.5 -Granksep=0.9",
         help="传递给 Graphviz 的额外参数"
     )
+    parser.add_argument(
+        "--top_roots",
+        type=int,
+        default=5,
+        help="高亮贡献最大的根节点数量，0 表示不高亮"
+    )
+    parser.add_argument(
+        "--top_ops",
+        type=int,
+        default=3,
+        help="在图中允许显示的操作类型数量，按最终种群出现频次排序，0 表示全部不显示"
+    )
+    parser.add_argument(
+        "--pop_only",
+        action="store_true",
+        help="仅绘制 pop.csv 中的最终种群，不包含 removed_ind_act_history.csv"
+    )
     return parser.parse_args()
 
 
@@ -156,6 +175,47 @@ def main() -> None:
     removed_file = model_path / "removed_ind_act_history.csv"
     if not pop_file.is_file() or not removed_file.is_file():
         sys.exit(f"错误：未找到 pop.csv 或 removed_ind_act_history.csv 于 {model_path}")
+
+    def load_histories(csv_path: Path):
+        histories = []
+        with csv_path.open(newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                history = row.get("history_data")
+                if history:
+                    histories.append(history)
+        return histories
+
+    def extract_root(history: str) -> str:
+        return history.split("|", 1)[0]
+
+    def extract_ops(history: str):
+        ops = []
+        for token in history.split("|")[1:]:
+            op = token.split("_")[0]
+            op = op.split("-")[0]
+            if op:
+                ops.append(op)
+        return ops
+
+    pop_histories = load_histories(pop_file)
+
+    highlight_roots = []
+    if args.top_roots > 0:
+        root_counter = Counter(extract_root(h) for h in pop_histories)
+        highlight_roots = [root for root, _ in root_counter.most_common(args.top_roots)]
+
+    allowed_ops = None
+    if args.top_ops > 0:
+        op_counter = Counter()
+        for hist in pop_histories:
+            op_counter.update(extract_ops(hist))
+        allowed_ops = [op for op, _ in op_counter.most_common(args.top_ops)]
+
+    if highlight_roots:
+        print("高亮根节点:", highlight_roots)
+    if allowed_ops is not None:
+        print("显示的操作类型:", allowed_ops)
 
     # 确认 Matplotlib 版本兼容（EvoMol 推荐 3.5.x）
     import matplotlib
@@ -187,7 +247,10 @@ def main() -> None:
         draw_n_mols=None if args.draw_n_mols < 0 else args.draw_n_mols,
         cmap=args.cmap,
         graphviz_args=args.graphviz_args,
-        normalize_prop=args.prop.lower() == "sa"
+        normalize_prop=args.prop.lower() == "sa",
+        highlight_roots=highlight_roots,
+        allowed_ops=allowed_ops,
+        pop_only=args.pop_only
     )
 
     output_dir = args.output_dir.resolve()
