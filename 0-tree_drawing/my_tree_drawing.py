@@ -161,6 +161,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="仅绘制 pop.csv 中的最终种群，不包含 removed_ind_act_history.csv"
     )
+    parser.add_argument(
+        "--unique_histories",
+        action="store_true",
+        help="为每条历史添加唯一后缀，避免重复合并"
+    )
     return parser.parse_args()
 
 
@@ -247,10 +252,11 @@ def main() -> None:
         draw_n_mols=None if args.draw_n_mols < 0 else args.draw_n_mols,
         cmap=args.cmap,
         graphviz_args=args.graphviz_args,
-        normalize_prop=args.prop.lower() == "sa",
+        normalize_prop=args.prop.lower() in {"sa", "docking_score"},
         highlight_roots=highlight_roots,
         allowed_ops=allowed_ops,
-        pop_only=args.pop_only
+        pop_only=args.pop_only,
+        unique_histories=args.unique_histories
     )
 
     output_dir = args.output_dir.resolve()
