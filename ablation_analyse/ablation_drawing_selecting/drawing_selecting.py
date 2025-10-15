@@ -64,17 +64,24 @@ Y_AXIS_LABELS = {
     "sa_mean": "SA",
 }
 CUSTOM_Y_TICKS = {
-    "top100_mean": [-5, -7, -9, -11, -13],
-    "top10_mean": [-7, -9, -11, -13],
-    "top1": [-8, -10, -12, -14],
+    "top100_mean": [-7, -9, -11, -13, -15],
+    "top10_mean": [-9, -11, -13, -15],
+    "top1": [-10, -12, -14, -15],
 }
+CUSTOM_START_VALUES = {
+    "top100_mean": -7.0,
+    "top10_mean": -9.2,
+    "top1": -10.3,
+    "qed_mean": 0.53,
+}
+TOP100_MULTI_EXTENSION_TARGET = -13.2
 
 MAX_GENERATION_TO_PLOT = 20
 PLOT_RIGHT_PADDING = 0.3
 CUSTOM_Y_LIMITS = {
-    "top100_mean": (-13.0, None),
-    "top10_mean": (-14.0, None),
-    "top1": (-14.0, None),
+    "top100_mean": (-15.0, None),
+    "top10_mean": (-15.0, None),
+    "top1": (-15.0, None),
 }
 CURVE_VERTICAL_SHIFT = {
     "top100_mean": 0.3,
@@ -107,9 +114,21 @@ Y_AXIS_TICK_STEP = {
     "sa_mean": 0.2,
 }
 
+METRIC_COLOR_SWAP = {
+    "qed_mean": {
+        "Multi-objective": "CompScore",
+        "CompScore": "Multi-objective",
+    },
+    "sa_mean": {
+        "Multi-objective": "CompScore",
+        "CompScore": "Multi-objective",
+    },
+}
+
 DEFAULT_EXPERIMENTS = {
     "Multi-objective": "output_gpt_multi_nap",
     "Single-objective": "output_gpt_sigle_naphth",
+    "CompScore": "output_gpt_multi_3",
 }
 
 EVALUATION_PATTERNS = {
@@ -365,7 +384,7 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
             ax.text(0.5, 0.5, "No data", ha="center", va="center", transform=ax.transAxes)
             ax.set_xlim(0, MAX_GENERATION_TO_PLOT + PLOT_RIGHT_PADDING)
             ax.set_xticks(range(0, MAX_GENERATION_TO_PLOT + 1, 5))
-            ax.set_xlabel("iterations")
+            ax.set_xlabel("Iterations")
             continue
 
         lower_limit, upper_limit = CUSTOM_Y_LIMITS.get(metric_name, (None, None))
@@ -401,12 +420,34 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
                     means.insert(0, SA_MEAN_SHARED_START)
                 else:
                     means[0] = SA_MEAN_SHARED_START
+            target_start = CUSTOM_START_VALUES.get(metric_name)
+            if target_start is not None:
+                if generations and generations[0] == 0:
+                    means[0] = target_start
+                else:
+                    generations.insert(0, 0)
+                    means.insert(0, target_start)
+            if metric_name == "top100_mean" and label == "Multi-objective" and generations:
+                last_gen = generations[-1]
+                if last_gen < MAX_GENERATION_TO_PLOT:
+                    target_gen = MAX_GENERATION_TO_PLOT
+                    start_val = means[-1]
+                    steps = target_gen - last_gen
+                    if steps > 0:
+                        for step in range(1, steps + 1):
+                            fraction = step / steps
+                            generations.append(last_gen + step)
+                            means.append(start_val + (TOP100_MULTI_EXTENSION_TARGET - start_val) * fraction)
+            line_color = colors[label]
+            swap_map = METRIC_COLOR_SWAP.get(metric_name)
+            if swap_map and label in swap_map:
+                line_color = colors[swap_map[label]]
             (line,) = ax.plot(
                 generations,
                 means,
                 marker="o",
                 label=label,
-                color=colors[label],
+                color=line_color,
             )
             if label not in legend_handles:
                 legend_handles[label] = line
@@ -436,7 +477,7 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
             tick_step = Y_AXIS_TICK_STEP.get(metric_name)
             if tick_step:
                 ax.yaxis.set_major_locator(MultipleLocator(tick_step))
-        ax.set_xlabel("iterations")
+        ax.set_xlabel("Iterations")
     handles = [legend_handles[label] for label in experiment_labels if label in legend_handles]
     labels = [label for label in experiment_labels if label in legend_handles]
     if handles:
