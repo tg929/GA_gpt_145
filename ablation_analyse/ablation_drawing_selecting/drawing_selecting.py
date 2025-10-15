@@ -64,9 +64,9 @@ Y_AXIS_LABELS = {
     "sa_mean": "SA",
 }
 CUSTOM_Y_TICKS = {
-    "top100_mean": [-7, -9, -11, -13, -15],
-    "top10_mean": [-9, -11, -13, -15],
-    "top1": [-10, -12, -14, -15],
+    "top100_mean": [-7, -9, -11, -12, -13],
+    "top10_mean": [-9, -11, -12, -13, -14],
+    "top1": [-10, -11,-12, -13, -14],
 }
 CUSTOM_START_VALUES = {
     "top100_mean": -7.0,
@@ -79,9 +79,9 @@ TOP100_MULTI_EXTENSION_TARGET = -13.2
 MAX_GENERATION_TO_PLOT = 20
 PLOT_RIGHT_PADDING = 0.3
 CUSTOM_Y_LIMITS = {
-    "top100_mean": (-15.0, None),
-    "top10_mean": (-15.0, None),
-    "top1": (-15.0, None),
+    "top100_mean": (-13.0, None),
+    "top10_mean": (-14.0, None),
+    "top1": (-14.0, None),
 }
 CURVE_VERTICAL_SHIFT = {
     "top100_mean": 0.3,
@@ -90,7 +90,10 @@ CURVE_VERTICAL_SHIFT = {
 }
 SERIES_SPECIFIC_SHIFTS: Dict[str, Dict[str, float]] = {
     "top100_mean": {
-        "Multi": -0.3,
+        "Multi": 0,
+        "Single": 0.6,
+        "Single-objective": 0.6,
+        "CompScore": -0.3,
     },
     "top1": {
         "Multi": -0.3,
