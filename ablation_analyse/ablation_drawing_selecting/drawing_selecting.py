@@ -143,6 +143,11 @@ METRIC_COLOR_SWAP = {
     },
 }
 
+LEGEND_LABEL_OVERRIDES = {
+    "Multi": "Multi-objects",
+    "Single": "Single-object",
+}
+
 DEFAULT_EXPERIMENTS = {
     "Multi-objective": "output_gpt_multi_nap",
     "Single-objective": "output_gpt_sigle_naphth",
@@ -498,8 +503,13 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
             if tick_step:
                 ax.yaxis.set_major_locator(MultipleLocator(tick_step))
         ax.set_xlabel("Iterations")
-    handles = [legend_handles[label] for label in experiment_labels if label in legend_handles]
-    labels = [label for label in experiment_labels if label in legend_handles]
+    handles = []
+    labels = []
+    for label in experiment_labels:
+        if label not in legend_handles:
+            continue
+        handles.append(legend_handles[label])
+        labels.append(LEGEND_LABEL_OVERRIDES.get(label, label))
     if handles:
         fig.legend(
             handles,
