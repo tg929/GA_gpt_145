@@ -22,12 +22,12 @@ from matplotlib.ticker import MultipleLocator
 plt.rcParams["font.family"] = "Times New Roman"
 plt.rcParams.update(
     {
-        "font.size": 20,
-        "axes.titlesize": 18,
-        "axes.labelsize": 17,
-        "xtick.labelsize": 18,
-        "ytick.labelsize": 13,
-        "legend.fontsize": 17,
+        "font.size": 24,
+        "axes.titlesize": 24,
+        "axes.labelsize": 22,
+        "xtick.labelsize": 20,
+        "ytick.labelsize": 20,
+        "legend.fontsize": 22,
     }
 )
 
@@ -50,11 +50,23 @@ class MetricSeries:
 
 
 METRIC_LABELS = {
-    "top100_mean": "DockingScore Top-100 Mean",
-    "top10_mean": "DockingScore Top-10 Mean",
-    "top1": "DockingScore Top-1",
-    "qed_mean": "QED Mean",
-    "sa_mean": "SA Mean",
+    "top100_mean": "Top-100 Mean",
+    "top10_mean": "Top-10 Mean",
+    "top1": "Top-1",
+    "qed_mean": "Mean",
+    "sa_mean": "Mean",
+}
+Y_AXIS_LABELS = {
+    "top100_mean": "Docking Score",
+    "top10_mean": "Docking Score",
+    "top1": "Docking Score",
+    "qed_mean": "QED",
+    "sa_mean": "SA",
+}
+CUSTOM_Y_TICKS = {
+    "top100_mean": [-5, -7, -9, -11, -13],
+    "top10_mean": [-7, -9, -11, -13],
+    "top1": [-8, -10, -12, -14],
 }
 
 MAX_GENERATION_TO_PLOT = 20
@@ -322,7 +334,7 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
     label_indices = {label: idx for idx, label in enumerate(experiment_labels)}
 
     fig_width = max(6, 4 * len(metric_order))
-    fig, axes = plt.subplots(1, len(metric_order), figsize=(fig_width, 4), sharey=False)
+    fig, axes = plt.subplots(1, len(metric_order), figsize=(fig_width, 5), sharey=False)
 
     if not isinstance(axes, Iterable):  # pragma: no cover - guard for single metric scenario
         axes = [axes]
@@ -331,6 +343,7 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
     for ax, metric_name in zip(axes, metric_order):
         ax.grid(True, linestyle="--", alpha=0.3)
         ax.set_title(METRIC_LABELS[metric_name])
+        ax.set_ylabel(Y_AXIS_LABELS.get(metric_name, ""))
         drawn = False
         plotted_means: List[float] = []
         series_payload: List[Tuple[str, List[int], List[float]]] = []
@@ -352,7 +365,7 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
             ax.text(0.5, 0.5, "No data", ha="center", va="center", transform=ax.transAxes)
             ax.set_xlim(0, MAX_GENERATION_TO_PLOT + PLOT_RIGHT_PADDING)
             ax.set_xticks(range(0, MAX_GENERATION_TO_PLOT + 1, 5))
-            ax.set_xlabel("Generation")
+            ax.set_xlabel("iterations")
             continue
 
         lower_limit, upper_limit = CUSTOM_Y_LIMITS.get(metric_name, (None, None))
@@ -416,10 +429,14 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
                 y_max = max(y_max, actual_max)
             padding = (y_max - y_min) * 0.02 if y_max > y_min else 0.1
             ax.set_ylim(y_min, y_max + padding)
-        tick_step = Y_AXIS_TICK_STEP.get(metric_name)
-        if tick_step:
-            ax.yaxis.set_major_locator(MultipleLocator(tick_step))
-        ax.set_xlabel("Generations")
+        custom_ticks = CUSTOM_Y_TICKS.get(metric_name)
+        if custom_ticks:
+            ax.set_yticks(custom_ticks)
+        else:
+            tick_step = Y_AXIS_TICK_STEP.get(metric_name)
+            if tick_step:
+                ax.yaxis.set_major_locator(MultipleLocator(tick_step))
+        ax.set_xlabel("iterations")
     handles = [legend_handles[label] for label in experiment_labels if label in legend_handles]
     labels = [label for label in experiment_labels if label in legend_handles]
     if handles:
