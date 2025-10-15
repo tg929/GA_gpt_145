@@ -342,7 +342,7 @@ def main():
     plt.subplots_adjust(top=0.88, bottom=0.06, left=0.06, right=0.98, hspace=0.25, wspace=0.3)
 
     # 保存图片
-    out_dir = Path('/data1/ytg/medium_models/GA_gpt/Overleaf Projects/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms')
+    out_dir = Path('/data1/ytg/medium_models/GA_gpt/compare_baselins_drawing')
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / 'linewave_iterations.png'
     plt.savefig(str(out_path), dpi=300, bbox_inches='tight', pad_inches=0.1, facecolor='white', edgecolor='none')

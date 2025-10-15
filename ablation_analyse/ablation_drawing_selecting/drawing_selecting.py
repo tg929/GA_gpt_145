@@ -440,8 +440,10 @@ def plot_metrics(metrics_by_experiment: Dict[str, Dict[str, MetricSeries]], outp
                             means.append(start_val + (TOP100_MULTI_EXTENSION_TARGET - start_val) * fraction)
             line_color = colors[label]
             swap_map = METRIC_COLOR_SWAP.get(metric_name)
-            if swap_map and label in swap_map:
-                line_color = colors[swap_map[label]]
+            if swap_map:
+                swap_label = swap_map.get(label)
+                if swap_label and swap_label in colors:
+                    line_color = colors[swap_label]
             (line,) = ax.plot(
                 generations,
                 means,
