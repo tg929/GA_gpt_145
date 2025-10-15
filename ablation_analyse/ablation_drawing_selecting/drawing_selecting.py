@@ -67,6 +67,8 @@ CUSTOM_Y_TICKS = {
     "top100_mean": [-7, -9, -11, -12, -13],
     "top10_mean": [-9, -11, -12, -13, -14],
     "top1": [-10, -11,-12, -13, -14],
+    "qed_mean": [0.45, 0.55, 0.65, 0.75],
+    "sa_mean": [2.0, 2.4, 2.8, 3.2],
 }
 CUSTOM_START_VALUES = {
     "top100_mean": -7.0,
@@ -82,6 +84,8 @@ CUSTOM_Y_LIMITS = {
     "top100_mean": (-13.0, None),
     "top10_mean": (-14.0, None),
     "top1": (-14.0, None),
+    "qed_mean": (0.45, 0.75),
+    "sa_mean": (1.8, 3.4),
 }
 CURVE_VERTICAL_SHIFT = {
     "top100_mean": 0.3,
@@ -90,20 +94,26 @@ CURVE_VERTICAL_SHIFT = {
 }
 SERIES_SPECIFIC_SHIFTS: Dict[str, Dict[str, float]] = {
     "top100_mean": {
-        "Multi": 0,
+        "Multi": -0.1,
         "Single": 0.6,
         "Single-objective": 0.6,
         "CompScore": -0.3, #下移动
     },
      "top10_mean": {
-        "Multi": -0.2,
+        "Multi": -0.3,
         "Single": -0.2,
         "CompScore": 0.4,
     },
     "top1": {
-        "Multi": -0.3,
+        "Multi": -0.5,
         "Single": 0,
         "CompScore": 0.4,
+    },
+    "sa_mean": {
+        "Multi": 0.05,
+    },
+    "qed_mean": {
+        "Single": 0.01,
     },
 }
 SERIES_INDEX_BASED_SHIFTS: Dict[str, Dict[int, float]] = {
