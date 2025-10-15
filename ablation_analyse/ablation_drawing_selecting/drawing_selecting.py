@@ -93,12 +93,17 @@ SERIES_SPECIFIC_SHIFTS: Dict[str, Dict[str, float]] = {
         "Multi": 0,
         "Single": 0.6,
         "Single-objective": 0.6,
-        "CompScore": -0.3,
+        "CompScore": -0.3, #下移动
+    },
+     "top10_mean": {
+        "Multi": -0.2,
+        "Single": -0.2,
+        "CompScore": 0.4,
     },
     "top1": {
         "Multi": -0.3,
-        "Single": -0.2,
-        "CompScore": 0.3,
+        "Single": 0,
+        "CompScore": 0.4,
     },
 }
 SERIES_INDEX_BASED_SHIFTS: Dict[str, Dict[int, float]] = {
