@@ -95,26 +95,39 @@ class MutationExecutor:
                 try:
                     # 使用suppress_stdout_stderr来避免输出干扰
                     with suppress_stdout_stderr():
-                        new_smiles_list = self.mutator.run_smiles_click2(parent)                    
-                    if not new_smiles_list:
+                        new_smiles_info = self.mutator.run_smiles_click2(parent, return_metadata=True)
+                    if not new_smiles_info:
                         failed_molecules.add(parent)
                         consecutive_failures += 1
                         continue
 
                     consecutive_failures = 0
                     
-                    for new_smi in new_smiles_list:
+                    for info in new_smiles_info:
+                        new_smi = info.get("smiles") if isinstance(info, dict) else None
+                        if not new_smi:
+                            continue
                         is_valid = all(check(new_smi) for check in self.filter_object_dict.values())
                         if (new_smi and is_valid and
                             new_smi not in mutation_results and 
                             new_smi not in total_population):
                             
                             mutation_results.append(new_smi)
-                            self.lineage_records.append({
+                            record = {
                                 "child": new_smi,
                                 "operation": "mutation",
                                 "parents": [parent]
-                            })
+                            }
+                            rule_name = info.get("reaction_name") if isinstance(info, dict) else None
+                            if rule_name:
+                                record["mutation_rule"] = rule_name
+                            reaction_id = info.get("reaction_id") if isinstance(info, dict) else None
+                            if reaction_id is not None:
+                                record["mutation_reaction_id"] = reaction_id
+                            comp_ids = info.get("complementary_mol_ids") if isinstance(info, dict) else None
+                            if comp_ids:
+                                record["complementary_molecules"] = list(comp_ids)
+                            self.lineage_records.append(record)
                             self.logger.debug(f"成功生成新分子: {new_smi}")                            
                             # 更新进度条
                             if progress_bar:

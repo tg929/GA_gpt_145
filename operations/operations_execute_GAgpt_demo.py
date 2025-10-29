@@ -27,6 +27,7 @@ import multiprocessing
 import shutil  
 from rdkit import Chem
 from rdkit.Chem import QED
+from datasets.decompose.demo_frags import break_into_fragments
 from fragment_GPT.utils import sascorer
 
 # 移除全局日志配置，避免多进程日志冲突
@@ -218,6 +219,130 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
         except Exception as exc:
             logger.warning(f"读取文件 {file_path} 时发生错误: {exc}")
         return smiles
+
+    def _tokenize_smiles_sequence(self, smiles: str, include_eos: bool = True) -> Optional[str]:
+        """将单个SMILES转换为[BOS]/[SEP]/[EOS]格式的片段序列。"""
+        if not smiles:
+            return None
+        mol = Chem.MolFromSmiles(smiles)
+        frag_count: Optional[int] = None
+        fragments: List[str] = []
+        if mol:
+            try:
+                result = break_into_fragments(mol, smiles)
+                fragments_candidate = None
+                if isinstance(result, tuple):
+                    if len(result) >= 3:
+                        fragments_candidate = result[1]
+                        frag_count = result[2]
+                    if (not fragments_candidate or isinstance(fragments_candidate, float)) and len(result) >= 4:
+                        fragments_candidate = result[3]
+                if isinstance(fragments_candidate, list):
+                    fragments = [frag for frag in fragments_candidate if isinstance(frag, str) and frag]
+                elif isinstance(fragments_candidate, str):
+                    fragments = [frag for frag in fragments_candidate.split() if frag]
+                else:
+                    fragments = []
+                if frag_count is None or frag_count <= 1:
+                    fragments = [smiles] if not fragments else fragments
+            except Exception:
+                fragments = [smiles]
+        else:
+            fragments = [smiles]
+        if not fragments:
+            fragments = [smiles]
+        joined = "[SEP]".join(fragments)
+        if include_eos:
+            return f"[BOS]{joined}[EOS]"
+        return f"[BOS]{joined}[SEP]"
+
+    def _generate_tokenized_file(
+        self,
+        source_path: Optional[str],
+        output_path: Path,
+        include_eos: bool = True,
+        first_column_only: bool = True
+    ) -> None:
+        """根据输入SMILES生成带有序列标记的SMI文件。"""
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        if not source_path:
+            output_path.touch()
+            return
+        src_path = Path(source_path)
+        if not src_path.exists():
+            output_path.touch()
+            return
+        lines: List[str] = []
+        try:
+            with open(src_path, 'r', encoding='utf-8') as src:
+                for line in src:
+                    stripped = line.strip()
+                    if not stripped:
+                        continue
+                    if first_column_only:
+                        parts = stripped.split()
+                        if not parts:
+                            continue
+                        stripped = parts[0]
+                    tokenized = self._tokenize_smiles_sequence(stripped, include_eos=include_eos)
+                    if tokenized:
+                        lines.append(tokenized)
+        except Exception as exc:
+            logger.warning(f"读取来源文件 {src_path} 以生成序列格式时失败: {exc}")
+            output_path.touch()
+            return
+        try:
+            with open(output_path, 'w', encoding='utf-8') as dst:
+                for entry in lines:
+                    dst.write(entry + '\n')
+        except Exception as exc:
+            logger.warning(f"写入序列文件 {output_path} 时失败: {exc}")
+
+    def _copy_pre_tokenized_file(self, source_path: Optional[str], output_path: Path) -> None:
+        """将已经是标记序列的文件复制到目标路径。"""
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        if not source_path:
+            output_path.touch()
+            return
+        src_path = Path(source_path)
+        if not src_path.exists():
+            output_path.touch()
+            return
+        try:
+            with open(src_path, 'r', encoding='utf-8') as src, open(output_path, 'w', encoding='utf-8') as dst:
+                dst.writelines(src.readlines())
+        except Exception as exc:
+            logger.warning(f"复制标记序列文件 {src_path} 时失败: {exc}")
+            output_path.touch()
+
+    def _export_tokenized_representations(
+        self,
+        generation: int,
+        parent_smiles_file: Path,
+        masked_fragments_file: Optional[str],
+        gpt_generated_file: Optional[str]
+    ) -> None:
+        """在@gpt_generated目录下输出父代、GPT子代和掩码片段的序列表示。"""
+        gen_dir = self.output_dir / f"generation_{generation}"
+        gpt_dir = gen_dir / "gpt_generated"
+        gpt_dir.mkdir(parents=True, exist_ok=True)
+        self._generate_tokenized_file(
+            str(parent_smiles_file),
+            gpt_dir / "initial_population.smi",
+            include_eos=True,
+            first_column_only=True
+        )
+        self._generate_tokenized_file(
+            gpt_generated_file,
+            gpt_dir / "gpt_generated_molecules_tokenized.smi",
+            include_eos=True,
+            first_column_only=True
+        )
+        self._copy_pre_tokenized_file(
+            masked_fragments_file,
+            gpt_dir / "masked_fragments.smi"
+        )
+
     def _update_lineage_tracker(self, lineage_entries: List[Dict]) -> None:
         """更新内存中的血统跟踪数据并同步到磁盘。"""
         if not lineage_entries:
@@ -232,6 +357,7 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
                 "sources": entry.get("sources", [])
             })
         self._save_lineage_tracker()
+
     def _record_initial_population(self, formatted_file: Path) -> None:
         """记录初代种群的血统来源。"""
         smiles_list = self._read_smiles_from_file(formatted_file)
@@ -667,11 +793,10 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             child = entry.get("child")
             if not child or child not in filtered_smiles:
                 continue
-            kept_entries.append({
-                "child": child,
-                "operation": entry.get("operation"),
-                "parents": entry.get("parents", [])
-            })
+            filtered_entry = dict(entry)
+            filtered_entry["child"] = child
+            filtered_entry["parents"] = list(filtered_entry.get("parents", []))
+            kept_entries.append(filtered_entry)
         return kept_entries
 
     def run_decomposition_and_masking(self, parent_smiles_file: str, generation: int) -> Optional[str]:
@@ -960,6 +1085,13 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
                 "operation": entry.get("operation"),
                 "parents": entry.get("parents", [])
             }
+            if entry.get("operation") == "mutation":
+                if "mutation_rule" in entry:
+                    source_info["mutation_rule"] = entry["mutation_rule"]
+                if "mutation_reaction_id" in entry:
+                    source_info["mutation_reaction_id"] = entry["mutation_reaction_id"]
+                if "complementary_molecules" in entry:
+                    source_info["complementary_molecules"] = entry["complementary_molecules"]
             sources = lineage_map.setdefault(child, [])
             if source_info not in sources:
                 sources.append(source_info)
@@ -1200,6 +1332,13 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
         else:
             # 3. GPT生成
             gpt_generated_file = self.run_gpt_generation(masked_file, generation)
+
+        self._export_tokenized_representations(
+            generation,
+            parent_smiles_file,
+            masked_file,
+            gpt_generated_file
+        )
 
         # 4. 遗传操作
         ga_children_files = self.run_ga_operations(str(parent_smiles_file), gpt_generated_file, generation)
