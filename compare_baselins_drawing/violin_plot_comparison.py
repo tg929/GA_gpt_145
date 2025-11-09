@@ -205,16 +205,16 @@ def main():
              fontsize=28, fontfamily='Times New Roman')
     
     # 创建图例
-    legend_labels = ['AutoGrow4.0', 'RGA', 'FragGPT-GA']
+    legend_labels = ['AutoGrow4.0', 'RGA', 'FragMLM-GA']
     legend_elements = [plt.Rectangle((0,0),1,1, facecolor=colors[i], alpha=0.7, 
                                    edgecolor='black', label=legend_labels[i]) 
                       for i in range(len(model_order))]
-    fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 0.01), 
+    fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.04), 
               ncol=3, fontsize=24)
     
     # 调整布局 (紧凑布局，去除空白)
     plt.tight_layout()
-    plt.subplots_adjust(top=0.98, bottom=0.04, left=0.06, right=0.98, hspace=0.35, wspace=0.3)
+    plt.subplots_adjust(top=0.9, bottom=0.04, left=0.06, right=0.98, hspace=0.35, wspace=0.3)
     
     # 保存图片 (按IEEE论文标准)
     output_path = "/data1/ytg/medium_models/GA_gpt/papers_0/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/violin_comparison.png"

@@ -257,7 +257,7 @@ def create_paper_radar_chart():
         'Graph-GA': 'Graph-GA',
         'AutoGrow4.0': 'AutoGrow4.0',
         'RGA': 'RGA',
-        'FragGPT-GA': 'FragGPT-GA (ours)'
+        'FragGPT-GA': 'FragMLM-GA (ours)'
     }
     
     # 重新排序所有图例
@@ -284,7 +284,7 @@ if __name__ == "__main__":
     fig = create_paper_radar_chart()
     
     # 保存为论文格式
-    output_path = "papers/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/paper_radar_chart.png"
+    output_path = "papers_0/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/paper_radar_chart.png"
     fig.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white', 
                 edgecolor='none', format='png')
     print(f"论文雷达图已保存至: {output_path}")

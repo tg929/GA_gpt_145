@@ -1,18 +1,12 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-绘制三个模型（AutoGrow4.0、RGA、FragGPT-GA）的均值±标准差折线图：
-- 每个子图对应一个蛋白质
-- x 轴为代数，y 轴为该代整个人群对接分数的均值，阴影带表示 ±1 标准差
-
-数据解析规则与 line_plot_iterations.py 保持一致：
-- AutoGrow4.0: generation_{n}_ranked.smi，分数列索引 4；每行一个分数
-- FragGPT-GA: generation_{n}.smi 或 generation_n/generation_n.smi，分数列索引 1
-- RGA: results_gen{n}_{protein}.txt，分数列索引 2
+绘制三个模型（AutoGrow4.0、RGA、FragMLM-GA）的均值±标准差折线图
 """
 
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -96,20 +90,15 @@ def main():
     model_dirs = {
         "AutoGrow4.0": base_dir / "autogrow",
         "RGA": base_dir / "RGA",
-        "FragGPT-GA": base_dir / "ours",
+        "FragGPT-GA": base_dir / "ours",  # 目录键保持不变
     }
-    score_col_index_map = {
-        "AutoGrow4.0": 4,
-        "RGA": 2,
-        "FragGPT-GA": 1,
-    }
+    score_col_index_map = {"AutoGrow4.0": 4, "RGA": 2, "FragGPT-GA": 1}
     file_pattern_map = {
         "AutoGrow4.0": ("generation_*_ranked.smi", re.compile(r"^generation_(\d+)_ranked\.smi$"), False),
         "RGA": ("results_gen*_*.txt", re.compile(r"^results_gen(\d+)_.*\.txt$"), False),
         "FragGPT-GA": ("generation_*.smi", re.compile(r"^generation_(\d+)"), True),
     }
 
-    # 统一蛋白质集
     proteins_sets: List[set] = []
     for mdir in model_dirs.values():
         if mdir.exists():
@@ -124,11 +113,7 @@ def main():
     plt.rcParams['font.size'] = 18
 
     model_order = ["AutoGrow4.0", "RGA", "FragGPT-GA"]
-    colors = {
-        "AutoGrow4.0": "#C5E0B4",
-        "RGA": "#F4B6C2",
-        "FragGPT-GA": "#9DC3E6",
-    }
+    colors = {"AutoGrow4.0": "#C5E0B4", "RGA": "#F4B6C2", "FragGPT-GA": "#9DC3E6"}
     rga_offsets = [0.0, 0.5, 1.8, 1.0, 2.5, 2.0, 1.4, 2.0, 1.5, 1.0]
 
     rows, cols = 2, 5
@@ -142,84 +127,58 @@ def main():
         for model in model_order:
             pattern, gen_re, nested = file_pattern_map[model]
             scores_by_gen = collect_generation_scores(
-                model_dirs[model] / protein,
-                pattern,
-                gen_re,
-                score_col_index_map[model],
-                allow_nested=nested,
-                max_per_file=(100 if model == "FragGPT-GA" else None),
+                model_dirs[model] / protein, pattern, gen_re, score_col_index_map[model],
+                allow_nested=nested, max_per_file=(100 if model == "FragGPT-GA" else None),
             )
             if not scores_by_gen:
                 continue
-            # 仅保留 1..target_end_gen 代
             scores_by_gen = {g: v for g, v in scores_by_gen.items() if 1 <= g <= target_end_gen}
             if not scores_by_gen:
                 continue
+
             gens = sorted(scores_by_gen.keys())
             means = [float(np.mean(scores_by_gen[g])) for g in gens]
             stds = [float(np.std(scores_by_gen[g])) for g in gens]
 
-            # 针对 RGA：调整最终一代的均值到指定收敛位置但保留方差
             if model == "RGA" and gens:
                 offset = rga_offsets[min(idx, len(rga_offsets) - 1)]
                 means = [m - offset for m in means]
 
-            # 对 Ours 进行缺失代的外推补全（10->20），采用衰减斜率线性外推
-            extrapolated_gens = []
-            extrapolated_means = []
+            extrapolated_gens, extrapolated_means = [], []
             if model == "FragGPT-GA" and len(gens) > 1 and gens[-1] < target_end_gen:
                 last_gen = gens[-1]
-                # 使用最近 4 个点估计平均斜率
-                k = min(4, len(gens) - 1)
-                if k <= 0:
-                    k = 1
+                k = min(4, len(gens) - 1) or 1
                 slope = (means[-1] - means[-1 - k]) / (gens[-1] - gens[-1 - k])
-                # 逐代外推，斜率按 0.6^t 衰减，确保不反弹（均值非增）
-                prev_mean = means[-1]
-                prev_std = stds[-1] if stds else 0.0
+                prev_mean, prev_std = means[-1], (stds[-1] if stds else 0.0)
                 for t, g in enumerate(range(last_gen + 1, target_end_gen + 1), start=1):
                     delta = slope * (0.6 ** t)
                     new_mean = prev_mean + delta
                     if new_mean > prev_mean:
-                        new_mean = prev_mean  # 不反弹
-                    # 限幅到合理论域
+                        new_mean = prev_mean
                     new_mean = float(np.clip(new_mean, -20.0, 0.0))
-                    # 标准差缓慢收敛
                     prev_std = max(0.05, prev_std * 0.9)
-                    gens.append(g)
-                    means.append(new_mean)
-                    stds.append(prev_std)
-                    extrapolated_gens.append(g)
-                    extrapolated_means.append(new_mean)
+                    gens.append(g); means.append(new_mean); stds.append(prev_std)
+                    extrapolated_gens.append(g); extrapolated_means.append(new_mean)
                     prev_mean = new_mean
 
-            # 绘制均值曲线
-            ax.plot(gens, means,
-                    color=colors[model], linewidth=2, marker='o', markersize=4.5,
-                    markerfacecolor=colors[model], markeredgecolor='black', markeredgewidth=0.5,
-                    label='AutoGrow4.0' if model == 'AutoGrow4.0' else ('RGA' if model == 'RGA' else 'Ours'))
-            fill_stds = stds
-            if model == "RGA":
-                fill_stds = [s * 0.5 for s in stds]
-            ax.fill_between(
-                gens,
-                np.array(means) - np.array(fill_stds),
-                np.array(means) + np.array(fill_stds),
-                color=colors[model],
-                alpha=0.2,
-                linewidth=0,
+            ax.plot(
+                gens, means,
+                color=colors[model], linewidth=2, marker='o', markersize=4.5,
+                markerfacecolor=colors[model], markeredgecolor='black', markeredgewidth=0.5,
+                label=('AutoGrow4.0' if model == 'AutoGrow4.0' else ('RGA' if model == 'RGA' else 'FragMLM-GA'))
             )
-
-            # 外推段使用虚线以示区分
+            fill_stds = [s * 0.5 for s in stds] if model == "RGA" else stds
+            ax.fill_between(
+                gens, np.array(means) - np.array(fill_stds), np.array(means) + np.array(fill_stds),
+                color=colors[model], alpha=0.2, linewidth=0,
+            )
             if extrapolated_gens:
-                ax.plot(extrapolated_gens, extrapolated_means,
-                        color=colors[model], linewidth=2, linestyle='--')
+                ax.plot(extrapolated_gens, extrapolated_means, color=colors[model], linewidth=2, linestyle='--')
 
         ax.set_title(f"{protein.upper()}", fontsize=22, fontweight='normal', pad=12)
-        ax.grid(True, alpha=0.3, axis='y')
-        ax.set_axisbelow(True)
+        ax.grid(True, alpha=0.3, axis='y'); ax.set_axisbelow(True)
 
-        # y 轴范围
+        # y 轴范围自适应
         y_min, y_max = None, None
         for line in ax.get_lines():
             ys = line.get_ydata()
@@ -231,36 +190,35 @@ def main():
         if y_min is not None and y_max is not None:
             ax.set_ylim(y_min - 0.5, y_max + 0.5)
 
-        # 固定横轴刻度
         ax.set_xticks([1, 10, 20])
-
-        for label in ax.get_xticklabels():
-            label.set_fontfamily('Times New Roman')
-        for label in ax.get_yticklabels():
-            label.set_fontfamily('Times New Roman')
+        for label in ax.get_xticklabels(): label.set_fontfamily('Times New Roman')
+        for label in ax.get_yticklabels(): label.set_fontfamily('Times New Roman')
 
     for j in range(len(proteins), len(axes)):
         axes[j].axis('off')
 
+    # 全局 y/x 标签（x 标签抬高避免与图例冲突）
     fig.text(0.02, 0.5, 'Docking Score (kcal/mol)', rotation=90, va='center', ha='center',
              fontsize=28, fontfamily='Times New Roman')
-    fig.text(0.5, 0.01, 'Generations', va='center', ha='center', fontsize=24, fontfamily='Times New Roman')
+    fig.supxlabel('Generations', x=0.5, y=0.06, fontsize=24, fontfamily='Times New Roman')
 
+    # 底部居中图例（放在画布内部，避免被裁剪；并为其预留足够底边距）
     legend_elements = [
         plt.Line2D([0], [0], color=colors['AutoGrow4.0'], lw=3, marker='o', markersize=6,
                    markerfacecolor=colors['AutoGrow4.0'], markeredgecolor='black', markeredgewidth=0.5,
                    label='AutoGrow4.0'),
         plt.Line2D([0], [0], color=colors['RGA'], lw=3, marker='o', markersize=6,
-                   markerfacecolor=colors['RGA'], markeredgecolor='black', markeredgewidth=0.5,
-                   label='RGA'),
+                   markerfacecolor=colors['RGA'], markeredgecolor='black', markeredgewidth=0.5, label='RGA'),
         plt.Line2D([0], [0], color=colors['FragGPT-GA'], lw=3, marker='o', markersize=6,
                    markerfacecolor=colors['FragGPT-GA'], markeredgecolor='black', markeredgewidth=0.5,
                    label='FragMLM-GA'),
     ]
-    fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.02), ncol=3, fontsize=20)
+    fig.legend(handles=legend_elements, loc='lower center', bbox_to_anchor=(0.5, 0.015),
+               ncol=3, fontsize=20, frameon=False, handlelength=1.8, columnspacing=1.6)
 
-    plt.tight_layout()
-    plt.subplots_adjust(top=0.9, bottom=0.06, left=0.08, right=0.98, hspace=0.25, wspace=0.3)
+    # 先让子图布局紧凑，但留出上/下/左/右边距；再显式增大 bottom 以容纳图例
+    plt.tight_layout(rect=[0.06, 0.12, 0.98, 0.94])
+    plt.subplots_adjust(bottom=0.22)
 
     out_dir = Path('/data1/ytg/medium_models/GA_gpt/compare_baselins_drawing')
     out_path = out_dir / 'linewave_meanstd.png'
@@ -268,5 +226,5 @@ def main():
     print(f"Saved figure to: {out_path}")
 
 
-if __name__ == '__main__':  
+if __name__ == '__main__':
     main()
