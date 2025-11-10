@@ -207,8 +207,8 @@ def create_paper_radar_chart():
     ax.set_xticks(angles[:-1])
     
     # 自定义标签位置和方向
-    labels = ['Binding\nAffinity', 'Drug-likeness\n(QED)', 
-              'Synthetic\nAccessibility', 'Novelty']
+    labels = ['Binding\nAffinity', 'QED', 
+              'SA', 'Novelty']
     
     # 手动设置每个标签的位置和旋转角度
     for i, (angle, label) in enumerate(zip(angles[:-1], labels)):
@@ -257,7 +257,7 @@ def create_paper_radar_chart():
         'Graph-GA': 'Graph-GA',
         'AutoGrow4.0': 'AutoGrow4.0',
         'RGA': 'RGA',
-        'FragGPT-GA': 'FragMLM-GA (ours)'
+        'FragGPT-GA': 'FragEvo (ours)'
     }
     
     # 重新排序所有图例

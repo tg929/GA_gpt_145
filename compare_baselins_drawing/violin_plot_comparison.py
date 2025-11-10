@@ -205,7 +205,7 @@ def main():
              fontsize=28, fontfamily='Times New Roman')
     
     # 创建图例
-    legend_labels = ['AutoGrow4.0', 'RGA', 'FragMLM-GA']
+    legend_labels = ['AutoGrow4.0', 'RGA', 'FragEvo']
     legend_elements = [plt.Rectangle((0,0),1,1, facecolor=colors[i], alpha=0.7, 
                                    edgecolor='black', label=legend_labels[i]) 
                       for i in range(len(model_order))]

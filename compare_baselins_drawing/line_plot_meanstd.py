@@ -255,7 +255,7 @@ def main():
                    label='RGA'),
         plt.Line2D([0], [0], color=colors['FragGPT-GA'], lw=3, marker='o', markersize=6,
                    markerfacecolor=colors['FragGPT-GA'], markeredgecolor='black', markeredgewidth=0.5,
-                   label='FragMLM-GA'),
+                   label='FragEvo'),
     ]
     fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.02), ncol=3, fontsize=20)
 
