@@ -1,14 +1,26 @@
 # Fdb version 4
+<<<<<<< HEAD
 ["bibtex bare_jrnl_new_sample4"] 1758825343.63844 "bare_jrnl_new_sample4.aux" "bare_jrnl_new_sample4.bbl" "bare_jrnl_new_sample4" 1758825350.60443 0
   "./references_1.bib" 1756312620.94583 16766 9a98c96fc37851edaa6101d19160f44a ""
   "/usr/local/texlive/2025/texmf-dist/bibtex/bst/ieeetran/IEEEtran.bst" 1440712899 57748 7c8250ecf02814ce6ddc0cdbb63df1dd ""
   "bare_jrnl_new_sample4.aux" 1758825350.26349 9033 4bb625ffb2b71feea2913f3b11fbb31c "pdflatex"
+=======
+["bibtex bare_jrnl_new_sample4"] 1756448365.48476 "bare_jrnl_new_sample4.aux" "bare_jrnl_new_sample4.bbl" "bare_jrnl_new_sample4" 1758257388.22062 0
+  "./references_1.bib" 1756312620.94583 16766 9a98c96fc37851edaa6101d19160f44a ""
+  "/usr/local/texlive/2025/texmf-dist/bibtex/bst/ieeetran/IEEEtran.bst" 1440712899 57748 7c8250ecf02814ce6ddc0cdbb63df1dd ""
+  "bare_jrnl_new_sample4.aux" 1758257387.82053 8944 7ba207b3b65ff9eddb2c6aef8be33ba0 "pdflatex"
+>>>>>>> 10201b3 (last : putup paper related)
   (generated)
   "bare_jrnl_new_sample4.bbl"
   "bare_jrnl_new_sample4.blg"
   (rewritten before read)
+<<<<<<< HEAD
 ["pdflatex"] 1758825343.7958 "/data1/ytg/medium_models/GA_gpt/Overleaf Projects/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms/bare_jrnl_new_sample4.tex" "bare_jrnl_new_sample4.pdf" "bare_jrnl_new_sample4" 1758825350.60461 0
   "/data1/ytg/medium_models/GA_gpt/Overleaf Projects/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms/bare_jrnl_new_sample4.tex" 1758825279.85236 51409 eec81d93cccb71f483a96646ba2dc7d6 ""
+=======
+["pdflatex"] 1758257381.34171 "/data1/ytg/medium_models/GA_gpt/Overleaf Projects/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms/bare_jrnl_new_sample4.tex" "bare_jrnl_new_sample4.pdf" "bare_jrnl_new_sample4" 1758257388.22088 0
+  "/data1/ytg/medium_models/GA_gpt/Overleaf Projects/Enhancing Molecular Generation withFragGPT-Guided Genetic Algorithms/bare_jrnl_new_sample4.tex" 1756447465.94759 51328 8f03f2317d07e08fc76836b8cd9462ac ""
+>>>>>>> 10201b3 (last : putup paper related)
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -108,11 +120,19 @@
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1756102751 3345754 4f73532846c2a9db5b596a86d06761da ""
   "/usr/local/texlive/2025/texmf.cnf" 1756102458.05111 455 5b996dcaa0eb4ef14a83b026bc0a008c ""
   "IEEEtran.cls" 1756312620.96483 282108 7379a03af5f3d0dad26db23a43c3a726 ""
+<<<<<<< HEAD
   "bare_jrnl_new_sample4.aux" 1758825350.26349 9033 4bb625ffb2b71feea2913f3b11fbb31c "pdflatex"
   "bare_jrnl_new_sample4.bbl" 1758825343.78957 10240 35d3f7efd4fd07c56609bf8fb4003d13 "bibtex bare_jrnl_new_sample4"
   "bare_jrnl_new_sample4.tex" 1758825279.85236 51409 eec81d93cccb71f483a96646ba2dc7d6 ""
   "linewave_iterations.png" 1756457635.31128 679370 0e4f828440865d5c46c245c1412a0582 ""
   "linewave_meanstd.png" 1758784498.78864 1051905 547af781255c9ef85a6a573799a6b1b2 ""
+=======
+  "bare_jrnl_new_sample4.aux" 1758257387.82053 8944 7ba207b3b65ff9eddb2c6aef8be33ba0 "pdflatex"
+  "bare_jrnl_new_sample4.bbl" 1756448365.64035 10240 de2bda8aee97180eba5f050f75c916a4 "bibtex bare_jrnl_new_sample4"
+  "bare_jrnl_new_sample4.tex" 1756447465.94759 51328 8f03f2317d07e08fc76836b8cd9462ac ""
+  "linewave_iterations.png" 1756457635.31128 679370 0e4f828440865d5c46c245c1412a0582 ""
+  "linewave_meanstd.png" 1756457831.58955 1035624 c771cccef30240d22e1d4c6c2dec8c19 ""
+>>>>>>> 10201b3 (last : putup paper related)
   "model.png" 1756312620.90783 129747 66870e738875b1a798aaa567c650223d ""
   "radar.png" 1756312621.01983 401920 74586650f6fc80066702b50021c0f4ea ""
   "violin_new_new.png" 1756312621.24283 1366970 8673837a0d0e356d169ae5eab76ae9fe ""
