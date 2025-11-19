@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-绘制三个模型（AutoGrow4.0, RGA, FragGPT-GA）在10种蛋白质上对接分数的小提琴图对比
+绘制三个模型（AutoGrow4.0, RGA, FragEvo）在10种蛋白质上对接分数的小提琴图对比
 """
 
 import pandas as pd
@@ -59,7 +59,7 @@ def extract_docking_scores(base_dir, model_name, score_column_index):
 
 def main():
     # 数据目录
-    base_path = "/data1/ytg/medium_models/GA_gpt/compare_baselins_drawing"
+    base_path = "compare_baselins_drawing"
     
     # 提取三个模型的数据
     print("Extracting AutoGrow4.0 data...")
@@ -76,10 +76,10 @@ def main():
         2  # 第3列（索引2）
     )
     
-    print("\nExtracting FragGPT-GA data...")
+    print("\nExtracting FragEvo data...")
     fraggpt_data = extract_docking_scores(
-        os.path.join(base_path, "FragGPT_GA"), 
-        "FragGPT-GA", 
+        os.path.join(base_path, "FragEvo"), 
+        "FragEvo", 
         1  # 第2列（索引1）
     )
     
@@ -112,34 +112,25 @@ def main():
     # 定义颜色（与模型图保持一致的配色方案）
     # RGB: 浅绿色(197,224,180), 浅蓝色(157,195,230), 浅黄色(248,203,173)
     colors = ['#C5E0B4', '#9DC3E6', '#F8CBAD']  # 浅绿色、浅蓝色、浅黄色
-    model_order = ['AutoGrow4.0', 'RGA', 'FragGPT-GA']
-    
-    # 为每种蛋白质绘制子图
+    model_order = ['AutoGrow4.0', 'RGA', 'FragEvo']    
     for idx, protein in enumerate(proteins):
-        ax = axes[idx]
-        
-        # 准备该蛋白质的数据
-        protein_data = all_data[all_data['Protein'] == protein]
-        
-        # 为每个模型准备数据
+        ax = axes[idx]       
+  
+        protein_data = all_data[all_data['Protein'] == protein]        
         violin_data = []
         for model in model_order:
             model_protein_data = protein_data[protein_data['Model'] == model]['Docking_Score'].values
             violin_data.append(model_protein_data)
-            print(f"{protein} - {model}: {len(model_protein_data)} data points")
-        
-        # 绘制小提琴图
+            print(f"{protein} - {model}: {len(model_protein_data)} data points")        
         violin_parts = ax.violinplot(violin_data, positions=range(1, len(model_order) + 1), 
                                    showmeans=True, showmedians=True, widths=0.7)
         
-        # 设置颜色
         for i, pc in enumerate(violin_parts['bodies']):
             pc.set_facecolor(colors[i])
             pc.set_alpha(0.7)
             pc.set_edgecolor('black')
             pc.set_linewidth(1)
         
-        # 设置其他元素的颜色
         violin_parts['cmeans'].set_colors('red')
         violin_parts['cmeans'].set_linewidth(2)
         violin_parts['cmedians'].set_colors('blue')
@@ -148,16 +139,13 @@ def main():
         violin_parts['cmaxes'].set_colors('black')
         violin_parts['cmins'].set_colors('black')
         
-        # 添加散点图显示数据分布
         for i, model in enumerate(model_order):
             model_data = violin_data[i]
-            if len(model_data) > 0:
-                # 添加少量随机抖动以避免重叠
+            if len(model_data) > 0:               
                 x_pos = np.random.normal(i + 1, 0.02, len(model_data))
                 ax.scatter(x_pos, model_data, alpha=0.4, s=15, color=colors[i], 
-                          edgecolors='black', linewidth=0.3)
-        
-        # 设置子图属性
+                          edgecolors='black', linewidth=0.3)        
+       
         ax.set_xticks(range(1, len(model_order) + 1))
         ax.set_xticklabels(['Auto', 'RGA', 'Ours'], fontsize=20, rotation=0, ha='center', fontfamily='Times New Roman')
         ax.set_title(f'{protein.upper()}', fontsize=22, fontweight='normal', pad=15, fontfamily='Times New Roman')
@@ -172,21 +160,18 @@ def main():
         for label in ax.get_yticklabels():
             label.set_fontfamily('Times New Roman')
         for label in ax.get_xticklabels():
-            label.set_fontfamily('Times New Roman')
-        
-        # 添加网格
+            label.set_fontfamily('Times New Roman')        
+       
         ax.grid(True, alpha=0.3, axis='y')
-        ax.set_axisbelow(True)
-        
-        # Y轴标签在后面统一设置
-        
+        ax.set_axisbelow(True)        
+       
         # 添加TOP1统计信息（最佳分数，即最小值）
         stats_text = []
         display_names = ['Auto', 'RGA', 'Ours']
         for i, model in enumerate(model_order):
             model_data = protein_data[protein_data['Model'] == model]['Docking_Score']
             if len(model_data) > 0:
-                top1_score = model_data.min()  # 对接分数越小越好，所以用min()
+                top1_score = model_data.min() 
                 stats_text.append(f"{display_names[i]}: {top1_score:.1f}")
         
         # 在右上角添加TOP1统计信息
@@ -197,22 +182,19 @@ def main():
     
     # 设置总标题（已移除）
     # fig.suptitle('Docking Score Comparison Across Three Models for 10 Protein Targets', 
-    #             fontsize=16, fontweight='bold', y=0.95)
-    
-    # 添加全局Y轴标签（居中放置）
+    #             fontsize=16, fontweight='bold', y=0.95)    
+   
     fig.text(0.02, 0.5, 'Docking Score (kcal/mol)', rotation=90, 
              verticalalignment='center', horizontalalignment='center',
              fontsize=28, fontfamily='Times New Roman')
-    
-    # 创建图例
+   
     legend_labels = ['AutoGrow4.0', 'RGA', 'FragEvo']
     legend_elements = [plt.Rectangle((0,0),1,1, facecolor=colors[i], alpha=0.7, 
                                    edgecolor='black', label=legend_labels[i]) 
                       for i in range(len(model_order))]
     fig.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, 1.04), 
-              ncol=3, fontsize=24)
-    
-    # 调整布局 (紧凑布局，去除空白)
+              ncol=3, fontsize=24)    
+   
     plt.tight_layout()
     plt.subplots_adjust(top=0.9, bottom=0.04, left=0.06, right=0.98, hspace=0.35, wspace=0.3)
     

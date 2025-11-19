@@ -1,16 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-论文专用雷达图生成器
-===================
-生成适合论文首页使用的简洁雷达图
-"""
-
 import matplotlib.pyplot as plt
 import numpy as np
 from math import pi
 
-# 设置专业的学术风格
+# 设置
 plt.rcParams['font.family'] = ['Times New Roman']
 plt.rcParams['font.size'] = 8
 plt.rcParams['axes.labelsize'] = 8
@@ -18,12 +12,10 @@ plt.rcParams['axes.titlesize'] = 9
 plt.rcParams['legend.fontsize'] = 7
 plt.rcParams['figure.titlesize'] = 9
 
-def create_paper_radar_chart():
-    """创建适合论文的简洁雷达图"""
+def create_paper_radar_chart():  
     
-    # 创建图形，增加宽度以容纳图例
-    fig, ax = plt.subplots(figsize=(5.5, 2.8), subplot_kw=dict(projection='polar'))
-    
+   
+    fig, ax = plt.subplots(figsize=(5.5, 2.8), subplot_kw=dict(projection='polar'))    
     # 包含论文表格中的所有方法
     methods_data = {
         'screening': {
@@ -217,21 +209,19 @@ def create_paper_radar_chart():
         y = 1.15  # 稍微超出雷达图范围
         
         # 根据位置决定文字方向
-        if i == 0:  # 右侧 (0度)
+        if i == 0:  
             rotation = 90
-        elif i == 1:  # 上方 (90度)
+        elif i == 1:  
             rotation = 0
-        elif i == 2:  # 左侧 (180度)
+        elif i == 2:  
             rotation = -90
-        else:  # 下方 (270度)
+        else:  
             rotation = 0
             
         ax.text(x, y, label, rotation=rotation, ha='center', va='center',
-                fontsize=12, fontweight='normal', transform=ax.transData)
+                fontsize=12, fontweight='normal', transform=ax.transData)    
     
-    # 移除默认标签
-    ax.set_xticklabels([])
-    
+    ax.set_xticklabels([])    
     # 设置径向轴
     ax.set_ylim(0, 1)
     ax.set_yticks([0.2, 0.4, 0.6, 0.8, 1.0])
@@ -284,7 +274,7 @@ if __name__ == "__main__":
     fig = create_paper_radar_chart()
     
     # 保存为论文格式
-    output_path = "papers_0/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/paper_radar_chart.png"
+    output_path = "pictures_model/paper_radar_chart.png"
     fig.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white', 
                 edgecolor='none', format='png')
     print(f"论文雷达图已保存至: {output_path}")

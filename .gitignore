@@ -28,6 +28,14 @@ EvoMol-master/
 2_output/*
 3-output/*
 4-output/*
+*.pdbqt
+*.sdf
+*.log
+*.txt
+*.pdb
+*.jsonl
+
+
 
 
 

@@ -1,0 +1,1102 @@
+{
+  "C#CC(C)(C)NCC(C)=O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C#CC1(CO)CC1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C#CCCNS(C)(=O)=O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C#CCCn1ccncc1=O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C#CCNC[C@H](O)C=C": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C#CCNS(C)(=O)=O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C#CCSCC(=O)NCCCNC(C)=O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C#C[C@H]1C[C@@H]1CO": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C/C=C(/C)CC": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C/C=C/[C@@H](C)O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C/C=C\\C(C)=O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C=C/C=C\\CC=C": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C=CCCC(=O)N1CCC(=O)CC1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C=CCCC[C@H](C)NC(=O)[C@H](C)OC": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C=CCNC(=O)[C@@H](C#N)C(=O)[C@H]1CCC(=O)C1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C=C[C@@H](C)ON=CC(C)C": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C=C[C@@](C)(O)CNCc1cc[nH]c1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C=Cc1c(CC)cccc1CC": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C=Cc1cccc(CCN)c1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CC(=O)Nc1c[nH]c(C(=O)NC#N)c1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CC(=O)OCC(N)=S": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CC(=O)OC[C@@H](C)NC/C=C\\Cl": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CC(=O)O[C@@H](C)CCl": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CC(=O)[C@H](C)OCC(N)=O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CC(C)C[C@H]1CCC[C@]1(N)C(=O)O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CC(C)[C@@H]1CCN1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CC(C)[C@@H]1NC(=O)NC1=O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CCC(=O)CC(=O)c1ccccc1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CCCNCc1cc2ccccc2[nH]1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CCCN[C@H](C(=O)O)c1cnn(C)c1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CCCOCCBr": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CCC[C@H](CC)Nc1cc(N)ncn1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CCN(C)c1cc(Cl)cc(C)n1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CCOCCO": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CC[C@@H]1CN(CC(=O)NC)C[C@H]1O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CC[C@@]1(C)C[C@@H]1N": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CC[C@H](C(=O)N[C@H]1CCC1(C)C)[C@H](C)O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CC[C@H](CO)NC[C@@H]1C[C@H]1C": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CCc1ccc(N)c(S)c1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CCc1ccc(NC)cc1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CCc1ccc(O)c(N)c1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CCc1noc(C)c1-c1nn[nH]n1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CCc1noc(CCl)n1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CN(CCCl)c1ccc(C=O)cc1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CNC(=O)CN": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CNC(=O)NC(C)=O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CNCCOC": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CN[C@@H](C)c1nn[nH]n1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CNc1cn[nH]c1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CNc1cnn[nH]1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "COC(=O)CF": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "COC(CC(=O)O)OC": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "COCCCS[C@@H](C)C(=O)O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "COCCN1CCC(=O)CC1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CO[C@@H]1CCC[C@H](CO)C1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "CO[C@H](C)Cl": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "COc1cc(N)ccc1B1OC(C)(C)C(C)(C)O1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "COc1cc2ccccc2cc1N=C=O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C[C@@H](C(=O)NN)N1CCOCC1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C[C@@H](CN(CCO)C1CC1)C(=O)O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C[C@@H](CN)C1CC1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C[C@@H](O)c1ncc(C=O)s1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C[C@@H]1CN(C)C[C@@H]1C(=O)N1CCC[C@H](O)[C@@H]1C": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C[C@H](C#N)OC(=O)/C(C#N)=C/C1CC1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C[C@H](C(=O)NN)N(C)C": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C[C@H](CO)N[C@H](C)[C@H]1CCCO1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C[C@H](NC(=O)c1nc(O)nc(O)c1N)C1CC1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C[C@H](O)[C@H]1CO1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C[C@H](OCc1cccc(F)c1)[C@H]1CO1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C[C@H]1CC[C@@H](NC(=O)C(C)(C)CN)C1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "C[C@H]1C[C@H]1CO": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "Cc1cc(-c2ccncn2)cnc1F": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "Cc1cc(Cl)nc(C(F)(F)F)c1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "Cc1nc(CN2CCC[C@@H]2C)[nH]c1C": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "ClCCOC1CC=CC1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "ClCCOC[C@H]1CCCO1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "ClC[C@@H](Cl)[C@H]1CO1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "ClC[C@@H]1CO1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "Cn1cc(CCCl)cn1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "FC(F)=C(F)C[C@H]1CO1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "F[B-](F)(F)CC[C@H]1CO1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "N=C(N)NC1CCCC1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "N=c1nc(O)c(N)cn1C(=O)[C@@H]1COCN1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "NC(=O)[C@@H]1CC=CC[C@@H]1N": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "NCCCC1CC1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "NCCc1cccc(-c2ccc(F)cn2)c1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "NN[C@@H](c1ccc(F)cc1)C1CCC1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "NNc1cccc(-c2ccccc2)c1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "N[C@@H]1C[C@@H]1C(=O)N[C@@H]1CC[C@H]1O": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "N[C@H](c1nnn[nH]1)C1CC1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "Nc1c(F)cccc1NC1CC1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "Nc1cnncc1Nc1nccs1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "Nc1ncc(Nc2cc(N)c(O)cc2O)cn1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "O=C(O)C(=O)c1c[nH]cn1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "O=C(O)CCCC(=O)Nc1nnn[nH]1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "O=C(O)[C@@]1(F)CCNC1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "O=C(O)c1cccc(Br)c1[N+](=O)[O-]": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "O=CC(=O)c1cc(F)cc(F)c1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "Oc1cc2cc[nH]c2cc1OC1CC1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ],
+  "c1cc([C@@H]2CCCN2)[nH]n1": [
+    {
+      "generation": 0,
+      "sources": [
+        {
+          "operation": "initial_population",
+          "parents": []
+        }
+      ]
+    }
+  ]
+}

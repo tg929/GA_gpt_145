@@ -21,8 +21,6 @@
 - autogrow 的 .smi 文件名为 generation_{n}_ranked.smi，分数字段位于第 5 列（索引 4），若列不足则取最后一列作为分数。
 - ours 的 .smi 文件名为 generation_{n}.smi，分数字段位于第 2 列（索引 1），若列不足则取最后一列作为分数。
 - generation_0 表示初始种群。
-
-绘图风格参考 violin_plot_comparison.py 与论文风格（Times New Roman 字体等）。
 """
 
 import os
@@ -33,28 +31,21 @@ from typing import Dict, List, Tuple
 
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns  # 仅用于一致的风格设定；不强制使用其绘图 API
+import seaborn as sns  
 
 
-def parse_score_from_line(line: str, preferred_index: int) -> float:
-    """
-    从一行 .smi 记录中解析对接分数。
-    优先使用 preferred_index 索引的列；若不足则回退到最后一列。
-    """
+def parse_score_from_line(line: str, preferred_index: int) -> float:  
     line = line.strip()
     if not line:
-        raise ValueError("Empty line")
-    # 使用任意空白分割，兼容空格/制表符
-    parts = re.split(r"\s+", line)
-    # 有些文件可能出现多余的空字段，过滤
+        raise ValueError("Empty line")    
+    parts = re.split(r"\s+", line)    
     parts = [p for p in parts if p]
     if not parts:
         raise ValueError("No tokens parsed")
     idx = preferred_index if preferred_index < len(parts) else len(parts) - 1
     try:
         return float(parts[idx])
-    except ValueError:
-        # 回退：尝试从末尾向前寻找第一个可解析为 float 的字段
+    except ValueError:        
         for token in reversed(parts):
             try:
                 return float(token)
@@ -84,17 +75,14 @@ def collect_generation_best_scores(protein_dir: Path, pattern: str, gen_regex: r
     # 对于允许嵌套的情况（例如 ours: generation_n/generation_n.smi）
     if allow_nested:
         nested_dirs = sorted([d for d in protein_dir.glob('generation_*') if d.is_dir()])
-        for d in nested_dirs:
-            # 优先匹配与目录同名的 .smi（如 generation_10/generation_10.smi）
+        for d in nested_dirs:            
             candidate = d / f"{d.name}.smi"
             if candidate.exists():
                 files.append(candidate)
-            else:
-                # 次选：该目录下任意 .smi（取一个）
+            else:                
                 smi_files = sorted(d.glob('*.smi'))
                 files.extend(smi_files)
-
-    # 去重（同一路径可能被重复加入）
+   
     unique_files = []
     seen = set()
     for f in files:
@@ -104,8 +92,7 @@ def collect_generation_best_scores(protein_dir: Path, pattern: str, gen_regex: r
 
     for fpath in sorted(unique_files):
         m = gen_regex.match(fpath.name)
-        if not m:
-            # 若是嵌套路径，尝试从父目录名中解析
+        if not m:            
             if allow_nested and gen_regex.match(fpath.parent.name):
                 try:
                     gen = int(gen_regex.match(fpath.parent.name).group(1))
@@ -135,8 +122,7 @@ def collect_generation_best_scores(protein_dir: Path, pattern: str, gen_regex: r
             print(f"Warning: failed reading {fpath}: {e}")
             continue
         if best_score is not None:
-            results.append((gen, best_score))
-    # 去重（若有重复代文件，以最小分数保留）
+            results.append((gen, best_score))   
     agg: Dict[int, float] = {}
     for g, s in results:
         if g not in agg or s < agg[g]:
@@ -149,21 +135,19 @@ def main():
     base_dir = Path("/data1/ytg/medium_models/GA_gpt/gens_linewave_pare")
     model_dirs = {
         "AutoGrow4.0": base_dir / "autogrow",
-        "FragGPT-GA": base_dir / "ours",
+        "FragEvo": base_dir / "ours",
         "RGA": base_dir / "RGA",
     }
-
-    # 期望的分数列索引（与 violin_plot_comparison.py 中保持一致）
     score_col_index_map = {
         "AutoGrow4.0": 4,  # 第5列
-        "FragGPT-GA": 1,   # 第2列
+        "FragEvo": 1,   # 第2列
         "RGA": 2,          # 第3列（预览结果文件：SMILES, ID, SCORE, [files]）
     }
 
     # 文件名与正则
     file_pattern_map = {
         "AutoGrow4.0": ("generation_*_ranked.smi", re.compile(r"^generation_(\d+)_ranked\.smi$"), False),
-        "FragGPT-GA": ("generation_*.smi", re.compile(r"^generation_(\d+)"), True),
+        "FragEvo": ("generation_*.smi", re.compile(r"^generation_(\d+)"), True),
         "RGA": ("results_gen*_*.txt", re.compile(r"^results_gen(\d+)_.*\.txt$"), False),
     }
 
@@ -176,7 +160,7 @@ def main():
             continue
         subdirs = [d.name for d in sorted(mdir.iterdir()) if d.is_dir() and d.name != "__pycache__"]
         proteins_sets.append(set(subdirs))
-    # 优先用并集，避免丢失任一模型的蛋白质；排序用于固定子图顺序
+    
     proteins = sorted(set().union(*proteins_sets))
     if not proteins:
         print("No protein directories found under models.")
@@ -190,24 +174,19 @@ def main():
     # 颜色与模型顺序（与小提琴图保持视觉一致：Auto 绿色，Ours 蓝色）
     model_order = ["AutoGrow4.0", "RGA", "FragGPT-GA"]
     line_colors = {
-        "AutoGrow4.0": "#C5E0B4",  # 浅绿（与小提琴图一致）
-        "RGA": "#F4B6C2",         # 粉色（与论文描述一致）
-        "FragGPT-GA": "#9DC3E6",   # 浅蓝（与小提琴图/论文一致）
-    }
-
-    # 创建 2x5 子图布局
+        "AutoGrow4.0": "#C5E0B4",  # 浅绿
+        "RGA": "#F4B6C2",         # 粉色
+        "FragGPT-GA": "#9DC3E6",   # 浅蓝
+    }    
     rows, cols = 2, 5
-    total = rows * cols
-    # 只取前 10 个蛋白质（若有更多）
+    total = rows * cols  
     proteins = proteins[:total]
 
     fig, axes = plt.subplots(rows, cols, figsize=(16, 10))
     axes = axes.flatten()
-
-    # 收集并绘制
+    
     for idx, protein in enumerate(proteins):
-        ax = axes[idx]
-        # 每个模型的代-最优分数
+        ax = axes[idx]      
         for model in model_order:
             mdir = model_dirs[model]
             pattern, gen_re, nested = file_pattern_map[model]
@@ -290,12 +269,10 @@ def main():
                 fontsize=11,
                 bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8),
             )
-
-    # 关闭多余子图（如果蛋白质不足 10）
+    
     for j in range(len(proteins), len(axes)):
         axes[j].axis('off')
-
-    # 全局 y 轴标签
+   
     fig.text(
         0.02,
         0.5,
@@ -347,10 +324,8 @@ def main():
     out_path = out_dir / 'linewave_iterations.png'
     plt.savefig(str(out_path), dpi=300, bbox_inches='tight', pad_inches=0.1, facecolor='white', edgecolor='none')
     print(f"Saved figure to: {out_path}")
-
     # 交互环境下可显示
     # plt.show()
-
 
 if __name__ == "__main__":
     main()

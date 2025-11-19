@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-绘制三个模型（AutoGrow4.0、RGA、FragMLM-GA）的均值±标准差折线图
+绘制三个模型（AutoGrow4.0、RGA、FragEvo）的均值±标准差折线图
 """
 
 import re
@@ -86,17 +86,17 @@ def collect_generation_scores(protein_dir: Path, pattern: str, gen_regex: re.Pat
 
 
 def main():
-    base_dir = Path("/data1/ytg/medium_models/GA_gpt/gens_linewave_pare")
+    base_dir = Path("gens_linewave_pare")
     model_dirs = {
         "AutoGrow4.0": base_dir / "autogrow",
         "RGA": base_dir / "RGA",
-        "FragGPT-GA": base_dir / "ours",  # 目录键保持不变
+        "FragEvo": base_dir / "ours", 
     }
-    score_col_index_map = {"AutoGrow4.0": 4, "RGA": 2, "FragGPT-GA": 1}
+    score_col_index_map = {"AutoGrow4.0": 4, "RGA": 2, "FragEvo": 1}
     file_pattern_map = {
         "AutoGrow4.0": ("generation_*_ranked.smi", re.compile(r"^generation_(\d+)_ranked\.smi$"), False),
         "RGA": ("results_gen*_*.txt", re.compile(r"^results_gen(\d+)_.*\.txt$"), False),
-        "FragGPT-GA": ("generation_*.smi", re.compile(r"^generation_(\d+)"), True),
+        "FragEvo": ("generation_*.smi", re.compile(r"^generation_(\d+)"), True),
     }
 
     proteins_sets: List[set] = []
@@ -112,8 +112,8 @@ def main():
     plt.rcParams['font.family'] = 'Times New Roman'
     plt.rcParams['font.size'] = 18
 
-    model_order = ["AutoGrow4.0", "RGA", "FragGPT-GA"]
-    colors = {"AutoGrow4.0": "#C5E0B4", "RGA": "#F4B6C2", "FragGPT-GA": "#9DC3E6"}
+    model_order = ["AutoGrow4.0", "RGA", "FragEvo"]
+    colors = {"AutoGrow4.0": "#C5E0B4", "RGA": "#F4B6C2", "FragEvo": "#9DC3E6"}
     rga_offsets = [0.0, 0.5, 1.8, 1.0, 2.5, 2.0, 1.4, 2.0, 1.5, 1.0]
 
     rows, cols = 2, 5
@@ -128,7 +128,7 @@ def main():
             pattern, gen_re, nested = file_pattern_map[model]
             scores_by_gen = collect_generation_scores(
                 model_dirs[model] / protein, pattern, gen_re, score_col_index_map[model],
-                allow_nested=nested, max_per_file=(100 if model == "FragGPT-GA" else None),
+                allow_nested=nested, max_per_file=(100 if model == "FragEvo" else None),
             )
             if not scores_by_gen:
                 continue
@@ -145,7 +145,7 @@ def main():
                 means = [m - offset for m in means]
 
             extrapolated_gens, extrapolated_means = [], []
-            if model == "FragGPT-GA" and len(gens) > 1 and gens[-1] < target_end_gen:
+            if model == "FragEvo" and len(gens) > 1 and gens[-1] < target_end_gen:
                 last_gen = gens[-1]
                 k = min(4, len(gens) - 1) or 1
                 slope = (means[-1] - means[-1 - k]) / (gens[-1] - gens[-1 - k])
@@ -165,7 +165,7 @@ def main():
                 gens, means,
                 color=colors[model], linewidth=2, marker='o', markersize=4.5,
                 markerfacecolor=colors[model], markeredgecolor='black', markeredgewidth=0.5,
-                label=('AutoGrow4.0' if model == 'AutoGrow4.0' else ('RGA' if model == 'RGA' else 'FragMLM-GA'))
+                label=('AutoGrow4.0' if model == 'AutoGrow4.0' else ('RGA' if model == 'RGA' else 'FragEvo'))
             )
             fill_stds = [s * 0.5 for s in stds] if model == "RGA" else stds
             ax.fill_between(
@@ -209,9 +209,9 @@ def main():
                    label='AutoGrow4.0'),
         plt.Line2D([0], [0], color=colors['RGA'], lw=3, marker='o', markersize=6,
                    markerfacecolor=colors['RGA'], markeredgecolor='black', markeredgewidth=0.5, label='RGA'),
-        plt.Line2D([0], [0], color=colors['FragGPT-GA'], lw=3, marker='o', markersize=6,
-                   markerfacecolor=colors['FragGPT-GA'], markeredgecolor='black', markeredgewidth=0.5,
-                   label='FragMLM-GA'),
+        plt.Line2D([0], [0], color=colors['FragEvo'], lw=3, marker='o', markersize=6,
+                   markerfacecolor=colors['FragEvo'], markeredgecolor='black', markeredgewidth=0.5,
+                   label='FragEvo'),
     ]
     fig.legend(handles=legend_elements, loc='lower center', bbox_to_anchor=(0.5, 0.015),
                ncol=3, fontsize=20, frameon=False, handlelength=1.8, columnspacing=1.6)
@@ -220,7 +220,7 @@ def main():
     plt.tight_layout(rect=[0.06, 0.12, 0.98, 0.94])
     plt.subplots_adjust(bottom=0.22)
 
-    out_dir = Path('/data1/ytg/medium_models/GA_gpt/compare_baselins_drawing')
+    out_dir = Path('compare_baselins_drawing')
     out_path = out_dir / 'linewave_meanstd.png'
     plt.savefig(str(out_path), dpi=300, bbox_inches='tight', pad_inches=0.2, facecolor='white', edgecolor='none')
     print(f"Saved figure to: {out_path}")
