@@ -36,6 +36,7 @@ EvoMol-master/
 *.jsonl
 test/*
 pictures_model/*
+test_model/*
 
 
 

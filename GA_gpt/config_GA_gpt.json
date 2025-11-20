@@ -9,7 +9,7 @@
   "workflow": {
     "description": "FragEvo混合工作流核心参数",
     "max_generations": 30,
-    "initial_population_file": "datasets/source_compounds/naphthalene_smiles.smi",
+    "initial_population_file": "datasets/initial_population/my_initial_population_200.smi",
     "output_directory": "FragEvo_output",
     "enable_gpt_generation": true,
     "gpt_integration_mode": "additive",
@@ -24,13 +24,13 @@
     "n_fragments_to_mask": 1,
     "seed": 42,
     "device": "1",
-    "temperature": 1.0,
+    "temperature": 1.2,
     "dynamic_masking": {
       "enable": true
     },
     "model_settings": {
       "max_seq_len": 1024,
-      "top_k": null,
+      "top_k": 50,
       "stream": false,
       "rp": 1.0,
       "kv_cache": true,
@@ -180,8 +180,8 @@
     "description": "分子对接参数配置",
     "dock_choice": "VinaDocking",
     "conversion_choice": "MGLToolsConversion",
-    "docking_exhaustiveness": 8,
-    "docking_num_modes": 9,
+    "docking_exhaustiveness": 20,
+    "docking_num_modes": 12,
     "number_of_processors": null,
     "max_variants_per_compound": 3,
     "gypsum_thoroughness": 3,
@@ -200,7 +200,7 @@
   
   "crossover_finetune": {
     "description": "GA交叉操作参数",
-    "crossover_attempts": 100,
+    "crossover_attempts": 200,
     "crossover_rate": 0.8,
     "min_atom_match_mcs": 4,
     "max_time_mcs_prescreen": 1,
@@ -215,7 +215,7 @@
   
   "mutation_finetune": {
     "description": "GA突变操作参数",
-    "mutation_attempts": 100,
+    "mutation_attempts": 150,
     "max_mutations_per_parent": 1,
     "rxn_library": "all_rxns",
     "max_attempts_multiplier": 60,
