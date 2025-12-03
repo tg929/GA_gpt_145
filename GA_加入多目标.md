@@ -2,7 +2,7 @@
 
 ## 完成的修改
 
-### 1. 配置文件升级 (`GA_gpt/config_example.json`)
+### 1. 配置文件升级 (`fragevo/config_example.json`)
 
 **修改内容：**
 - 添加了 `selection_mode` 字段，支持 `"single_objective"` 和 `"multi_objective"` 两种模式
@@ -68,7 +68,7 @@
 - 确保输出格式一致性（带分数的文件格式）
 - 支持选择器覆盖参数
 
-### 4. 新的主入口点 (`GA_gpt/GA_main.py`)
+### 4. 新的主入口点 (`fragevo/GA_main.py`)
 
 **新功能：**
 - 提供用户友好的命令行接口

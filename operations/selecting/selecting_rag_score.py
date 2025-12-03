@@ -41,8 +41,8 @@ calc_sa = None
 try:
     from sascorer import calculateScore as calc_sa  # type: ignore
 except Exception:
-    # Fallback: use fragment_GPT/utils/sascorer.py (ships with fpscores.pkl.gz)
-    ALT_SCORING_DIR = os.path.join(PROJECT_ROOT, 'fragment_GPT', 'utils')
+    # Fallback: use fragmlm/utils/sascorer.py (ships with fpscores.pkl.gz)
+    ALT_SCORING_DIR = os.path.join(PROJECT_ROOT, 'fragmlm', 'utils')
     if ALT_SCORING_DIR not in sys.path:
         sys.path.insert(0, ALT_SCORING_DIR)
     try:

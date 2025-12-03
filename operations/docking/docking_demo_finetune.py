@@ -535,7 +535,7 @@ def main():
     parser = argparse.ArgumentParser(description="分子对接流程脚本")
     parser.add_argument('--smiles_file', type=str, required=True, help='输入的SMILES文件路径')
     parser.add_argument('--output_file', type=str, required=True, help='最终输出的对接结果文件路径 (SMILES, score)')
-    parser.add_argument('--config_file', type=str, default='GA_gpt/config_GA_gpt.json', help='配置文件路径')
+    parser.add_argument('--config_file', type=str, default='fragevo/config_fragevo.json', help='配置文件路径')
     parser.add_argument('--generation_dir', type=str, required=True, help='当前代数专用的输出目录')
     parser.add_argument('--receptor', type=str, default=None, help='要使用的受体名称，如果未提供，则使用配置文件中的默认受体')
     # 新增：显式传递处理器数量

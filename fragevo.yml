@@ -1,4 +1,4 @@
-name: fraggpt
+name: fragevo
 channels:
   - conda-forge  # 建议将 conda-forge 放在最前面，它的包更全更新
   - defaults

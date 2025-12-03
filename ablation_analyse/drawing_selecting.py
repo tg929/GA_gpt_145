@@ -171,7 +171,7 @@ def _resolve_sa_calculator():
     try:
         from sascorer import calculateScore as calc_sa  # type: ignore
     except ImportError:
-        sascorer_dir = Path(__file__).resolve().parent.parent / "fragment_GPT" / "utils"
+        sascorer_dir = Path(__file__).resolve().parent.parent / "fragmlm" / "utils"
         if sascorer_dir.exists():
             sys.path.append(str(sascorer_dir))
             try:

@@ -29,7 +29,7 @@ def main():
     parser.add_argument("--output_file", "-o", type=str, 
                       default=os.path.join(PROJECT_ROOT, "output/generation_crossover_0.smi"),
                       help="输出文件路径")
-    parser.add_argument('--config_file', type=str, default='GA_gpt/config_example.json', 
+    parser.add_argument('--config_file', type=str, default='fragevo/config_example.json', 
                       help='配置文件路径')
     parser.add_argument('--lineage_file', type=str, default=None,
                       help='可选的血统记录输出文件(JSONL)')

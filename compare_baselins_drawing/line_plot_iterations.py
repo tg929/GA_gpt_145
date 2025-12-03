@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-绘制两个模型（AutoGrow4.0 与 FragGPT-GA/Ours）在10种蛋白质上的迭代折线图：
+绘制两个模型（AutoGrow4.0 与 FragEvo/Ours）在10种蛋白质上的迭代折线图：
 - 每个子图对应一个蛋白质
 - x 轴为代数（generation_n），y 轴为该代的 TOP-1（最优，数值最小）对接分数
 
@@ -132,7 +132,7 @@ def collect_generation_best_scores(protein_dir: Path, pattern: str, gen_regex: r
 
 
 def main():
-    base_dir = Path("/data1/ytg/medium_models/GA_gpt/gens_linewave_pare")
+    base_dir = Path("/data1/ytg/medium_models/FragEvo/gens_linewave_pare")
     model_dirs = {
         "AutoGrow4.0": base_dir / "autogrow",
         "FragEvo": base_dir / "ours",
@@ -172,11 +172,11 @@ def main():
     plt.rcParams['font.size'] = 18
 
     # 颜色与模型顺序（与小提琴图保持视觉一致：Auto 绿色，Ours 蓝色）
-    model_order = ["AutoGrow4.0", "RGA", "FragGPT-GA"]
+    model_order = ["AutoGrow4.0", "RGA", "FragEvo"]
     line_colors = {
         "AutoGrow4.0": "#C5E0B4",  # 浅绿
         "RGA": "#F4B6C2",         # 粉色
-        "FragGPT-GA": "#9DC3E6",   # 浅蓝
+        "FragEvo": "#9DC3E6",   # 浅蓝
     }    
     rows, cols = 2, 5
     total = rows * cols  
@@ -250,7 +250,7 @@ def main():
 
         # 右上角 TOP1（全代最优）注释
         stats_text = []
-        label_map = {"AutoGrow4.0": "Auto", "RGA": "RGA", "FragGPT-GA": "Ours"}
+        label_map = {"AutoGrow4.0": "Auto", "RGA": "RGA", "FragEvo": "Ours"}
         for model in model_order:
             # 找到对应曲线的数据
             for line in ax.get_lines():
@@ -303,8 +303,8 @@ def main():
         plt.Line2D([0], [0], color=line_colors['RGA'], lw=3, marker='o', markersize=6,
                    markerfacecolor=line_colors['RGA'], markeredgecolor='black', markeredgewidth=0.5,
                    label='RGA'),
-        plt.Line2D([0], [0], color=line_colors['FragGPT-GA'], lw=3, marker='o', markersize=6,
-                   markerfacecolor=line_colors['FragGPT-GA'], markeredgecolor='black', markeredgewidth=0.5,
+        plt.Line2D([0], [0], color=line_colors['FragEvo'], lw=3, marker='o', markersize=6,
+                   markerfacecolor=line_colors['FragEvo'], markeredgecolor='black', markeredgewidth=0.5,
                    label='Ours'),
     ]
     fig.legend(
@@ -319,7 +319,7 @@ def main():
     plt.subplots_adjust(top=0.88, bottom=0.06, left=0.06, right=0.98, hspace=0.25, wspace=0.3)
 
     # 保存图片
-    out_dir = Path('/data1/ytg/medium_models/GA_gpt/compare_baselins_drawing')
+    out_dir = Path('/data1/ytg/medium_models/FragEvo/compare_baselins_drawing')
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / 'linewave_iterations.png'
     plt.savefig(str(out_path), dpi=300, bbox_inches='tight', pad_inches=0.1, facecolor='white', edgecolor='none')

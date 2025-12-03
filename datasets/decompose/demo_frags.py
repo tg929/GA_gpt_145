@@ -240,7 +240,7 @@ def calculate_dynamic_mask_count(fragments_list: List[str], current_generation: 
 
 def decompose_and_mask_molecules_dynamic(input_file: str, output_file: str, current_generation: int, max_generations: int) -> int:
     """
-    分解分子并应用动态掩码的主函数,用于GA-GPT工作流的动态掩码功能    
+    分解分子并应用动态掩码的主函数,用于FragEvo工作流的动态掩码功能    
     Args:
         input_file: 输入SMILES文件路径
         output_file: 输出掩码片段文件路径
@@ -277,7 +277,7 @@ def decompose_and_mask_molecules_dynamic(input_file: str, output_file: str, curr
 
 def decompose_and_mask_molecules(input_file: str, output_file: str, n_fragments_to_mask: int = 1) -> int:
     """
-    分解分子并应用掩码的主函数,用于GA-GPT工作流    
+    分解分子并应用掩码的主函数,用于FragEvo工作流    
     Args:
         input_file: 输入SMILES文件路径
         output_file: 输出掩码片段文件路径

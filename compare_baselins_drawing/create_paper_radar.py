@@ -126,7 +126,7 @@ def create_paper_radar_chart():
             'linestyle': '-',
             'alpha': 0.8
         },
-        'FragGPT-GA': {
+        'FragEvo': {
             'docking': 13.458,
             'qed': 0.764,
             'sa': 2.014,
@@ -168,12 +168,12 @@ def create_paper_radar_chart():
         values += values[:1]
         
         # 设置线条样式
-        linewidth = 2.5 if method_name == 'FragGPT-GA' else 1.5
+        linewidth = 2.5 if method_name == 'FragEvo' else 1.5
         alpha_line = data.get('alpha', 0.8)
-        markersize = 4 if method_name == 'FragGPT-GA' else 3
+        markersize = 4 if method_name == 'FragEvo' else 3
         
         # 为关键方法设置填充
-        key_methods_fill = ['RGA', 'AutoGrow4.0', 'REINVENT', 'FragGPT-GA']
+        key_methods_fill = ['RGA', 'AutoGrow4.0', 'REINVENT', 'FragEvo']
         alpha_fill = 0.15 if method_name in key_methods_fill else 0
         
         # 绘制线条
@@ -184,7 +184,7 @@ def create_paper_radar_chart():
         
         # 为关键方法添加填充
         if method_name in key_methods_fill:
-            if method_name == 'FragGPT-GA':
+            if method_name == 'FragEvo':
                 fill_color = (46/255, 139/255, 87/255)  # 深绿色
             elif method_name == 'RGA':
                 fill_color = (197/255, 224/255, 180/255)  # 浅绿色
@@ -233,7 +233,7 @@ def create_paper_radar_chart():
     
     # 定义所有方法的显示顺序和标签映射
     legend_order = ['screening', 'MARS', 'MolDQN', 'GEGL', 'REINVENT', 'RationaleRL', 
-                   'JTVAE', 'Gen3D', 'GA+D', 'Graph-GA', 'AutoGrow4.0', 'RGA', 'FragGPT-GA']
+                   'JTVAE', 'Gen3D', 'GA+D', 'Graph-GA', 'AutoGrow4.0', 'RGA', 'FragEvo']
     label_mapping = {
         'screening': 'Screening',
         'MARS': 'MARS',
@@ -247,7 +247,7 @@ def create_paper_radar_chart():
         'Graph-GA': 'Graph-GA',
         'AutoGrow4.0': 'AutoGrow4.0',
         'RGA': 'RGA',
-        'FragGPT-GA': 'FragEvo (ours)'
+        'FragEvo': 'FragEvo (ours)'
     }
     
     # 重新排序所有图例

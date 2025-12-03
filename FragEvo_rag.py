@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-GA_gpt_rag.py
+fragevo_rag.py
 ==============
-Entry point for running the GA-GPT workflow using the RAG-score based
+Entry point for running the FragEvo workflow using the RAG-score based
 selection strategy. All other stages and scripts are identical to the
 finetune pipeline; only the selection step is swapped.
 """
@@ -18,17 +18,17 @@ import logging
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PROJECT_ROOT)
 
-from operations.operations_execute_GAgpt_rag import GAGPTRAGWorkflowExecutor
+from operations.operations_execute_fragevo_rag import FragEvoRAGWorkflowExecutor
 from utils.cpu_utils import get_available_cpu_cores, calculate_optimal_workers
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger("GA_GPT_RAG_MAIN")
+logger = logging.getLogger("FRAGEVO_RAG_MAIN")
 
 
 def run_workflow_for_receptor(config_path: str, receptor_name: str, output_dir: str, num_processors: int):
     try:
-        executor = GAGPTRAGWorkflowExecutor(
+        executor = FragEvoRAGWorkflowExecutor(
             config_path=config_path,
             receptor_name=receptor_name,
             output_dir_override=output_dir,
@@ -41,8 +41,8 @@ def run_workflow_for_receptor(config_path: str, receptor_name: str, output_dir: 
 
 
 def main():
-    parser = argparse.ArgumentParser(description='GA-GPT with RAG-score selection')
-    parser.add_argument('--config', type=str, default='GA_gpt/config_GA_gpt.json')
+    parser = argparse.ArgumentParser(description='FragEvo with RAG-score selection')
+    parser.add_argument('--config', type=str, default='fragevo/config_fragevo.json')
     parser.add_argument('--receptor', type=str, default=None)
     parser.add_argument('--all_receptors', action='store_true')
     parser.add_argument('--output_dir', type=str, default=None)

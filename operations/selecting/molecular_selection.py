@@ -207,7 +207,7 @@ def main():
     parser.add_argument('--docked_file', type=str, required=True,help='子代对接结果文件路径（格式: SMILES score)')
     parser.add_argument('--parent_file', type=str, default=None,help='父代对接结果文件路径（可选，格式: SMILES score)')
     parser.add_argument('--output_file', type=str, required=True,help='输出的选中分子文件路径')
-    parser.add_argument('--config_file', type=str, default='GA_gpt/config_example.json',help='配置文件路径')
+    parser.add_argument('--config_file', type=str, default='fragevo/config_example.json',help='配置文件路径')
     parser.add_argument('--selector_override', type=str, default=None, help='(可选) 强制使用指定的选择算法，覆盖配置文件中的设置')
     
     args = parser.parse_args()
@@ -218,13 +218,13 @@ def main():
             config = json.load(f)
             
         # 智能适配不同配置文件结构
-        # 优先尝试新的GA-GPT配置结构 (selection.single_objective_settings)
+        # 优先尝试新的FragEvo配置结构 (selection.single_objective_settings)
         selection_config = config.get("selection", {})
         single_obj_settings = selection_config.get("single_objective_settings", {})
         
         if single_obj_settings:
-            # GA-GPT版本：使用selection.single_objective_settings
-            logger.info("检测到GA-GPT配置文件格式")
+            # FragEvo版本：使用selection.single_objective_settings
+            logger.info("检测到FragEvo配置文件格式")
             n_select = single_obj_settings.get('n_select', 100)
             selector_choice_default = single_obj_settings.get('selector_choice', 'Rank_Selector')
             tourn_size = single_obj_settings.get('tourn_size', 0.1)

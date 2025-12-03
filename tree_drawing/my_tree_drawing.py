@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 使用 EvoMol 的 exploration_graph 函数，
-对 GA-GPT 运行结果生成探索树和分子表图。
+对 FragEvo 运行结果生成探索树和分子表图。
 """
 import argparse
 import sys
@@ -54,7 +54,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="根据 GA-GPT 输出的 pop.csv 与 removed_ind_act_history.csv 绘制探索树"
+        description="根据 FragEvo 输出的 pop.csv 与 removed_ind_act_history.csv 绘制探索树"
     )
     parser.add_argument(
         "--model_path",
@@ -65,7 +65,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output_dir",
         type=Path,
-        default=Path("/data1/ytg/medium_models/GA_gpt/0-tree_drawing/my_tree_drawing"),
+        default=Path("/data1/ytg/medium_models/FragEvo/0-tree_drawing/my_tree_drawing"),
         help="指定输出目录，将生成的图像复制到此处（默认: 0-tree_drawing/my_tree_drawing）"
     )
     parser.add_argument(

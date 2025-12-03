@@ -1,6 +1,6 @@
 output_*/*
-fragment_GPT/weights/*
-fragment_GPT/output/*
+fragmlm/weights/*
+fragmlm/output/*
 autogrow/*
 mgltools_x86_64Linux2_1.5.6/*
 pdb/*

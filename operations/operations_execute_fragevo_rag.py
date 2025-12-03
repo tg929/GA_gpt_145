@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-GA-GPT workflow executor (RAG selection variant)
+FragEvo workflow executor (RAG selection variant)
 ================================================
-This module reuses the full GA-GPT workflow and only replaces the selection
+This module reuses the full FragEvo workflow and only replaces the selection
 stage with a new RAG-score based selector that computes:
 
   y = DS_hat * QED * SA_hat
@@ -15,10 +15,10 @@ evaluation, cleanup, etc.) remain identical to the finetune executor.
 import os
 from typing import Optional
 
-from .operations_execute_GAgpt_finetune import GAGPTWorkflowExecutor
+from .operations_execute_fragevo_finetune import FragEvoWorkflowExecutor
 
 
-class GAGPTRAGWorkflowExecutor(GAGPTWorkflowExecutor):
+class FragEvoRAGWorkflowExecutor(FragEvoWorkflowExecutor):
     """Override only the selection stage to use RAG-score based selection."""
 
     def run_selection(self, parent_docked_file: str, offspring_docked_file: str, generation: int) -> Optional[str]:

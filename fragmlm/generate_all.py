@@ -18,8 +18,8 @@ from tqdm import tqdm
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FRAGMENT_GPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-#当前地址：/data1/tgy/GA_llm/fragment_GPT
-#vocab.txt地址：/data1/tgy/GA_llm/fragment_GPT/vocabs/vocab.txt
+#当前地址：/data1/tgy/GA_llm/fragmlm
+#vocab.txt地址：/data1/tgy/GA_llm/fragmlm/vocabs/vocab.txt
 
 
 def Test(model, tokenizer, max_seq_len, temperature, top_k, stream, rp, kv_cache, is_simulation, device,
@@ -193,7 +193,7 @@ def main_test(args):
         print(f"使用指定的输出文件路径: {output_file_path}")
     else:
         # 否则使用原来的默认路径（保持向后兼容）
-        output_dir = os.path.join(PROJECT_ROOT, "fragment_GPT/output")
+        output_dir = os.path.join(PROJECT_ROOT, "fragmlm/output")
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         output_file_path = os.path.join(output_dir, f'crossovered0_frags_new_{seed_value}.smi')

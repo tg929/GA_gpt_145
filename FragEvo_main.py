@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-FragGPT-GA: 混合分子生成项目主入口
+FragEvo: 混合分子生成项目主入口
 """
 import os
 import sys
@@ -19,12 +19,12 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PROJECT_ROOT)
 
 # --- 模块导入 ---
-from operations.operations_execute_GAgpt_demo import GAGPTWorkflowExecutor
+from operations.operations_execute_fragevo_demo import FragEvoWorkflowExecutor
 from utils.cpu_utils import get_available_cpu_cores, calculate_optimal_workers
 
 # --- 日志配置 ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger("GA_GPT_MAIN")
+logger = logging.getLogger("FRAGEVO_MAIN")
 
 def run_workflow_for_receptor(config_path: str, receptor_name: str, output_dir: str, num_processors: int) -> Tuple[str, bool]:
     """
@@ -40,13 +40,13 @@ def run_workflow_for_receptor(config_path: str, receptor_name: str, output_dir: 
     # 使用显示名称，方便日志中识别默认受体
     receptor_display_name = receptor_name if receptor_name else "default"    
     logger.info("=" * 80)
-    logger.info(f"启动子进程，为受体 '{receptor_display_name}' 运行GA-GPT混合工作流")
+    logger.info(f"启动子进程，为受体 '{receptor_display_name}' 运行FragEvo混合工作流")
     logger.info(f"分配的CPU核心数: {num_processors}")
     logger.info(f"进程ID: {os.getpid()}")
     logger.info("=" * 80)
     try:
         # 初始化工作流执行器，并传入为该进程分配的处理器数量
-        executor = GAGPTWorkflowExecutor(
+        executor = FragEvoWorkflowExecutor(
             config_path=config_path, 
             receptor_name=receptor_name,
             output_dir_override=output_dir,
@@ -68,15 +68,15 @@ def run_workflow_for_receptor(config_path: str, receptor_name: str, output_dir: 
 
 def main():
     """
-    主函数:解析参数,启动GA-GPT工作流。
+    主函数:解析参数,启动FragEvo工作流。
     所有并行控制完全由配置文件决定，无需命令行参数。
     """
     parser = argparse.ArgumentParser(
-        description="GA-GPT 混合分子生成项目主入口",
+        description="FragEvo 混合分子生成项目主入口",
         formatter_class=argparse.RawTextHelpFormatter
     )
     
-    parser.add_argument('--config', type=str, default='GA_gpt/config_GA_gpt.json', help='主配置文件的路径')
+    parser.add_argument('--config', type=str, default='fragevo/config_fragevo.json', help='主配置文件的路径')
     parser.add_argument('--receptor', type=str, default=None, help='(可选) 指定要运行的目标受体名称')
     parser.add_argument('--all_receptors', action='store_true', help='(可选) 运行配置文件中target_list的所有受体')
     parser.add_argument('--output_dir', type=str, default=None, help='(可选) 指定输出总目录')
@@ -198,7 +198,7 @@ def main():
 
     # --- 3. 最终总结报告 ---
     logger.info("=" * 80)
-    logger.info("所有GA-GPT工作流执行完毕")
+    logger.info("所有FragEvo工作流执行完毕")
     logger.info(f"成功运行的受体 ({len(successful_runs)}): {successful_runs}")
     logger.info(f"失败的受体 ({len(failed_runs)}): {failed_runs}")
     logger.info("=" * 80)

@@ -17,7 +17,7 @@ from autogrow.operators.filter.filter_classes.filter_children_classes.vande_wate
 PARSER = argparse.ArgumentParser()
 PARSER = argparse.ArgumentParser(description='GA mutation parameters')
 PARSER.add_argument("--input_file", "-i",type=str, required=True)#第一次：/data1/tgy/GA_llm/output/generation_crossover_0.smi
-PARSER.add_argument("--llm_generation_file", "-l",type=str, default=os.path.join(PROJECT_ROOT, "fragment_GPT/output/test0/crossovered0_frags_new_0.smi"))
+PARSER.add_argument("--llm_generation_file", "-l",type=str, default=os.path.join(PROJECT_ROOT, "fragmlm/output/test0/crossovered0_frags_new_0.smi"))
 PARSER.add_argument("--output_file", "-o",type=str, default=os.path.join(PROJECT_ROOT, "output/generation_0_mutationed.smi"))     
 PARSER.add_argument("--mutation_attempts", type=int, default=1)
 PARSER.add_argument("--max_mutations", type=int, default=2, help="每个父代最大变异尝试次数")

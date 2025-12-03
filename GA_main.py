@@ -9,10 +9,10 @@ GA优化流程主入口
 
 用法:
   - 针对默认受体运行:
-    python GA_main.py --config GA_gpt/config_example.json
+    python GA_main.py --config fragevo/config_example.json
 
   - 针对特定受体运行:
-    python GA_main.py --config GA_gpt/config_example.json --receptor 4r6e
+    python GA_main.py --config fragevo/config_example.json --receptor 4r6e
 """
 import os
 import sys
@@ -35,7 +35,7 @@ from operations.operations_execute_demo import GAWorkflowExecutor
 def main():
     """主函数:解析参数并启动GA工作流"""
     parser = argparse.ArgumentParser(description='GA分子优化流程主入口')
-    parser.add_argument('--config', type=str, default='GA_gpt/config_example.json',
+    parser.add_argument('--config', type=str, default='fragevo/config_example.json',
                         help='配置文件路径。')
     parser.add_argument('--receptor', type=str, default=None,
                         help='(可选) 指定要运行的目标受体名称。如果未提供，将使用默认受体。')

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-GA-GPT 混合工作流执行脚本
+FragEvo 混合工作流执行脚本
 ==========================
 1. 种群初始化和评估
 2. 基于父代的分子分解与掩码
@@ -28,7 +28,7 @@ import shutil
 from rdkit import Chem
 from rdkit.Chem import QED
 from datasets.decompose.demo_frags import break_into_fragments
-from fragment_GPT.utils import sascorer
+from fragmlm.utils import sascorer
 
 # 移除全局日志配置，避免多进程日志冲突
 # logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -39,15 +39,15 @@ if not logger.handlers:
     handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
     logger.addHandler(handler)
     logger.setLevel(logging.INFO)
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent #Path(__file__).resolve()：当前脚本目录/地址/data1/ytg/medium_models/GA_gpt/operations/operations_execute_GAgpt_demo.py  .resolve()：将相对路径转换为绝对路径 
-                                                             #整个项目地址：/data1/ytg/medium_models/GA_gpt
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent #Path(__file__).resolve()：当前脚本目录/地址/data1/ytg/medium_models/FragEvo/operations/operations_execute_fragevo_demo.py  .resolve()：将相对路径转换为绝对路径 
+                                                             #整个项目地址：/data1/ytg/medium_models/FragEvo
 sys.path.insert(0, str(PROJECT_ROOT))#0：添加目录到搜索列表最前面
 
 
-class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调用这个类
+class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在调用这个类
     def __init__(self, config_path: str, receptor_name: Optional[str] = None, output_dir_override: Optional[str] = None, num_processors_override: Optional[int] = None):
         """
-        初始化GA-GPT工作流执行器。        
+        初始化FragEvo工作流执行器。        
         Args:
             config_path (str): 配置文件路径。
             receptor_name (Optional[str]): 目标受体名称。如果为None, 则使用默认受体。
@@ -75,7 +75,7 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
         self.placeholder_roots: Dict[int, str] = {}
         self.last_offspring_histories: Set[str] = set()
         self.last_offspring_smiles: Set[str] = set()
-        logger.info(f"GA-GPT工作流初始化完成, 输出目录: {self.output_dir}")
+        logger.info(f"FragEvo工作流初始化完成, 输出目录: {self.output_dir}")
         logger.info(f"最大迭代代数: {self.max_generations}")
 
     def _load_config(self) -> dict:#加载配置文件
@@ -94,7 +94,7 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
         if output_dir_override:
             output_dir_name = output_dir_override
         else:
-            output_dir_name = workflow_config.get('output_directory', 'GA_GPT_output')
+            output_dir_name = workflow_config.get('output_directory', 'FragEvo_output')
         base_output_dir = self.project_root / output_dir_name
         self.run_params['base_output_dir'] = str(base_output_dir)
         # 根据受体确定最终运行目录
@@ -869,7 +869,7 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             '--output_file', str(gpt_generated_file)  # 直接传递输出路径
         ]
 
-        if not self._run_script('fragment_GPT/generate_all.py', gpt_args):
+        if not self._run_script('fragmlm/generate_all.py', gpt_args):
             logger.error(f"第 {generation} 代: GPT生成脚本执行失败。")
             return None        
 
@@ -1221,9 +1221,9 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
 
     def run_complete_workflow(self):
         """
-        执行完整的GA-GPT工作流。
+        执行完整的FragEvo工作流。
         """
-        logger.info(f"开始执行完整的GA-GPT工作流程 (输出目录: {self.output_dir})")
+        logger.info(f"开始执行完整的FragEvo工作流程 (输出目录: {self.output_dir})")
         
         # 第0步：初代种群处理
         current_parents_docked_file = self.run_initial_generation()
@@ -1242,7 +1242,7 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             current_parents_docked_file = next_parents_file
         
         logger.info("=" * 60)
-        logger.info("GA-GPT工作流程全部完成!")
+        logger.info("FragEvo工作流程全部完成!")
         logger.info(f"最终优化种群保存在: {current_parents_docked_file}")
         logger.info("=" * 60)
         self._export_evomo_files()
@@ -1312,7 +1312,7 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
 
     def run_generation_step(self, generation: int, current_parents_docked_file: str):
         """
-        执行单代GA-GPT的完整流程。
+        执行单代FragEvo的完整流程。
         """
         logger.info(f"========== 开始第 {generation} 代进化 ==========")
         gen_dir = self.output_dir / f"generation_{generation}"
@@ -1453,9 +1453,9 @@ def main():
     """主函数，用于解析命令行参数和启动工作流"""
     import argparse
     
-    parser = argparse.ArgumentParser(description='GA-GPT混合工作流执行器')
+    parser = argparse.ArgumentParser(description='FragEvo混合工作流执行器')
     parser.add_argument('--config', type=str, 
-                       default='GA_gpt/config_example.json',
+                       default='fragevo/config_example.json',
                        help='配置文件路径')
     parser.add_argument('--receptor', type=str, default=None,
                        help='(可选) 要运行的目标受体名称')
@@ -1465,13 +1465,13 @@ def main():
     args = parser.parse_args()
     
     try:
-        executor = GAGPTWorkflowExecutor(args.config, args.receptor, args.output_dir)
+        executor = FragEvoWorkflowExecutor(args.config, args.receptor, args.output_dir)
         success = executor.run_complete_workflow()
         if not success:
-            logger.error("GA-GPT工作流执行失败。")
+            logger.error("FragEvo工作流执行失败。")
             return 1
         
-        logger.info("GA-GPT工作流成功完成!")
+        logger.info("FragEvo工作流成功完成!")
 
     except Exception as e:
         logger.critical(f"工作流执行过程中发生严重错误: {e}", exc_info=True)

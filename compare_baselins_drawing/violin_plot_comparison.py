@@ -77,14 +77,14 @@ def main():
     )
     
     print("\nExtracting FragEvo data...")
-    fraggpt_data = extract_docking_scores(
+    fragevo_data = extract_docking_scores(
         os.path.join(base_path, "FragEvo"), 
         "FragEvo", 
         1  # 第2列（索引1）
     )
     
     # 合并所有数据
-    all_data = pd.concat([autogrow_data, rga_data, fraggpt_data], ignore_index=True)
+    all_data = pd.concat([autogrow_data, rga_data, fragevo_data], ignore_index=True)
     
     # 检查数据
     print(f"\nTotal data points: {len(all_data)}")
@@ -199,7 +199,7 @@ def main():
     plt.subplots_adjust(top=0.9, bottom=0.04, left=0.06, right=0.98, hspace=0.35, wspace=0.3)
     
     # 保存图片 (按IEEE论文标准)
-    output_path = "/data1/ytg/medium_models/GA_gpt/papers_0/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/violin_comparison.png"
+    output_path = "/data1/ytg/medium_models/FragEvo/papers_0/A Sample Article Using IEEEtran.cls for IEEE Journals and Transactions/violin_comparison.png"
     plt.savefig(output_path, dpi=300, bbox_inches='tight', pad_inches=0.5, facecolor='white', edgecolor='none')
     print(f"\nViolin plot saved to: {output_path}")
     
