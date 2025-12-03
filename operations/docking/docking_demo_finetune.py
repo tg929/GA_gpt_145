@@ -95,17 +95,22 @@ def extract_vina_score_from_pdbqt(pdbqt_file):
                             return val
                         except Exception:
                             pass
+    except Exception:
+        pass
     # 2) 回退到 log 文件
     log_file = pdbqt_file.replace("_out.pdbqt", ".log")
     if os.path.exists(log_file):
-        with open(log_file, 'r', errors='ignore') as f:
-            content = f.read()
-        # 常见模式： Vina 记录或 qvina 的结果行
-        # 尝试抓取最优能量（第一个负值）
-        nums = re.findall(r"[-+]?\d*\.\d+|[-+]?\d+", content)
-        negs = [x for x in nums if x.startswith('-')]
-        if negs:
-            return negs[0]
+        try:
+            with open(log_file, 'r', errors='ignore') as f:
+                content = f.read()
+            # 常见模式： Vina 记录或 qvina 的结果行
+            # 尝试抓取最优能量（第一个负值）
+            nums = re.findall(r"[-+]?\d*\.\d+|[-+]?\d+", content)
+            negs = [x for x in nums if x.startswith('-')]
+            if negs:
+                return negs[0]
+        except Exception:
+            pass
     return "NA"
 
 def keep_best_docking_results(results_dir):
@@ -132,15 +137,14 @@ def keep_best_docking_results(results_dir):
         for file_path in file_group:
             score_str = extract_vina_score_from_pdbqt(file_path)
             if score_str != "NA":
-                score = float(score_str)
+                try:
+                    score = float(score_str)
+                except ValueError:
+                    continue
                 if score < best_score:
                     best_score = score
                     best_file = file_path
-        
-        if best_file is None:
-            print(f"警告: 无法为ID {mol_id} 确定最佳结果，将全部保留。")
-            continue
-        
+
         # 2b. 删除组内非最佳的所有结果文件
         for file_path in file_group:
             if file_path != best_file:
@@ -152,7 +156,8 @@ def keep_best_docking_results(results_dir):
                     log_file = file_path.replace("_out.pdbqt", ".log")
                     if os.path.exists(log_file):
                         os.remove(log_file)
-                        
+                except OSError as e:
+                    print(f"删除文件失败: {file_path}, 错误: {e}")
 
 def output_smiles_scores(smiles_file, scores_dict, output_file):
     """将成功对接的结果写入文件,按对接分数排序（分数越低越好排在前面）,不包含头,不记录NA值。"""
@@ -522,10 +527,6 @@ def run_molecular_docking(config: Dict, ligands_file: str, generation_dir: str, 
             logger.error("对接流程失败，未生成有效的输出文件。")
             return None
 
-    except Exception as e:
-        logger.error(f"对接工作流程出现严重错误: {e}", exc_info=True)
-        return None
-
 def main():
     """主函数，用于独立运行此脚本。"""
     import argparse
@@ -574,6 +575,5 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 
