@@ -76,18 +76,22 @@ def main():
             parent1, parent2 = random.sample(initial_population, 2)
             mol1 = execute_crossover.convert_mol_from_smiles(parent1)
             mol2 = execute_crossover.convert_mol_from_smiles(parent2)
-            if mol1 is None or mol2 is None: continue
-                
+            if mol1 is None or mol2 is None:
+                continue
+
             mcs_result = execute_crossover.test_for_mcs(vars, mol1, mol2)
-            if mcs_result is None: continue
-                
+            if mcs_result is None:
+                continue
+
             ligand_new_smiles = None
             for _ in range(merge_attempts):
                 ligand_new_smiles = smiles_merge.run_main_smiles_merge(vars, parent1, parent2)
-                if ligand_new_smiles is not None: break
-                    
-            if ligand_new_smiles is None: continue
-                
+                if ligand_new_smiles is not None:
+                    break
+
+            if ligand_new_smiles is None:
+                continue
+
             if Filter.run_filter_on_just_smiles(ligand_new_smiles, vars['filter_object_dict']):
                 crossed_population.append(ligand_new_smiles)
                 lineage_records.append({
@@ -95,8 +99,11 @@ def main():
                     "operation": "crossover",
                     "parents": [parent1, parent2]
                 })
-                
-            
+
+        except Exception as e:
+            logger.warning(f"交叉操作出错: {str(e)}")
+            continue
+
     if attempts >= max_attempts:
         logger.warning(f"达到最大尝试次数 {max_attempts}，但只生成了 {len(crossed_population)} 个有效分子")
         

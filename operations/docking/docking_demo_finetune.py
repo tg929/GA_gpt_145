@@ -346,16 +346,14 @@ class DockingWorkflow:
         """
         print("正在验证受体文件...")
         base_path = self.vars["receptor_file"]
-        candidates = []
-        # 如果已是 .pdbqt 直接使用
-        if base_path.lower().endswith('.pdbqt'):
+        candidates: List[str] = []
+        lower_path = base_path.lower()
+        if lower_path.endswith('.pdbqt'):
             candidates.append(base_path)
-        # 常见写法：.pdb + 'qt'
-        candidates.append(base_path + 'qt')
-        # 将 .pdb 替换为 .pdbqt
-        if base_path.lower().endswith('.pdb'):
+        else:
+            if lower_path.endswith('.pdb'):
+                candidates.append(base_path[:-4] + '.pdbqt')
             candidates.append(base_path + 'qt')
-            candidates.append(base_path[:-4] + '.pdbqt')
         # 去重保序
         seen = set()
         uniq = []
@@ -419,33 +417,39 @@ class DockingWorkflow:
         # 确保至少使用1个核心
         num_workers = max(1, num_workers)
         print(f"将使用 {num_workers} 个CPU核心进行并行对接...")
-        
-        futures = []  # 对接任务对象
+        future_to_ligand = {}  # 对接任务与配体文件的映射
         scores = {}
         
         with ProcessPoolExecutor(max_workers=num_workers) as executor:
             for ligand_file in ligand_files:  # 遍历所有配体
-                futures.append(executor.submit(
+                future = executor.submit(
                     vina_dock_single, ligand_file, receptor_pdbqt, results_dir, self.vars
-                ))  # 添加对接任务            
+                )
+                future_to_ligand[future] = ligand_file
             
-            for future in tqdm(as_completed(futures), total=len(futures), desc="对接进度"):
-                ligand_file, success, score_str = future.result()                   
-                base_name = os.path.basename(ligand_file).replace(".pdbqt", "")  # 从完整路径中获取文件名，并去除.pdbqt后缀                  
-                mol_name = base_name.split('__')[0]  # 从文件名中提取基础分子名，去除构象异构体编号（如 __1, __2）               
-                if success and score_str != "NA":  # 只有对接成功且分数有效时才处理
+            for future in tqdm(as_completed(future_to_ligand), total=len(future_to_ligand), desc="对接进度"):
+                ligand_file = future_to_ligand[future]
+                try:
+                    _, success, score_str = future.result()
+                except Exception as exc:
+                    logger.error(f"配体 {ligand_file} 对接失败: {exc}")
+                    success = False
+                    score_str = "NA"
+                
+                base_name = os.path.basename(ligand_file).replace(".pdbqt", "")
+                mol_name = base_name.split('__')[0]
+                if success and score_str != "NA":
                     try:
                         score_float = float(score_str)
-                        current_best_score = scores.get(mol_name)                        
-                        # 如果当前分子还没有记录，或者新分数更好（更低），则更新
+                        current_best_score = scores.get(mol_name)
                         if current_best_score is None or score_float < float(current_best_score):
-                            scores[mol_name] = score_str                            
+                            scores[mol_name] = score_str
                     except (ValueError, TypeError):
                         if mol_name not in scores:
                             scores[mol_name] = "NA"
                 else:
                     if mol_name not in scores:
-                        scores[mol_name] = "NA"        
+                        scores[mol_name] = "NA"
         
         # 仅保留最佳对接的mol/姿势
         keep_best_docking_results(results_dir)
@@ -454,6 +458,7 @@ class DockingWorkflow:
         final_scores_file = os.path.join(results_dir, "final_scored.smi")
         output_smiles_scores(self.vars["ligands"], scores, final_scores_file)
         return final_scores_file
+
     @staticmethod
     def pick_conversion_class(conversion_choice: str) -> type:
         """
