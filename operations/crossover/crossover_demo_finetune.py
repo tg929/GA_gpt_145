@@ -35,13 +35,9 @@ def main():
                       help='可选的血统记录输出文件(JSONL)')
     args = parser.parse_args()    
     # 加载配置
-    try:
-        with open(args.config_file, 'r', encoding='utf-8') as f:
-            config = json.load(f)
-        crossover_config = config['crossover_finetune']
-    except (FileNotFoundError, KeyError) as e:
-        print(f"错误：无法从 {args.config_file} 加载交叉配置: {e}")
-        return
+    with open(args.config_file, 'r', encoding='utf-8') as f:
+        config = json.load(f)
+    crossover_config = config['crossover_finetune']
     # 设置日志
     logger = setup_logging()
     logger.info("开始交叉操作")    
@@ -100,9 +96,6 @@ def main():
                     "parents": [parent1, parent2]
                 })
                 
-        except Exception as e:
-            logger.warning(f"交叉操作出错: {str(e)}")
-            continue
             
     if attempts >= max_attempts:
         logger.warning(f"达到最大尝试次数 {max_attempts}，但只生成了 {len(crossed_population)} 个有效分子")

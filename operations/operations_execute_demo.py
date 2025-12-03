@@ -91,12 +91,9 @@ class GAWorkflowExecutor:
             logger.error("保存执行配置快照失败")            
         # 为了向后兼容，也保留原来的简化版本
         legacy_vars_path = self.output_dir / "vars.json"
-        try:
-            with open(legacy_vars_path, 'w', encoding='utf-8') as f:
-                json.dump(self.run_params, f, indent=4, ensure_ascii=False)
-            logger.info(f"简化版运行参数已保存到: {legacy_vars_path}")
-        except Exception as e:
-            logger.error(f"无法保存简化版运行参数到 {legacy_vars_path}: {e}")
+        with open(legacy_vars_path, 'w', encoding='utf-8') as f:
+            json.dump(self.run_params, f, indent=4, ensure_ascii=False)
+        logger.info(f"简化版运行参数已保存到: {legacy_vars_path}")
     
     def _run_script(self, script_path: str, args: List[str]) -> bool:
         """运行Python脚本,并管理输出信息"""
@@ -104,23 +101,17 @@ class GAWorkflowExecutor:
         cmd = ['python', str(full_script_path)] + args        
         # 将详细命令的日志级别降为DEBUG
         logger.debug(f"执行命令: {' '.join(cmd)}")        
-        try:
-            # 捕获输出，但在成功时不显示stdout/stderr，以保持日志整洁
-            result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(self.project_root), check=False)            
-            if result.returncode == 0:
-                logger.info(f"脚本 {script_path} 执行成功")
-                # 如果需要，可以记录一些关键的stdout信息
-                # logger.debug(f"STDOUT: {result.stdout}")
-                return True
-            else:
-                logger.error(f"脚本 {script_path} 执行失败")
-                # 仅在失败时打印详细的错误输出
-                logger.error(f"错误输出 (stderr):\n{result.stderr}")
-                if result.stdout:
-                    logger.error(f"标准输出 (stdout):\n{result.stdout}")
-                return False
-        except Exception as e:
-            logger.error(f"执行脚本 {script_path} 时发生异常: {e}")
+        # 捕获输出，但在成功时不显示stdout/stderr，以保持日志整洁
+        result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(self.project_root), check=False)
+        if result.returncode == 0:
+            logger.info(f"脚本 {script_path} 执行成功")
+            return True
+        else:
+            logger.error(f"脚本 {script_path} 执行失败")
+            # 仅在失败时打印详细的错误输出
+            logger.error(f"错误输出 (stderr):\n{result.stderr}")
+            if result.stdout:
+                logger.error(f"标准输出 (stdout):\n{result.stdout}")
             return False
     
     def _count_molecules(self, file_path: str) -> int:
@@ -152,9 +143,6 @@ class GAWorkflowExecutor:
             
             logger.info(f"去重完成: {len(unique_smiles_list)} 个独特分子保存到 {output_file} (已添加ID)")
             return len(unique_smiles_list)
-        except Exception as e:
-            logger.error(f"去重过程中发生错误: {e}")
-            return 0
     
     def _combine_files(self, file_list: List[str], output_file: str) -> bool:
         """合并多个文件"""
@@ -167,9 +155,6 @@ class GAWorkflowExecutor:
                             if line:
                                 outf.write(line + '\n')
             return True
-        except Exception as e:
-            logger.error(f"合并文件时发生错误: {e}")
-            return False
     
     def _extract_smiles_from_docked_file(self, docked_file: str, output_smiles_file: str) -> bool:#提取分数       
         try:
@@ -184,9 +169,6 @@ class GAWorkflowExecutor:
             extracted_count = self._count_molecules(output_smiles_file)
             logger.debug(f"从 {docked_file} 提取了 {extracted_count} 个SMILES到 {output_smiles_file}")
             return True
-        except Exception as e:
-            logger.error(f"从 {docked_file} 提取SMILES时出错: {e}")
-            return False
     
     def run_initial_generation(self) -> str:
         """
@@ -449,19 +431,15 @@ def main():
     parser.add_argument('--receptor', type=str, default=None, help='(可选) 要运行的目标受体名称')
     parser.add_argument('--output_dir', type=str, default=None, help='(可选) 指定输出目录，覆盖配置文件中的设置')    
     args = parser.parse_args()    
-    try:
-        # 创建并运行GA工作流
-        executor = GAWorkflowExecutor(args.config, args.receptor, args.output_dir)        
-        # 执行完整工作流
-        success = executor.run_complete_workflow()        
-        if success:
-            logger.info("GA工作流执行成功完成")
-            return 0
-        else:
-            logger.error("GA工作流执行失败")
-            return 1            
-    except Exception as e:
-        logger.error(f"工作流执行过程中发生异常: {e}")
+    # 创建并运行GA工作流
+    executor = GAWorkflowExecutor(args.config, args.receptor, args.output_dir)
+    # 执行完整工作流
+    success = executor.run_complete_workflow()
+    if success:
+        logger.info("GA工作流执行成功完成")
+        return 0
+    else:
+        logger.error("GA工作流执行失败")
         return 1
 if __name__ == "__main__":
     exit(main())

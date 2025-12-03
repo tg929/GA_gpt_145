@@ -94,8 +94,6 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
                     if process.poll() is None:
                         logger.warning(f"强制终止子进程 PID: {process.pid}")
                         process.kill()
-                except Exception as e:
-                    logger.error(f"终止进程时出错: {e}")
         
         # 清理临时文件
         for temp_file in self._temp_files:
@@ -103,8 +101,6 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
                 if os.path.exists(temp_file):
                     os.unlink(temp_file)
                     logger.debug(f"已清理临时文件: {temp_file}")
-            except Exception as e:
-                logger.debug(f"清理临时文件 {temp_file} 时出错: {e}")
         
         # 清理临时目录
         for temp_dir in self._temp_dirs:
@@ -112,8 +108,6 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
                 if os.path.exists(temp_dir):
                     shutil.rmtree(temp_dir)
                     logger.debug(f"已清理临时目录: {temp_dir}")
-            except Exception as e:
-                logger.debug(f"清理临时目录 {temp_dir} 时出错: {e}")
         
         # 清空资源列表
         self._running_processes = []
@@ -235,8 +229,6 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
                 except psutil.NoSuchProcess:
                     pass
                     
-        except Exception as e:
-            logger.error(f"终止进程组时出错: {e}")
 
     def _run_script(self, script_path: str, args: List[str]) -> bool:
         """
@@ -319,14 +311,6 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
                     logger.error(f"标准输出 (stdout):\n{''.join(stdout_data)}")
                 return False
                 
-        except Exception as e:
-            logger.error(f"执行脚本 {script_path} 时发生异常: {e}")
-            # 确保进程被终止
-            if process and process.poll() is None:
-                self._terminate_process_group(process)
-                if process in self._running_processes:
-                    self._running_processes.remove(process)
-            return False
 
     def _count_molecules(self, file_path: str) -> int:
         """统计SMILES文件中的分子数量"""
@@ -396,16 +380,6 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
             
             logger.info(f"去重完成: {len(unique_smiles)} 个独特分子保存到 {output_file}")
             return len(unique_smiles)
-        except Exception as e:
-            logger.error(f"去重过程中发生错误: {e}")
-            # 清理可能的临时文件
-            if os.path.exists(temp_output_file):
-                try:
-                    os.remove(temp_output_file)
-                    self._temp_files.discard(temp_output_file)
-                except:
-                    pass
-            return 0
 
     def _extract_smiles_from_docked_file(self, docked_file: str, output_smiles_file: str) -> bool:
         """从带对接分数的文件中提取纯SMILES,用于遗传操作或分解"""
@@ -417,9 +391,6 @@ class GAGPTWorkflowExecutor:    #工作流；主函数/入口文件就是在调�
                         smiles = line.split()[0]
                         outfile.write(f"{smiles}\n")
             return True
-        except Exception as e:
-            logger.error(f"从 {docked_file} 提取SMILES时出错: {e}")
-            return False
 
     def _execute_ga_stage(self, ga_op_name: str, ga_script: str, input_pool_file: str, raw_output_file: str, filtered_output_file: str) -> bool:
         """辅助函数，用于运行一个GA阶段（如交叉）及其后续的过滤。"""

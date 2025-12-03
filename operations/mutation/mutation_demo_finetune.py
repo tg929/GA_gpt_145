@@ -172,13 +172,9 @@ def run_mutation_simple(config: Dict, parent_smiles: List[str], additional_smile
     """
     简化的变异操作函数
     """
-    try:
-        executor = MutationExecutor(config)
-        results = executor.run_mutation_generation(parent_smiles, additional_smiles or [])
-        return results, executor.lineage_records
-    except Exception as e:
-        logger.error(f"变异操作主函数出错: {e}", exc_info=True)
-        return [], []
+    executor = MutationExecutor(config)
+    results = executor.run_mutation_generation(parent_smiles, additional_smiles or [])
+    return results, executor.lineage_records
 
 def main():
     parser = argparse.ArgumentParser(description='分子变异操作')
@@ -189,19 +185,11 @@ def main():
     
     args = parser.parse_args()
     
-    try:
-        with open(args.config_file, 'r', encoding='utf-8') as f:
-            config = json.load(f)
-    except Exception as e:
-        logger.error(f"无法加载配置文件 {args.config_file}: {e}")
-        return
+    with open(args.config_file, 'r', encoding='utf-8') as f:
+        config = json.load(f)
     
-    try:
-        with open(args.smiles_file, 'r') as f:
-            parent_smiles = [line.strip().split()[0] for line in f if line.strip()]
-    except Exception as e:
-        logger.error(f"无法读取SMILES文件 {args.smiles_file}: {e}")
-        return
+    with open(args.smiles_file, 'r') as f:
+        parent_smiles = [line.strip().split()[0] for line in f if line.strip()]
     
     if not parent_smiles:
         logger.warning("输入SMILES文件为空，无法执行变异操作")
@@ -213,21 +201,15 @@ def main():
     
     mutated_smiles, lineage_records = run_mutation_simple(config, parent_smiles)
     
-    try:
-        with open(args.output_file, 'w') as f:
-            for smiles in mutated_smiles: f.write(f"{smiles}\n")
-        logger.info(f"变异结果已保存到: {args.output_file} ({len(mutated_smiles)} 个分子)")
-    except Exception as e:
-        logger.error(f"无法保存结果到 {args.output_file}: {e}")
+    with open(args.output_file, 'w') as f:
+        for smiles in mutated_smiles: f.write(f"{smiles}\n")
+    logger.info(f"变异结果已保存到: {args.output_file} ({len(mutated_smiles)} 个分子)")
     
     if args.lineage_file:
-        try:
-            with open(args.lineage_file, 'w', encoding='utf-8') as lineage_f:
-                for record in lineage_records:
-                    lineage_f.write(json.dumps(record, ensure_ascii=False) + '\n')
-            logger.info(f"血统记录已保存到: {args.lineage_file}")
-        except Exception as e:
-            logger.error(f"无法保存血统记录到 {args.lineage_file}: {e}")
+        with open(args.lineage_file, 'w', encoding='utf-8') as lineage_f:
+            for record in lineage_records:
+                lineage_f.write(json.dumps(record, ensure_ascii=False) + '\n')
+        logger.info(f"血统记录已保存到: {args.lineage_file}")
 
 if __name__ == "__main__":
     main()

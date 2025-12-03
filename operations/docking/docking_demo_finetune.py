@@ -64,15 +64,11 @@ def vina_dock_single(ligand_file, receptor_pdbqt, results_dir, vars):
         "--out", out_file,
         "--log", log_file
     ]
-    try:
-        subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=300)
-        score = extract_vina_score_from_pdbqt(out_file)
-        if os.path.exists(log_file):#清理文件
-            os.remove(log_file)
-        return ligand_file, True, score
-    except Exception:
-        # 对接失败，静默返回NA，后续将被过滤
-        return ligand_file, False, "NA"
+    subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=300)
+    score = extract_vina_score_from_pdbqt(out_file)
+    if os.path.exists(log_file):
+        os.remove(log_file)
+    return ligand_file, True, score
 
 def extract_vina_score_from_pdbqt(pdbqt_file):
     """
@@ -99,23 +95,17 @@ def extract_vina_score_from_pdbqt(pdbqt_file):
                             return val
                         except Exception:
                             pass
-    except Exception as e:
-        print(f"解析PDBQT文件出错 {pdbqt_file}: {e}")
-
     # 2) 回退到 log 文件
-    try:
-        log_file = pdbqt_file.replace("_out.pdbqt", ".log")
-        if os.path.exists(log_file):
-            with open(log_file, 'r', errors='ignore') as f:
-                content = f.read()
-            # 常见模式： Vina 记录或 qvina 的结果行
-            # 尝试抓取最优能量（第一个负值）
-            nums = re.findall(r"[-+]?\d*\.\d+|[-+]?\d+", content)
-            negs = [x for x in nums if x.startswith('-')]
-            if negs:
-                return negs[0]
-    except Exception:
-        pass
+    log_file = pdbqt_file.replace("_out.pdbqt", ".log")
+    if os.path.exists(log_file):
+        with open(log_file, 'r', errors='ignore') as f:
+            content = f.read()
+        # 常见模式： Vina 记录或 qvina 的结果行
+        # 尝试抓取最优能量（第一个负值）
+        nums = re.findall(r"[-+]?\d*\.\d+|[-+]?\d+", content)
+        negs = [x for x in nums if x.startswith('-')]
+        if negs:
+            return negs[0]
     return "NA"
 
 def keep_best_docking_results(results_dir):
@@ -163,8 +153,6 @@ def keep_best_docking_results(results_dir):
                     if os.path.exists(log_file):
                         os.remove(log_file)
                         
-                except OSError as e:
-                    print(f"删除文件失败: {file_path}, 错误: {e}")
 
 def output_smiles_scores(smiles_file, scores_dict, output_file):
     """将成功对接的结果写入文件,按对接分数排序（分数越低越好排在前面）,不包含头,不记录NA值。"""
@@ -183,10 +171,7 @@ def output_smiles_scores(smiles_file, scores_dict, output_file):
         score = scores_dict.get(mol_name, "NA")
         # 仅收集得分有效的分子
         if score != "NA":
-            try:
-                valid_molecules.append((smiles, float(score)))
-            except (ValueError, TypeError):
-                continue  # 跳过无效分数
+            valid_molecules.append((smiles, float(score)))
     
     # 按对接分数排序（分数越低越好，升序排列）
     valid_molecules.sort(key=lambda x: x[1])
@@ -385,17 +370,11 @@ class DockingWorkflow:
         ligand_dir = self.vars["ligand_dir"]
         if not os.path.exists(ligand_dir):
             os.makedirs(ligand_dir)
-        # 使用 try/except 捕获生成3D失败，避免整体中断
-        try:
-            convert_to_3d(self.vars, smi_file, ligand_dir)
-        except Exception as e:
-            logger.warning(f"convert_to_3d 发生异常: {e}")
+        # 1. SMILES转3D SDF
+        convert_to_3d(self.vars, smi_file, ligand_dir)
         # 2. SDF转PDB
         sdf_dir = self.vars["sdf_dir"]
-        try:
-            convert_sdf_to_pdbs(self.vars, sdf_dir, sdf_dir)
-        except Exception as e:
-            logger.warning(f"convert_sdf_to_pdbs 发生异常: {e}")
+        convert_sdf_to_pdbs(self.vars, sdf_dir, sdf_dir)
         pdb_dir = sdf_dir + "_PDB"
         if not os.path.exists(pdb_dir):
             raise RuntimeError(f"PDB目录未生成: {pdb_dir}")
@@ -409,11 +388,7 @@ class DockingWorkflow:
             # 如果文件已存在且有效，则跳过
             if os.path.exists(pdbqt_file) and os.path.getsize(pdbqt_file) > 0:
                 continue            
-            try:
-                success, smile_name = file_converter.convert_ligand_pdb_file_to_pdbqt(pdb_file)
-                # 静默处理转换失败的分子
-            except Exception:
-                continue            
+            success, smile_name = file_converter.convert_ligand_pdb_file_to_pdbqt(pdb_file)
         return pdb_dir  # 返回包含PDBQT文件的目录
 
     def run_docking(self, receptor_pdbqt: str, ligand_dir: str) -> str:
@@ -430,13 +405,9 @@ class DockingWorkflow:
         num_workers = self.vars.get("number_of_processors")
         if num_workers is None or num_workers == -1:
             # 自动检测模式：使用实时CPU检测
-            try:
-                available_cores, cpu_usage = get_available_cpu_cores()
-                num_workers = available_cores
-                print(f"自动检测到 {available_cores} 个空闲CPU核心（当前系统使用率: {cpu_usage:.1f}%）")
-            except Exception as e:
-                logger.warning(f"CPU自动检测失败，使用默认值: {e}")
-                num_workers = os.cpu_count() or 1
+            available_cores, cpu_usage = get_available_cpu_cores()
+            num_workers = available_cores
+            print(f"自动检测到 {available_cores} 个空闲CPU核心（当前系统使用率: {cpu_usage:.1f}%）")
         else:
             num_workers = int(num_workers)
         
@@ -472,17 +443,11 @@ class DockingWorkflow:
                         scores[mol_name] = "NA"        
         
         # 仅保留最佳对接的mol/姿势
-        try:
-            keep_best_docking_results(results_dir)
-        except Exception as e:
-            logger.warning(f"清理对接结果时异常: {e}")
+        keep_best_docking_results(results_dir)
 
         # 写出分数字典
         final_scores_file = os.path.join(results_dir, "final_scored.smi")
-        try:
-            output_smiles_scores(self.vars["ligands"], scores, final_scores_file)
-        except Exception as e:
-            logger.warning(f"写出最终分数失败: {e}")
+        output_smiles_scores(self.vars["ligands"], scores, final_scores_file)
         return final_scores_file
     @staticmethod
     def pick_conversion_class(conversion_choice: str) -> type:
@@ -528,17 +493,12 @@ def run_molecular_docking(config: Dict, ligands_file: str, generation_dir: str, 
     """
     logger.info("启动分子对接工作流程...")
     
-    try:
-        # 实例化工作流，并传入配体文件路径
-        workflow = DockingWorkflow(config, generation_dir, ligands_file)
-        
-        # 如果指定了受体，则切换到该受体
-        if receptor_name:
-            try:
-                workflow.set_receptor(receptor_name, config)
-            except ValueError as e:
-                logger.error(f"无法设置受体 '{receptor_name}': {e}")
-                return None
+    # 实例化工作流，并传入配体文件路径
+    workflow = DockingWorkflow(config, generation_dir, ligands_file)
+
+    # 如果指定了受体，则切换到该受体
+    if receptor_name:
+        workflow.set_receptor(receptor_name, config)
 
         # 1. 准备受体
         receptor_pdbqt = workflow.prepare_receptor()
@@ -603,13 +563,9 @@ def main():
     if final_output_file:
         print(f"对接工作流成功完成: {final_output_file}")
         # 将生成的最终结果文件复制到指定的output_file
-        try:
-            shutil.copy(final_output_file, args.output_file)
-            logging.info(f"结果已成功复制到: {args.output_file}")
-            exit(0)
-        except Exception as e:
-            logging.error(f"无法将结果复制到 {args.output_file}: {e}")
-            exit(1)
+        shutil.copy(final_output_file, args.output_file)
+        logging.info(f"结果已成功复制到: {args.output_file}")
+        exit(0)
     else:
         logging.error("对接流程失败，未生成有效的输出文件。")
         # 创建一个空的输出文件，以防止下游流程因FileNotFound而崩溃
