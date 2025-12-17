@@ -14,12 +14,9 @@ from utils.train_utils import get_mol
 from utils.chem_utils import reconstruct
 from tqdm import tqdm
 
-# 设置项目根目录
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FRAGMENT_GPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-#当前地址：/data1/tgy/GA_llm/fragmlm
-#vocab.txt地址：/data1/tgy/GA_llm/fragmlm/vocabs/vocab.txt
 
 
 def Test(model, tokenizer, max_seq_len, temperature, top_k, stream, rp, kv_cache, is_simulation, device,
@@ -31,13 +28,9 @@ def Test(model, tokenizer, max_seq_len, temperature, top_k, stream, rp, kv_cache
         with open(input_file, 'r') as f:
             prefixes = [line.strip() for line in f if line.strip()]
     else:
-        prefixes = [None]  # 保持无输入时生成功能
+        prefixes = [None]
 
-    # 修改循环结构：每个条件生成1个分子（不加第二个内部循环）
     for input_prefix in tqdm(prefixes, desc='Processing molecules'):
-        #修改：每个输入条件下生成对应的两个新分子：
-        #for _ in range(3): 
-        # 生成条件输入的token序列
         if input_prefix:
             prefix_tokens = tokenizer.encode(input_prefix, add_special_tokens=False)
             x = torch.tensor([prefix_tokens], dtype=torch.int64).to(device)
@@ -55,7 +48,7 @@ def Test(model, tokenizer, max_seq_len, temperature, top_k, stream, rp, kv_cache
             continue
 
         history_idx = 0
-        complete_answer = f"{tokenizer.decode(x[0])}"  # 用于保存整个生成的句子
+        complete_answer = f"{tokenizer.decode(x[0])}"
 
         while y != None:
             answer = tokenizer.decode(y[0].tolist())
@@ -73,10 +66,8 @@ def Test(model, tokenizer, max_seq_len, temperature, top_k, stream, rp, kv_cache
                     break
                 continue
 
-            # 保存生成的片段到完整回答中
             complete_answer += answer[history_idx:]
 
-            # print(answer[history_idx:], end='', flush=True)
             try:
                 y = next(res_y)
             except:
@@ -103,8 +94,6 @@ def Test(model, tokenizer, max_seq_len, temperature, top_k, stream, rp, kv_cache
     print(
         f"valid ratio:{len(valid_answer_list)}/{len(complete_answer_list)}={len(valid_answer_list) / len(complete_answer_list)}")
     
-    # 修改：使用传入的输出文件路径，直接保存有效的SMILES分子
-    # 确保输出目录存在
     os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
     
     with open(output_file_path, "w") as w:
@@ -134,21 +123,16 @@ def load_config(config_path):
 
 
 def main_test(args):
-    # 加载配置文件参数（如果提供）
     gpt_config = load_config(args.config_file)
     
-    # 设置随机种子的值（优先使用命令行参数，否则使用配置文件，最后使用默认值）
     if args.seed:
         seed_value = int(args.seed)
     else:
-        seed_value = gpt_config.get('seed', 42)  # 默认42
+        seed_value = gpt_config.get('seed', 42)
     seed_all(seed_value)
     
-    # --- Device Setup ---
-    # 优先使用命令行参数，否则使用配置文件，最后使用默认值 '0'
     device_id_str = args.device if args.device else gpt_config.get('device', '0')
     
-    # 确定最终要使用的设备
     if torch.cuda.is_available():
         try:
             requested_id = int(device_id_str)
@@ -176,30 +160,24 @@ def main_test(args):
     mconf = GPTConfig(vocab_size=tokenizer.vocab_size, n_layer=12, n_head=12, n_embd=768)
     model = GPT(mconf)
     
-    # --- Model Loading ---
-    # 使用 map_location 将模型权重加载到目标设备
     checkpoint_path = os.path.join(FRAGMENT_GPT_DIR, 'weights/dpo_0_400.pt')
     print(f"正在从 {checkpoint_path} 加载模型权重到设备 {device}...")
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=True)   
     
     model.load_state_dict(checkpoint)
-    model.to(device) # 确保模型在目标设备上
+    model.to(device)
     start_time = time.time()
     
-    # 确定输出文件路径
     if args.output_file:
-        # 如果指定了输出文件，直接使用
         output_file_path = args.output_file
         print(f"使用指定的输出文件路径: {output_file_path}")
     else:
-        # 否则使用原来的默认路径（保持向后兼容）
         output_dir = os.path.join(PROJECT_ROOT, "fragmlm/output")
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         output_file_path = os.path.join(output_dir, f'crossovered0_frags_new_{seed_value}.smi')
         print(f"使用默认输出路径: {output_file_path}")
     
-    # 从配置文件获取模型设置参数（使用默认值作为回退）
     model_settings = gpt_config.get('model_settings', {})
     max_seq_len = model_settings.get('max_seq_len', 1024)
     temperature = gpt_config.get('temperature', 1.0)
