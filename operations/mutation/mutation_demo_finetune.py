@@ -34,6 +34,8 @@ class MutationExecutor:
         self.config = config
         self.logger = logger
         self.mutation_config = self.config.get('mutation_finetune', {})
+        workflow_config = self.config.get("workflow", {})
+        self.enable_lineage_tracking = bool(workflow_config.get("enable_lineage_tracking", False))
         
         # 从mutation_finetune配置块中直接读取路径
         rxn_library = self.mutation_config.get('rxn_library', 'all_rxns')
@@ -95,16 +97,15 @@ class MutationExecutor:
                 try:
                     # 使用suppress_stdout_stderr来避免输出干扰
                     with suppress_stdout_stderr():
-                        new_smiles_info = self.mutator.run_smiles_click2(parent, return_metadata=True)
-                    if not new_smiles_info:
+                        new_smiles_list = self.mutator.run_smiles_click2(parent)
+                    if not new_smiles_list:
                         failed_molecules.add(parent)
                         consecutive_failures += 1
                         continue
 
                     consecutive_failures = 0
                     
-                    for info in new_smiles_info:
-                        new_smi = info.get("smiles") if isinstance(info, dict) else None
+                    for new_smi in new_smiles_list:
                         if not new_smi:
                             continue
                         is_valid = all(check(new_smi) for check in self.filter_object_dict.values())
@@ -113,21 +114,12 @@ class MutationExecutor:
                             new_smi not in total_population):
                             
                             mutation_results.append(new_smi)
-                            record = {
-                                "child": new_smi,
-                                "operation": "mutation",
-                                "parents": [parent]
-                            }
-                            rule_name = info.get("reaction_name") if isinstance(info, dict) else None
-                            if rule_name:
-                                record["mutation_rule"] = rule_name
-                            reaction_id = info.get("reaction_id") if isinstance(info, dict) else None
-                            if reaction_id is not None:
-                                record["mutation_reaction_id"] = reaction_id
-                            comp_ids = info.get("complementary_mol_ids") if isinstance(info, dict) else None
-                            if comp_ids:
-                                record["complementary_molecules"] = list(comp_ids)
-                            self.lineage_records.append(record)
+                            if self.enable_lineage_tracking:
+                                self.lineage_records.append({
+                                    "child": new_smi,
+                                    "operation": "mutation",
+                                    "parents": [parent]
+                                })
                             self.logger.debug(f"成功生成新分子: {new_smi}")                            
                             # 更新进度条
                             if progress_bar:
@@ -187,6 +179,7 @@ def main():
     
     with open(args.config_file, 'r', encoding='utf-8') as f:
         config = json.load(f)
+    enable_lineage_tracking = bool(config.get("workflow", {}).get("enable_lineage_tracking", False))
     
     with open(args.smiles_file, 'r') as f:
         parent_smiles = [line.strip().split()[0] for line in f if line.strip()]
@@ -205,7 +198,7 @@ def main():
         for smiles in mutated_smiles: f.write(f"{smiles}\n")
     logger.info(f"变异结果已保存到: {args.output_file} ({len(mutated_smiles)} 个分子)")
     
-    if args.lineage_file:
+    if args.lineage_file and enable_lineage_tracking:
         with open(args.lineage_file, 'w', encoding='utf-8') as lineage_f:
             for record in lineage_records:
                 lineage_f.write(json.dumps(record, ensure_ascii=False) + '\n')

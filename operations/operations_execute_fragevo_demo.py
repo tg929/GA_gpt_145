@@ -64,7 +64,9 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
         self._setup_parameters_and_paths(receptor_name, output_dir_override)
         self.metric_cache = ChemMetricCache(self.output_dir / "chem_metric_cache.json")
         self._save_run_parameters()
-        self.lineage_tracker_path = self.output_dir / "lineage_tracker.json"
+        self.lineage_tracker_path: Optional[Path] = (
+            self.output_dir / "lineage_tracker.json" if self.enable_lineage_tracking else None
+        )
         self.lineage_tracker = self._load_lineage_tracker()
         self.history_paths: Dict[str, str] = {}
         self.smiles_to_history: Dict[str, str] = {}
@@ -87,6 +89,8 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
         workflow_config = self.config.get('workflow', {})
         gpt_config = self.config.get('gpt', {})
         self.dynamic_masking_config = gpt_config.get('dynamic_masking', {'enable': False})
+        self.enable_lineage_tracking = bool(workflow_config.get("enable_lineage_tracking", False))
+        self.run_params["enable_lineage_tracking"] = self.enable_lineage_tracking
         # 记录配置和根目录
         self.run_params['config_file_path'] = self.config_path
         self.run_params['project_root'] = str(self.project_root)
@@ -156,6 +160,8 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
             logger.error("保存执行配置快照失败")
     def _load_lineage_tracker(self) -> Dict[str, List[Dict]]:
         """从磁盘加载既有的血统记录。"""
+        if not getattr(self, "enable_lineage_tracking", False):
+            return {}
         if self.output_dir and hasattr(self, "output_dir"):
             path = getattr(self, "lineage_tracker_path", None)
         else:
@@ -172,6 +178,10 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
         return {}
     def _save_lineage_tracker(self) -> None:
         """将血统跟踪记录持久化到磁盘。"""
+        if not getattr(self, "enable_lineage_tracking", False):
+            return
+        if not self.lineage_tracker_path:
+            return
         try:
             with open(self.lineage_tracker_path, 'w', encoding='utf-8') as f:
                 json.dump(self.lineage_tracker, f, indent=2, ensure_ascii=False)
@@ -345,6 +355,8 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
 
     def _update_lineage_tracker(self, lineage_entries: List[Dict]) -> None:
         """更新内存中的血统跟踪数据并同步到磁盘。"""
+        if not self.enable_lineage_tracking:
+            return
         if not lineage_entries:
             return
         for entry in lineage_entries:
@@ -360,6 +372,8 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
 
     def _record_initial_population(self, formatted_file: Path) -> None:
         """记录初代种群的血统来源。"""
+        if not self.enable_lineage_tracking:
+            return
         smiles_list = self._read_smiles_from_file(formatted_file)
         if not smiles_list:
             return
@@ -743,20 +757,23 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
         filtered_output_file: Path,
         raw_lineage_file: Path,
         filtered_lineage_file: Path
-    ) -> Optional[Path]:
-        """辅助函数，用于运行一个GA阶段（如交叉）及其后续的过滤，并返回过滤后的血统文件路径。"""
+    ) -> Tuple[bool, Optional[Path]]:
+        """辅助函数，用于运行一个GA阶段（如交叉）及其后续的过滤，并返回(是否成功, 过滤后的血统文件路径)。"""
         logger.info(f"开始执行 {ga_op_name}...")
         
         # 运行GA操作
-        ga_succeeded = self._run_script(ga_script, [
+        ga_args = [
             '--smiles_file', input_pool_file,
             '--output_file', str(raw_output_file),
-            '--lineage_file', str(raw_lineage_file),
             '--config_file', self.config_path
-        ])
+        ]
+        if self.enable_lineage_tracking:
+            ga_args.extend(['--lineage_file', str(raw_lineage_file)])
+
+        ga_succeeded = self._run_script(ga_script, ga_args)
         if not ga_succeeded:
             logger.error(f"'{ga_op_name}' 脚本执行失败。")
-            return None
+            return False, None
 
         # 运行过滤器
         filter_succeeded = self._run_script('operations/filter/filter_demo.py', [
@@ -765,12 +782,16 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
         ])
         if not filter_succeeded:
             logger.error(f"'{ga_op_name}' 过滤失败。")
-            return None
+            return False, None
+
+        if not self.enable_lineage_tracking:
+            logger.info(f"'{ga_op_name}' 操作完成, 生成 {self._count_molecules(str(filtered_output_file))} 个过滤后的分子。")
+            return True, None
 
         filtered_entries = self._filter_lineage_entries(raw_lineage_file, filtered_output_file)
         self._write_jsonl(filtered_lineage_file, filtered_entries)
         logger.info(f"'{ga_op_name}' 操作完成, 生成 {self._count_molecules(str(filtered_output_file))} 个过滤后的分子。")
-        return filtered_lineage_file
+        return True, filtered_lineage_file
     def _filter_lineage_entries(self, raw_lineage_file: Path, filtered_output_file: Path) -> List[Dict]:
         """根据过滤后的SMILES保留有效的血统记录。"""
         raw_entries = self._read_jsonl(raw_lineage_file)
@@ -936,25 +957,25 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
 
         # 执行交叉操作
         logger.info(f"第 {generation} 代: 开始交叉操作...")
-        crossover_lineage_path = self._execute_ga_stage(
+        crossover_ok, crossover_lineage_path = self._execute_ga_stage(
             "交叉", 'operations/crossover/crossover_demo_finetune.py',
             str(ga_input_pool_file), crossover_raw_file, crossover_filtered_file,
             crossover_raw_lineage, crossover_filtered_lineage
         )
         
-        if not crossover_lineage_path:
+        if not crossover_ok:
             logger.error(f"第 {generation} 代: 交叉操作失败。")
             return None
 
         # 执行变异操作
         logger.info(f"第 {generation} 代: 开始变异操作...")
-        mutation_lineage_path = self._execute_ga_stage(
+        mutation_ok, mutation_lineage_path = self._execute_ga_stage(
             "突变", 'operations/mutation/mutation_demo_finetune.py',
             str(ga_input_pool_file), mutation_raw_file, mutation_filtered_file,
             mutation_raw_lineage, mutation_filtered_lineage
         )
         
-        if not mutation_lineage_path:
+        if not mutation_ok:
             logger.error(f"第 {generation} 代: 变异操作失败。")
             return None
 
@@ -1002,31 +1023,32 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
             str(offspring_raw_file), 
             str(offspring_formatted_file)
         )
-        offspring_lineage_file = gen_dir / "offspring_lineage.jsonl"
+        offspring_lineage_file = gen_dir / "offspring_lineage.jsonl" if self.enable_lineage_tracking else None
         if offspring_count == 0:
             logger.warning(f"第 {generation} 代: 经过滤和去重后，无有效子代分子。")
             # 创建一个空的对接文件和血统文件，避免后续步骤报错
             offspring_docked_file = gen_dir / "offspring_docked.smi"
             open(offspring_docked_file, 'a').close()
-            self._write_jsonl(offspring_lineage_file, [])
             self.last_offspring_histories = set()
             self.last_offspring_smiles = set()
-            return str(offspring_docked_file), str(offspring_lineage_file)
+            if offspring_lineage_file:
+                self._write_jsonl(offspring_lineage_file, [])
+                return str(offspring_docked_file), str(offspring_lineage_file)
+            return str(offspring_docked_file), None
 
-        unique_smiles = self._read_smiles_from_file(offspring_formatted_file)
-        crossover_entries = self._read_jsonl(Path(crossover_lineage_file)) if crossover_lineage_file else []
-        mutation_entries = self._read_jsonl(Path(mutation_lineage_file)) if mutation_lineage_file else []
-        offspring_lineage_entries = self._combine_lineage_records(
-            generation,
-            unique_smiles,
-            crossover_entries,
-            mutation_entries
-        )
-        history_mapping = self._assign_histories_to_offspring(generation, offspring_lineage_entries)
-        self.last_offspring_histories = set(history_mapping.values())
-        self.last_offspring_smiles = set(history_mapping.keys())
-        self._write_jsonl(offspring_lineage_file, offspring_lineage_entries)
-        self._update_lineage_tracker(offspring_lineage_entries)
+        if self.enable_lineage_tracking and offspring_lineage_file:
+            unique_smiles = self._read_smiles_from_file(offspring_formatted_file)
+            crossover_entries = self._read_jsonl(Path(crossover_lineage_file)) if crossover_lineage_file else []
+            mutation_entries = self._read_jsonl(Path(mutation_lineage_file)) if mutation_lineage_file else []
+            offspring_lineage_entries = self._combine_lineage_records(
+                generation,
+                unique_smiles,
+                crossover_entries,
+                mutation_entries
+            )
+            self._assign_histories_to_offspring(generation, offspring_lineage_entries)
+            self._write_jsonl(offspring_lineage_file, offspring_lineage_entries)
+            self._update_lineage_tracker(offspring_lineage_entries)
 
         logger.info(f"子代格式化完成: 共 {offspring_count} 个独特分子准备对接。")
 
@@ -1056,9 +1078,11 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
         docked_count = self._count_molecules(str(offspring_docked_file))
         logger.info(f"第 {generation} 代: 子代评估完成，{docked_count} 个分子已对接。")
 
-        self._ingest_population_metrics(offspring_docked_file, generation, mark_active=False)
+        offspring_mapping = self._ingest_population_metrics(offspring_docked_file, generation, mark_active=False)
+        self.last_offspring_histories = set(offspring_mapping.values())
+        self.last_offspring_smiles = set(offspring_mapping.keys())
 
-        return str(offspring_docked_file), str(offspring_lineage_file)
+        return str(offspring_docked_file), str(offspring_lineage_file) if offspring_lineage_file else None
     def _combine_lineage_records(
         self,
         generation: int,
@@ -1100,6 +1124,8 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
         return lineage_entries
     def _save_next_generation_lineage(self, generation: int, next_parents_file: str, offspring_lineage_file: Optional[str]) -> None:
         """保存下一代父代的血统信息，便于追踪分子来源。"""
+        if not self.enable_lineage_tracking:
+            return
         if not next_parents_file:
             return
         gen_dir = self.output_dir / f"generation_{generation}"
@@ -1377,11 +1403,12 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
 
         
         # 保存下一代父代的血统信息，便于追踪
-        self._save_next_generation_lineage(
-            generation,
-            next_parents_docked_file,
-            offspring_lineage_file
-        )
+        if self.enable_lineage_tracking:
+            self._save_next_generation_lineage(
+                generation,
+                next_parents_docked_file,
+                offspring_lineage_file
+            )
 
         # 7. 对选择后的精英种群进行评分分析（这是新的逻辑）
         self.run_selected_population_evaluation(next_parents_docked_file, generation)
