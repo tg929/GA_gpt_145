@@ -8,8 +8,8 @@
   },  
   "workflow": {
     "description": "FragEvo混合工作流核心参数",
-    "max_generations": 30,
-    "initial_population_file": "datasets/initial_population/my_initial_population_200.smi",
+    "max_generations": 10,
+    "initial_population_file": "datasets/initial_population/my_initial_population.smi",
     "output_directory": "FragEvo_output",
     "enable_gpt_generation": true,
     "gpt_integration_mode": "additive",
@@ -24,7 +24,7 @@
     "n_fragments_to_mask": 1,
     "seed": 42,
     "device": "1",
-    "temperature": 1.2,
+    "temperature": 1.0,
     "dynamic_masking": {
       "enable": true
     },
@@ -200,7 +200,7 @@
   
   "crossover_finetune": {
     "description": "GA交叉操作参数",
-    "crossover_attempts": 200,
+    "crossover_attempts": 100,
     "crossover_rate": 0.8,
     "min_atom_match_mcs": 4,
     "max_time_mcs_prescreen": 1,
@@ -215,7 +215,7 @@
   
   "mutation_finetune": {
     "description": "GA突变操作参数",
-    "mutation_attempts": 150,
+    "mutation_attempts": 100,
     "max_mutations_per_parent": 1,
     "rxn_library": "all_rxns",
     "max_attempts_multiplier": 60,
@@ -249,7 +249,7 @@
       "single_objective",
       "multi_objective"
     ],
-    "selection_mode": "single_objective",
+    "selection_mode": "multi_objective",
     
     "single_objective_settings": {
       "description": "Parameters for single-objective selection based on docking score.",

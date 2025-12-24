@@ -26,9 +26,8 @@ from operations.stating.config_snapshot_generator import save_config_snapshot #�
 import multiprocessing  
 import shutil  
 from rdkit import Chem
-from rdkit.Chem import QED
 from datasets.decompose.demo_frags import break_into_fragments
-from fragmlm.utils import sascorer
+from utils.chem_metrics import ChemMetricCache
 
 # 移除全局日志配置，避免多进程日志冲突
 # logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -63,6 +62,7 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
             
         self.run_params = {}
         self._setup_parameters_and_paths(receptor_name, output_dir_override)
+        self.metric_cache = ChemMetricCache(self.output_dir / "chem_metric_cache.json")
         self._save_run_parameters()
         self.lineage_tracker_path = self.output_dir / "lineage_tracker.json"
         self.lineage_tracker = self._load_lineage_tracker()
@@ -463,19 +463,9 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
             "docking_score": docking_score,
             "total": docking_score
         }
-        mol = Chem.MolFromSmiles(smiles)
-        if mol is None:
-            metrics["qed"] = None
-            metrics["sa"] = None
-            return metrics
-        try:
-            metrics["qed"] = float(QED.qed(mol))
-        except Exception:
-            metrics["qed"] = None
-        try:
-            metrics["sa"] = float(sascorer.calculateScore(mol))
-        except Exception:
-            metrics["sa"] = None
+        qed, sa = self.metric_cache.get_or_compute(smiles)
+        metrics["qed"] = qed
+        metrics["sa"] = sa
         return metrics
     def _upsert_history_record(self, history: str, smiles: str, generation: int, docking_score: Optional[float], mark_active: bool) -> None:
         record = self.history_records.get(history, {
@@ -516,6 +506,7 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
                 history = self._ensure_history(smiles, generation=generation)
                 mapping[smiles] = history
                 self._upsert_history_record(history, smiles, generation, docking_score, mark_active)
+        self.metric_cache.flush()
         return mapping
     def _mark_histories_active(self, histories: Set[str], generation: int) -> None:
         for history in histories:
@@ -1151,7 +1142,6 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
             Optional[str]: 成功则返回下一代父代文件路径,失败则返回None。
         """
         logger.info(f"第 {generation} 代: 开始选择操作...")
-        gen_dir = self.output_dir / f"generation_{generation}"
         next_parents_file = self.output_dir / f"generation_{generation+1}" / "initial_population_docked.smi"
         next_parents_file.parent.mkdir(exist_ok=True)
 
@@ -1177,7 +1167,10 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
                 '--docked_file', offspring_docked_file,
                 '--parent_file', parent_docked_file,
                 '--output_file', str(next_parents_file),
-                '--n_select', str(n_select)  # 统一通过命令行传递
+                '--n_select', str(n_select),
+                '--config_file', self.config_path,
+                '--cache_file', str(self.metric_cache.cache_path),
+                '--output_format', 'with_scores',
             ]
             selection_succeeded = self._run_script('operations/selecting/selecting_multi_demo.py', selection_args)
         

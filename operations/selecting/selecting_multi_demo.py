@@ -11,11 +11,11 @@
 import argparse
 import os
 import sys
+import json
+from pathlib import Path
 import numpy as np
-from rdkit import Chem
 import logging
-from typing import List, Dict
-from tdc import Oracle
+from typing import List, Dict, Optional
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -23,10 +23,7 @@ logger = logging.getLogger(__name__)
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, PROJECT_ROOT)
 
-# 使用TDC Oracle进行分子属性评估
-qed_evaluator = Oracle('qed')
-sa_evaluator = Oracle('sa')
-logger.info("已初始化TDC Oracle用于QED和SA分数计算。")
+from utils.chem_metrics import ChemMetricCache
 
 def non_dominated_sort(objectives):
     """
@@ -85,7 +82,64 @@ def crowding_distance(objectives, front):
                 distances[sorted_indices[i]] += (obj_array[sorted_indices[i+1], m] - obj_array[sorted_indices[i-1], m]) / (obj_max - obj_min)
     return distances
 
-def select_molecules_nsga2(molecules_data: List[Dict], n_select: int) -> List[Dict]:
+
+def _load_multi_objective_config(config_file: str) -> Dict:
+    if not config_file:
+        return {}
+    try:
+        with open(config_file, "r", encoding="utf-8") as f:
+            cfg = json.load(f)
+        selection_cfg = cfg.get("selection", {})
+        return selection_cfg.get("multi_objective_settings", {}) or {}
+    except Exception as exc:
+        logger.warning(f"无法加载多目标选择配置 {config_file}: {exc}")
+        return {}
+
+
+def _build_objective_matrix(molecules_data: List[Dict], objectives_cfg: List[Dict]) -> np.ndarray:
+    """
+    Build objective matrix of shape (n_molecules, n_objectives).
+    All objectives are converted into minimization form.
+    Supported objective names: docking_score, qed_score, sa_score.
+    """
+    if not objectives_cfg:
+        objectives_cfg = [
+            {"name": "docking_score", "direction": "minimize"},
+            {"name": "qed_score", "direction": "maximize"},
+            {"name": "sa_score", "direction": "minimize"},
+        ]
+
+    rows: List[List[float]] = []
+    for m in molecules_data:
+        row: List[float] = []
+        for obj in objectives_cfg:
+            name = (obj.get("name") or "").strip()
+            direction = (obj.get("direction") or "minimize").strip().lower()
+
+            if name == "docking_score":
+                value = float(m.get("docking_score", 0.0))
+            elif name == "qed_score":
+                value = float(m.get("qed_score", 0.0))
+            elif name == "sa_score":
+                value = float(m.get("sa_score", 10.0))
+            else:
+                raise ValueError(f"不支持的目标: {name}")
+
+            if direction == "maximize":
+                value = -value
+            elif direction != "minimize":
+                raise ValueError(f"不支持的direction: {direction} (目标: {name})")
+
+            row.append(value)
+        rows.append(row)
+    return np.array(rows, dtype=float)
+
+def select_molecules_nsga2(
+    molecules_data: List[Dict],
+    n_select: int,
+    objectives_cfg: Optional[List[Dict]] = None,
+    enable_crowding_distance: bool = True,
+) -> List[Dict]:
     """
     使用非支配排序和拥挤度距离进行多目标分子选择 (NSGA-II的核心思想)    
     Args:
@@ -97,28 +151,27 @@ def select_molecules_nsga2(molecules_data: List[Dict], n_select: int) -> List[Di
     if not molecules_data:
         logger.warning("分子数据为空，无法执行选择。")
         return []
-    # 目标：1.对接分数(min), 2.-QED(min), 3.SA分数(min)
-    objectives = np.array([
-        [m['docking_score'], -m.get('qed_score', 0), m.get('sa_score', 10)] 
-        for m in molecules_data
-    ])    
+    objectives = _build_objective_matrix(molecules_data, objectives_cfg or [])
     # 执行非支配排序
     fronts = non_dominated_sort(objectives)    
     selected_molecules = []
-    selected_indices = []    
     for front in fronts:
         if len(selected_molecules) + len(front) <= n_select:
-            selected_indices.extend(front)
             selected_molecules.extend([molecules_data[i] for i in front])
         else:
-            # 如果当前前沿无法完全加入，则使用拥挤度距离选择
-            distances = crowding_distance(objectives, front)
-            sorted_by_crowding = sorted(zip(front, distances), key=lambda x: x[1], reverse=True)            
             remaining_needed = n_select - len(selected_molecules)
-            for i in range(remaining_needed):
-                idx = sorted_by_crowding[i][0]
-                selected_indices.append(idx)
-                selected_molecules.append(molecules_data[idx])
+            if enable_crowding_distance:
+                # 如果当前前沿无法完全加入，则使用拥挤度距离选择
+                distances = crowding_distance(objectives, front)
+                sorted_by_crowding = sorted(zip(front, distances), key=lambda x: x[1], reverse=True)
+                for i in range(remaining_needed):
+                    idx = sorted_by_crowding[i][0]
+                    selected_molecules.append(molecules_data[idx])
+            else:
+                # 不启用拥挤度距离时，退化为按第一个目标（通常是 docking_score）排序补齐
+                front_sorted = sorted(front, key=lambda idx: objectives[idx, 0])
+                for idx in front_sorted[:remaining_needed]:
+                    selected_molecules.append(molecules_data[idx])
             break # 已选够数量            
     logger.info(f"多目标选择完成：从 {len(molecules_data)} 个候选中选出 {len(selected_molecules)} 个分子。")
     return selected_molecules
@@ -200,9 +253,9 @@ def load_molecules_from_combined_files(parent_file: str, docked_file: str):
     
     return all_molecules
 
-def add_additional_scores(molecules: List[Dict]) -> List[Dict]:
+def add_additional_scores(molecules: List[Dict], cache: ChemMetricCache) -> List[Dict]:
     """
-    使用TDC Oracle为分子批量添加QED和SA分数。
+    使用统一的RDKit指标实现为分子添加QED和SA分数，并做持久化缓存。
 
     Args:
         molecules: 包含分子SMILES的字典列表。
@@ -213,19 +266,22 @@ def add_additional_scores(molecules: List[Dict]) -> List[Dict]:
     if not molecules:
         return []
 
-    logger.info(f"开始为 {len(molecules)} 个分子批量计算QED和SA分数...")
-    
-    # 提取所有SMILES用于批量处理
-    smiles_list = [m['smiles'] for m in molecules]
-    
-    # 使用TDC进行批量计算
-    qed_scores = qed_evaluator(smiles_list)
-    sa_scores = sa_evaluator(smiles_list)
-    
-    # 将计算出的分数分配回每个分子字典
-    for i, mol_data in enumerate(molecules):
-        mol_data['qed_score'] = qed_scores[i]
-        mol_data['sa_score'] = sa_scores[i]
+    logger.info(f"开始为 {len(molecules)} 个分子计算QED和SA分数(带缓存)...")
+
+    unique_smiles = list({m.get("smiles") for m in molecules if m.get("smiles")})
+    for smi in unique_smiles:
+        cache.get_or_compute(smi)
+    cache.flush()
+
+    for mol_data in molecules:
+        smi = mol_data.get("smiles")
+        if not smi:
+            mol_data["qed_score"] = 0.0
+            mol_data["sa_score"] = 10.0
+            continue
+        qed, sa = cache.get(smi)
+        mol_data["qed_score"] = 0.0 if qed is None else float(qed)
+        mol_data["sa_score"] = 10.0 if sa is None else float(sa)
         
     logger.info(f"完成所有 {len(molecules)} 个分子的分数计算。")
     return molecules
@@ -286,24 +342,49 @@ def main():
     parser.add_argument('--output_file', type=str, required=True,
                        help='输出的下一代父代文件路径')    
     # 选择参数
-    parser.add_argument('--n_select', type=int, required=True,
-                       help='要选择的分子数量')    
+    parser.add_argument('--n_select', type=int, required=False,
+                       help='要选择的分子数量（不指定则从配置文件读取）')
     # 输出格式选择
     parser.add_argument('--output_format', type=str, choices=['smiles_only', 'with_scores'], 
                        default='with_scores',
                        help='输出格式:仅SMILES或包含分数 (默认: with_scores)')
     
     # 其他参数
+    parser.add_argument('--config_file', type=str, default=None,
+                       help='配置文件路径（读取 multi_objective_settings）')
+    parser.add_argument('--cache_file', type=str, default=None,
+                       help='(可选) 化学指标缓存文件路径')
     parser.add_argument('--verbose', action='store_true', default=False,
                        help='显示详细信息')    
     args = parser.parse_args()    
-    
+
     logger.info("开始基于NSGA-II的多目标分子选择...")
     logger.info(f"子代文件: {args.docked_file}")
     if args.parent_file:
         logger.info(f"父代文件: {args.parent_file}")
     logger.info(f"输出文件: {args.output_file}")    
-    
+
+    multi_cfg = _load_multi_objective_config(args.config_file) if args.config_file else {}
+    if args.verbose or bool(multi_cfg.get("verbose", False)):
+        logger.setLevel(logging.DEBUG)
+
+    n_select = args.n_select if args.n_select is not None else int(multi_cfg.get("n_select", 100))
+    objectives_cfg = multi_cfg.get("objectives") or []
+    enable_crowding_distance = bool(multi_cfg.get("enable_crowding_distance", True))
+    enhanced_strategy = (multi_cfg.get("enhanced_strategy") or "standard").strip().lower()
+
+    if enhanced_strategy not in ("standard", "nsga2"):
+        logger.warning(f"当前 selecting_multi_demo.py 未实现 enhanced_strategy='{enhanced_strategy}'，将回退到标准NSGA-II。")
+
+    cache_path = args.cache_file
+    if not cache_path:
+        # output_file is usually .../<run_root>/generation_k/initial_population_docked.smi
+        # cache is persisted at run_root level to be shared across generations.
+        out_path = os.path.abspath(args.output_file)
+        run_root = os.path.dirname(os.path.dirname(out_path))
+        cache_path = os.path.join(run_root, "chem_metric_cache.json")
+    cache = ChemMetricCache(Path(cache_path))
+
     # 1. 加载分子数据
     if args.parent_file:
         # 如果提供了父代文件，合并父代和子代
@@ -318,10 +399,19 @@ def main():
         return    
     
     # 2. 计算QED和SA分数
-    molecules = add_additional_scores(molecules)    
+    molecules = add_additional_scores(molecules, cache)
     
     # 3. 使用NSGA-II进行多目标选择
-    selected_molecules = select_molecules_nsga2(molecules, args.n_select)    
+    try:
+        selected_molecules = select_molecules_nsga2(
+            molecules,
+            n_select,
+            objectives_cfg=objectives_cfg,
+            enable_crowding_distance=enable_crowding_distance,
+        )
+    except Exception as exc:
+        logger.error(f"多目标选择失败: {exc}")
+        selected_molecules = []
     
     # 4. 保存结果
     if selected_molecules:

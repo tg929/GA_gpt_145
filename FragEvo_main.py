@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-FragEvo: 混合分子生成项目主入口
+FragEvo
 """
 import os
 import sys
@@ -12,17 +12,13 @@ import multiprocessing
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import List, Tuple
 
-# --- 项目根目录设置 ---
-# 此脚本位于项目根目录下，直接获取项目根目录
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 sys.path.insert(0, PROJECT_ROOT)
 
-# --- 模块导入 ---
 from operations.operations_execute_fragevo_demo import FragEvoWorkflowExecutor
 from utils.cpu_utils import get_available_cpu_cores, calculate_optimal_workers
 
-# --- 日志配置 ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("FRAGEVO_MAIN")
 
