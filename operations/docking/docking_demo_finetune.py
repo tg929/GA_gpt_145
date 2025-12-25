@@ -13,6 +13,7 @@ import subprocess
 import time
 import re
 import shutil
+import random
 from pathlib import Path
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, PROJECT_ROOT)
@@ -64,6 +65,9 @@ def vina_dock_single(ligand_file, receptor_pdbqt, results_dir, vars):
         "--out", out_file,
         "--log", log_file
     ]
+    seed_value = vars.get("seed")
+    if seed_value is not None:
+        cmd.extend(["--seed", str(seed_value)])
     subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=300)
     score = extract_vina_score_from_pdbqt(out_file)
     if os.path.exists(log_file):
@@ -240,6 +244,7 @@ class DockingWorkflow:
             'docking_exhaustiveness': docking_config.get('docking_exhaustiveness', 8),
             'docking_num_modes': docking_config.get('docking_num_modes', 9),
             'number_of_processors': processor_count,
+            'seed': docking_config.get('seed'),
             'max_variants_per_compound': docking_config.get('max_variants_per_compound', 3),
             'gypsum_thoroughness': docking_config.get('gypsum_thoroughness', 3),
             'gypsum_timeout_limit': docking_config.get('gypsum_timeout_limit', 15),
@@ -502,6 +507,18 @@ def run_molecular_docking(config: Dict, ligands_file: str, generation_dir: str, 
     :return: str or None: 成功则返回包含对接分数的最终文件路径,否则返回None
     """
     logger.info("启动分子对接工作流程...")
+
+    docking_config = config.setdefault("docking", {})
+    seed_value = docking_config.get("seed")
+    if seed_value is None:
+        seed_value = config.get("workflow", {}).get("seed", 42)
+        docking_config["seed"] = seed_value
+    try:
+        seed_value = int(seed_value)
+    except (TypeError, ValueError):
+        seed_value = 42
+        docking_config["seed"] = seed_value
+    random.seed(seed_value)
     
     # 实例化工作流，并传入配体文件路径
     workflow = DockingWorkflow(config, generation_dir, ligands_file)
@@ -546,6 +563,7 @@ def main():
     parser.add_argument('--receptor', type=str, default=None, help='要使用的受体名称，如果未提供，则使用配置文件中的默认受体')
     # 新增：显式传递处理器数量
     parser.add_argument('--number_of_processors', type=int, default=None, help='要使用的CPU核心数，会覆盖配置文件中的设置')
+    parser.add_argument('--seed', type=int, default=None, help='随机种子（用于保证可复现性）')
 
     args = parser.parse_args()
     
@@ -562,6 +580,11 @@ def main():
             config['performance'] = {}
         config['performance']['number_of_processors'] = args.number_of_processors
         logger.info(f"通过命令行参数覆盖CPU核心数为: {args.number_of_processors}")
+    if args.seed is not None:
+        if 'docking' not in config:
+            config['docking'] = {}
+        config['docking']['seed'] = args.seed
+        logger.info(f"通过命令行参数覆盖对接随机种子为: {args.seed}")
 
     # 将smiles_file参数和receptor参数传递给对接工作流
     final_output_file = run_molecular_docking(config, args.smiles_file, args.generation_dir, args.receptor)
@@ -580,5 +603,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-

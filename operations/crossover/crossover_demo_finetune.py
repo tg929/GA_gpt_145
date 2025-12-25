@@ -33,10 +33,18 @@ def main():
                       help='配置文件路径')
     parser.add_argument('--lineage_file', type=str, default=None,
                       help='可选的血统记录输出文件(JSONL)')
+    parser.add_argument('--seed', type=int, default=None,
+                      help='随机种子（用于保证可复现性）')
     args = parser.parse_args()    
     # 加载配置
     with open(args.config_file, 'r', encoding='utf-8') as f:
         config = json.load(f)
+    seed_value = args.seed if args.seed is not None else config.get("workflow", {}).get("seed", 42)
+    try:
+        seed_value = int(seed_value)
+    except (TypeError, ValueError):
+        seed_value = 42
+    random.seed(seed_value)
     enable_lineage_tracking = bool(config.get("workflow", {}).get("enable_lineage_tracking", False))
     crossover_config = config['crossover_finetune']
     # 设置日志
@@ -47,7 +55,7 @@ def main():
     with open(args.smiles_file, 'r') as f:
         all_smiles = [line.split()[0].strip() for line in f if line.strip()]
         logger.info(f"加载分子数量: {len(all_smiles)}")    
-    initial_population = list(set(all_smiles))    
+    initial_population = sorted(set(all_smiles))
     # 从配置中读取交叉参数
     vars = {
         'min_atom_match_mcs': crossover_config.get('min_atom_match_mcs', 4),

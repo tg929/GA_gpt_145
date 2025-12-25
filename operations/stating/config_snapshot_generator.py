@@ -100,6 +100,7 @@ class ConfigSnapshotGenerator:
                 "conversion_choice": docking_config.get("conversion_choice"),
                 "docking_exhaustiveness": docking_config.get("docking_exhaustiveness"),
                 "docking_num_modes": docking_config.get("docking_num_modes"),
+                "seed": docking_config.get("seed"),
                 "number_of_processors": docking_config.get("number_of_processors"),
                 "max_variants_per_compound": docking_config.get("max_variants_per_compound"),
                 "gypsum_thoroughness": docking_config.get("gypsum_thoroughness"),
@@ -257,6 +258,7 @@ class ConfigSnapshotGenerator:
         workflow_config = self.original_config.get("workflow", {})
         if workflow_config:
             self.used_config["workflow"] = {
+                "seed": workflow_config.get("seed"),
                 "initial_population_file": workflow_config.get("initial_population_file"),
                 "output_directory": workflow_config.get("output_directory"),
                 "max_generations": workflow_config.get("max_generations"),

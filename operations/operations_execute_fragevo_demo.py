@@ -22,6 +22,7 @@ import threading
 import queue
 import csv
 import hashlib
+import random
 from operations.stating.config_snapshot_generator import save_config_snapshot #保存参数（快照）
 import multiprocessing  
 import shutil  
@@ -87,6 +88,13 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
     def _setup_parameters_and_paths(self, receptor_name: Optional[str], output_dir_override: Optional[str]):        
         self.project_root = Path(self.config.get('paths', {}).get('project_root', PROJECT_ROOT))
         workflow_config = self.config.get('workflow', {})
+        seed_value = workflow_config.get("seed", 42)
+        try:
+            self.seed = int(seed_value)
+        except (TypeError, ValueError):
+            self.seed = 42
+        random.seed(self.seed)
+        self.run_params["seed"] = self.seed
         gpt_config = self.config.get('gpt', {})
         self.dynamic_masking_config = gpt_config.get('dynamic_masking', {'enable': False})
         self.enable_lineage_tracking = bool(workflow_config.get("enable_lineage_tracking", False))
@@ -597,6 +605,8 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
         cmd = ['python', str(full_script_path)] + args
         logger.debug(f"Executing command: {' '.join(cmd)}")
 
+        env = os.environ.copy()
+        env["PYTHONHASHSEED"] = str(getattr(self, "seed", 42))
         try:
             with subprocess.Popen(
                 cmd,
@@ -605,6 +615,7 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
                 text=True,
                 encoding='utf-8',
                 cwd=str(self.project_root),
+                env=env,
                 close_fds=True
             ) as process:
                 
@@ -765,7 +776,8 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
         ga_args = [
             '--smiles_file', input_pool_file,
             '--output_file', str(raw_output_file),
-            '--config_file', self.config_path
+            '--config_file', self.config_path,
+            '--seed', str(getattr(self, "seed", 42)),
         ]
         if self.enable_lineage_tracking:
             ga_args.extend(['--lineage_file', str(raw_lineage_file)])
@@ -792,6 +804,7 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
         self._write_jsonl(filtered_lineage_file, filtered_entries)
         logger.info(f"'{ga_op_name}' 操作完成, 生成 {self._count_molecules(str(filtered_output_file))} 个过滤后的分子。")
         return True, filtered_lineage_file
+
     def _filter_lineage_entries(self, raw_lineage_file: Path, filtered_output_file: Path) -> List[Dict]:
         """根据过滤后的SMILES保留有效的血统记录。"""
         raw_entries = self._read_jsonl(raw_lineage_file)
@@ -870,8 +883,7 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
         gpt_output_dir = gen_dir / "gpt_generated"
         gpt_output_dir.mkdir(exist_ok=True)        
         
-        gpt_config = self.config.get('gpt', {})
-        seed = gpt_config.get('seed', generation) # 使用代数作为种子以保证可复现性        
+        seed = getattr(self, "seed", 42)
         
         # 定义GPT输出文件路径，不再硬编码和移动文件
         gpt_generated_file = gpt_output_dir / "gpt_generated_molecules.smi"
@@ -1062,7 +1074,8 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
             '--smiles_file', str(offspring_formatted_file),
             '--output_file', str(offspring_docked_file),
             '--generation_dir', str(gen_dir),
-            '--config_file', self.config_path
+            '--config_file', self.config_path,
+            '--seed', str(getattr(self, "seed", 42)),
         ]
         if self.receptor_name:
             docking_args.extend(['--receptor', self.receptor_name])
@@ -1308,7 +1321,8 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
             '--smiles_file', str(initial_formatted_file),
             '--output_file', str(initial_docked_file),
             '--generation_dir', str(gen_dir),
-            '--config_file', self.config_path
+            '--config_file', self.config_path,
+            '--seed', str(getattr(self, "seed", 42)),
         ]
         if self.receptor_name:
             docking_args.extend(['--receptor', self.receptor_name])

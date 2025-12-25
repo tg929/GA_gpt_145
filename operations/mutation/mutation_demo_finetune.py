@@ -64,7 +64,7 @@ class MutationExecutor:
         max_attempts_multiplier = self.mutation_config.get('max_attempts_multiplier', 50)
         max_consecutive_failures_multiplier = self.mutation_config.get('max_consecutive_failures_multiplier', 2)
         enable_progress_bar = self.mutation_config.get('enable_progress_bar', True)        
-        total_population = list(set(parent_smiles + additional_smiles))        
+        total_population = sorted(set(parent_smiles + additional_smiles))
         if not total_population:
             self.logger.warning("种群为空，无法执行变异操作。")
             return []            
@@ -145,7 +145,7 @@ class MutationExecutor:
             # 确保进度条被正确关闭
             if progress_bar:
                 progress_bar.close()        
-        unique_results = list(set(mutation_results))
+        unique_results = sorted(set(mutation_results))
         success_rate = len(unique_results) / attempts * 100 if attempts > 0 else 0
         
         self.logger.info(f"变异完成: 目标 {num_mutations}, 实际生成 {len(unique_results)} 个独特分子")
@@ -174,11 +174,18 @@ def main():
     parser.add_argument('--output_file', type=str, required=True, help='输出SMILES文件路径')
     parser.add_argument('--config_file', type=str, default='fragevo/config_example.json', help='配置文件路径')
     parser.add_argument('--lineage_file', type=str, default=None, help='血统记录输出文件(JSONL)')
+    parser.add_argument('--seed', type=int, default=None, help='随机种子（用于保证可复现性）')
     
     args = parser.parse_args()
     
     with open(args.config_file, 'r', encoding='utf-8') as f:
         config = json.load(f)
+    seed_value = args.seed if args.seed is not None else config.get("workflow", {}).get("seed", 42)
+    try:
+        seed_value = int(seed_value)
+    except (TypeError, ValueError):
+        seed_value = 42
+    random.seed(seed_value)
     enable_lineage_tracking = bool(config.get("workflow", {}).get("enable_lineage_tracking", False))
     
     with open(args.smiles_file, 'r') as f:
@@ -189,7 +196,7 @@ def main():
         with open(args.output_file, 'w') as f: pass
         return
     
-    parent_smiles = list(set(parent_smiles))
+    parent_smiles = sorted(set(parent_smiles))
     logger.info(f"开始变异操作: {len(parent_smiles)} 个父代分子（已去重）")
     
     mutated_smiles, lineage_records = run_mutation_simple(config, parent_smiles)

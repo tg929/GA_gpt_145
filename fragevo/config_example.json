@@ -4,6 +4,7 @@
     "conversion_choice": "MGLToolsConversion",
     "docking_exhaustiveness": 8,
     "docking_num_modes": 9,
+    "seed": 42,
     "number_of_processors": null,
     "max_variants_per_compound": 3,
     "gypsum_thoroughness": 3,
@@ -222,6 +223,7 @@
     }
   },  
   "workflow": {
+    "seed": 42,
     "initial_population_file": "datasets/source_compounds/my_initial_population.smi",
     "output_directory": "GA_output",
     "max_generations": 15,

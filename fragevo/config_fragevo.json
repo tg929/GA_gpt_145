@@ -6,6 +6,7 @@
   },
   "workflow": {
     "description": "FragEvo混合工作流核心参数",
+    "seed": 42,
     "max_generations": 10,
     "initial_population_file": "datasets/initial_population/my_initial_population.smi",
     "output_directory": "FragEvo_output"
@@ -160,6 +161,7 @@
     "conversion_choice": "MGLToolsConversion",
     "docking_exhaustiveness": 20,
     "docking_num_modes": 12,
+    "seed": 42,
     "number_of_processors": null,
     "max_variants_per_compound": 3,
     "gypsum_thoroughness": 3,
