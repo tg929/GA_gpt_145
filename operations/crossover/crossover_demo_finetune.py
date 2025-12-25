@@ -5,8 +5,6 @@ sys.path.insert(0, PROJECT_ROOT)
 import random
 import json
 import argparse
-from rdkit import Chem
-from rdkit.Chem import AllChem
 import logging
 import autogrow.operators.crossover.smiles_merge.smiles_merge as smiles_merge 
 import autogrow.operators.crossover.execute_crossover as execute_crossover
@@ -57,21 +55,21 @@ def main():
         logger.info(f"加载分子数量: {len(all_smiles)}")    
     initial_population = sorted(set(all_smiles))
     # 从配置中读取交叉参数
+    number_of_crossovers = crossover_config.get(
+        "number_of_crossovers",
+        crossover_config.get("crossover_attempts", 20),  # backward-compat
+    )
     vars = {
         'min_atom_match_mcs': crossover_config.get('min_atom_match_mcs', 4),
         'max_time_mcs_prescreen': crossover_config.get('max_time_mcs_prescreen', 1),
         'max_time_mcs_thorough': crossover_config.get('max_time_mcs_thorough', 1),
         'protanate_step': crossover_config.get('protanate_step', True),
-        'number_of_crossovers': crossover_config.get('crossover_attempts', 20),
+        'number_of_crossovers': number_of_crossovers,
         'filter_object_dict': {},  # 过滤器配置（如果需要）
-        'max_variants_per_compound': crossover_config.get('max_variants_per_compound', 1),
-        'debug_mode': crossover_config.get('debug_mode', False),
-        'gypsum_timeout_limit': crossover_config.get('gypsum_timeout_limit', 120.0),
-        'gypsum_thoroughness': crossover_config.get('gypsum_thoroughness', 3)
     }    
     crossover_attempts = vars['number_of_crossovers']
-    max_attempts_multiplier = crossover_config.get('max_attempts_multiplier', 10)
-    merge_attempts = crossover_config.get('merge_attempts', 3)
+    max_attempts_multiplier = 10
+    merge_attempts = 3
     
     logger.info(f"开始交叉操作，本轮目标生成 {crossover_attempts} 个新分子")
     crossed_population = []

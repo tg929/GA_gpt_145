@@ -191,31 +191,29 @@ class ConfigSnapshotGenerator:
         """处理交叉操作参数"""
         crossover_config = self.original_config.get("crossover_finetune", {})
         if crossover_config:
+            number_of_crossovers = crossover_config.get(
+                "number_of_crossovers",
+                crossover_config.get("crossover_attempts"),  # backward-compat
+            )
             self.used_config["crossover_finetune"] = {
-                "crossover_attempts": crossover_config.get("crossover_attempts"),
-                "crossover_rate": crossover_config.get("crossover_rate"),
+                "number_of_crossovers": number_of_crossovers,
                 "min_atom_match_mcs": crossover_config.get("min_atom_match_mcs"),
                 "max_time_mcs_prescreen": crossover_config.get("max_time_mcs_prescreen"),
                 "max_time_mcs_thorough": crossover_config.get("max_time_mcs_thorough"),
-                "protanate_step": crossover_config.get("protanate_step"),
-                "max_variants_per_compound": crossover_config.get("max_variants_per_compound"),
-                "gypsum_timeout_limit": crossover_config.get("gypsum_timeout_limit"),
-                "gypsum_thoroughness": crossover_config.get("gypsum_thoroughness"),
-                "max_attempts_multiplier": crossover_config.get("max_attempts_multiplier"),
-                "merge_attempts": crossover_config.get("merge_attempts")
+                "protanate_step": crossover_config.get("protanate_step")
             }
     
     def _process_mutation_config(self):
         """处理突变操作参数"""
         mutation_config = self.original_config.get("mutation_finetune", {})
         if mutation_config:
+            number_of_mutants = mutation_config.get(
+                "number_of_mutants",
+                mutation_config.get("mutation_attempts"),  # backward-compat
+            )
             self.used_config["mutation_finetune"] = {
-                "mutation_attempts": mutation_config.get("mutation_attempts"),
-                "max_mutations_per_parent": mutation_config.get("max_mutations_per_parent"),
+                "number_of_mutants": number_of_mutants,
                 "rxn_library": mutation_config.get("rxn_library"),
-                "max_attempts_multiplier": mutation_config.get("max_attempts_multiplier"),
-                "max_consecutive_failures_multiplier": mutation_config.get("max_consecutive_failures_multiplier"),
-                "enable_progress_bar": mutation_config.get("enable_progress_bar"),
                 "rxn_library_file": mutation_config.get("rxn_library_file"),
                 "function_group_library": mutation_config.get("function_group_library"),
                 "complementary_mol_directory": mutation_config.get("complementary_mol_directory")

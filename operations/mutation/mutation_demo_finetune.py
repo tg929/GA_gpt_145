@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 from contextlib import contextmanager
 from tqdm import tqdm
-from rdkit import Chem
 @contextmanager
 def suppress_stdout_stderr():
     """A context manager that redirects stdout and stderr to devnull"""
@@ -60,10 +59,13 @@ class MutationExecutor:
         if additional_smiles is None:
             additional_smiles = []            
         # 从配置文件读取参数
-        num_mutations = self.mutation_config.get('mutation_attempts', 40)
-        max_attempts_multiplier = self.mutation_config.get('max_attempts_multiplier', 50)
-        max_consecutive_failures_multiplier = self.mutation_config.get('max_consecutive_failures_multiplier', 2)
-        enable_progress_bar = self.mutation_config.get('enable_progress_bar', True)        
+        num_mutations = self.mutation_config.get(
+            "number_of_mutants",
+            self.mutation_config.get("mutation_attempts", 40),  # backward-compat
+        )
+        max_attempts_multiplier = 60
+        max_consecutive_failures_multiplier = 2
+        enable_progress_bar = True
         total_population = sorted(set(parent_smiles + additional_smiles))
         if not total_population:
             self.logger.warning("种群为空，无法执行变异操作。")

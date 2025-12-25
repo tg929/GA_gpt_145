@@ -151,25 +151,15 @@
     }
   },
   "crossover_finetune": {
-    "crossover_attempts": 100,
-    "crossover_rate": 0.8,
+    "number_of_crossovers": 100,
     "min_atom_match_mcs": 4,
     "max_time_mcs_prescreen": 1,
     "max_time_mcs_thorough": 1,
-    "protanate_step": true,
-    "max_variants_per_compound": 3,
-    "gypsum_timeout_limit": 120.0,
-    "gypsum_thoroughness": 3,
-    "max_attempts_multiplier": 10,
-    "merge_attempts": 3
+    "protanate_step": true
   },
   "mutation_finetune": {
-    "mutation_attempts": 100,
-    "max_mutations_per_parent": 2,
+    "number_of_mutants": 100,
     "rxn_library": "all_rxns",
-    "max_attempts_multiplier": 50,
-    "max_consecutive_failures_multiplier": 2,
-    "enable_progress_bar": true,
     "rxn_library_file": "autogrow/operators/mutation/smiles_click_chem/reaction_libraries/all_rxns/All_Rxns_rxn_library.json",
     "function_group_library": "autogrow/operators/mutation/smiles_click_chem/reaction_libraries/all_rxns/All_Rxns_functional_groups.json",
     "complementary_mol_directory": "autogrow/operators/mutation/smiles_click_chem/reaction_libraries/all_rxns/complementary_mol_dir"
@@ -196,5 +186,4 @@
     "cleanup_intermediate_files": false
   }
 }
-
 
