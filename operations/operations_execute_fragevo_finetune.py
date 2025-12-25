@@ -94,6 +94,8 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
                     if process.poll() is None:
                         logger.warning(f"强制终止子进程 PID: {process.pid}")
                         process.kill()
+                except Exception as e:
+                    logger.warning(f"清理子进程 PID {getattr(process, 'pid', 'unknown')} 时发生错误: {e}")
         
         # 清理临时文件
         for temp_file in self._temp_files:
@@ -101,6 +103,8 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
                 if os.path.exists(temp_file):
                     os.unlink(temp_file)
                     logger.debug(f"已清理临时文件: {temp_file}")
+            except Exception as e:
+                logger.debug(f"清理临时文件失败 {temp_file}: {e}")
         
         # 清理临时目录
         for temp_dir in self._temp_dirs:
@@ -108,6 +112,8 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
                 if os.path.exists(temp_dir):
                     shutil.rmtree(temp_dir)
                     logger.debug(f"已清理临时目录: {temp_dir}")
+            except Exception as e:
+                logger.debug(f"清理临时目录失败 {temp_dir}: {e}")
         
         # 清空资源列表
         self._running_processes = []
@@ -228,6 +234,8 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
                     p.kill()
                 except psutil.NoSuchProcess:
                     pass
+        except Exception as e:
+            logger.warning(f"终止进程组失败: {e}")
                     
 
     def _run_script(self, script_path: str, args: List[str]) -> bool:
@@ -243,6 +251,14 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
         cmd = ['python', str(full_script_path)] + args        
         logger.debug(f"执行命令: {' '.join(cmd)}")        
         
+        env = os.environ.copy()
+        seed_value = str(getattr(self, "seed", 42))
+        env["PYTHONHASHSEED"] = seed_value
+        env["OMP_NUM_THREADS"] = "1"
+        env["MKL_NUM_THREADS"] = "1"
+        env["OPENBLAS_NUM_THREADS"] = "1"
+        env["NUMEXPR_NUM_THREADS"] = "1"
+
         process = None
         try:
             # 创建进程组以便于管理
@@ -252,6 +268,7 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
                 stderr=subprocess.PIPE,
                 text=True, 
                 cwd=str(self.project_root),
+                env=env,
                 preexec_fn=os.setsid,  # 创建新的进程组
                 close_fds=True
             )
@@ -310,7 +327,16 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
                 if stdout_data:
                     logger.error(f"标准输出 (stdout):\n{''.join(stdout_data)}")
                 return False
-                
+        except Exception as e:
+            logger.error(f"脚本 {script_path} 执行过程中发生异常: {e}", exc_info=True)
+            if process is not None:
+                try:
+                    self._terminate_process_group(process)
+                except Exception:
+                    pass
+                if process in self._running_processes:
+                    self._running_processes.remove(process)
+            return False
 
     def _count_molecules(self, file_path: str) -> int:
         """统计SMILES文件中的分子数量"""
@@ -333,6 +359,7 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
         # 添加随机延迟，避免多进程同时访问文件
         time.sleep(random.uniform(0.1, 0.5))
         
+        temp_output_file = None
         try:
             # 使用生成器而不是一次性加载所有内容到内存
             unique_smiles = set()
@@ -380,6 +407,14 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
             
             logger.info(f"去重完成: {len(unique_smiles)} 个独特分子保存到 {output_file}")
             return len(unique_smiles)
+        except Exception as e:
+            logger.error(f"去重过程中发生错误: {e}", exc_info=True)
+            if temp_output_file and os.path.exists(temp_output_file):
+                try:
+                    os.unlink(temp_output_file)
+                except OSError:
+                    pass
+            return 0
 
     def _extract_smiles_from_docked_file(self, docked_file: str, output_smiles_file: str) -> bool:
         """从带对接分数的文件中提取纯SMILES,用于遗传操作或分解"""
@@ -391,6 +426,9 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
                         smiles = line.split()[0]
                         outfile.write(f"{smiles}\n")
             return True
+        except Exception as e:
+            logger.error(f"提取SMILES失败: {e}", exc_info=True)
+            return False
 
     def _execute_ga_stage(self, ga_op_name: str, ga_script: str, input_pool_file: str, raw_output_file: str, filtered_output_file: str) -> bool:
         """辅助函数，用于运行一个GA阶段（如交叉）及其后续的过滤。"""

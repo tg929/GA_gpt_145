@@ -606,7 +606,12 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
         logger.debug(f"Executing command: {' '.join(cmd)}")
 
         env = os.environ.copy()
-        env["PYTHONHASHSEED"] = str(getattr(self, "seed", 42))
+        seed_value = str(getattr(self, "seed", 42))
+        env["PYTHONHASHSEED"] = seed_value
+        env["OMP_NUM_THREADS"] = "1"
+        env["MKL_NUM_THREADS"] = "1"
+        env["OPENBLAS_NUM_THREADS"] = "1"
+        env["NUMEXPR_NUM_THREADS"] = "1"
         try:
             with subprocess.Popen(
                 cmd,

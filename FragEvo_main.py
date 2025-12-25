@@ -137,11 +137,16 @@ def main():
         # 并行执行模式
         logger.info("=" * 60)
         logger.info("使用并行执行模式")
-        logger.info("正在检测系统可用CPU资源...")
         logger.info("=" * 60)
         
-        # 动态检测可用CPU资源
-        available_cores, cpu_usage = get_available_cpu_cores()        
+        available_cores = None
+        cpu_usage = None
+        if max_workers_config == -1 or inner_processors_config == -1:
+            logger.info("正在检测系统可用CPU资源...")
+            available_cores, cpu_usage = get_available_cpu_cores()
+        else:
+            logger.info("已固定并行参数，跳过CPU资源动态检测。")
+
         # 计算最优并行配置
         if max_workers_config == -1 and inner_processors_config == -1:
             # 全自动模式
@@ -168,7 +173,8 @@ def main():
         logger.info(f"  - 同时运行的受体数: {max_workers}")
         logger.info(f"  - 每个受体CPU核心数: {cores_per_worker}")
         logger.info(f"  - 预估总使用核心数: {max_workers * cores_per_worker}")
-        logger.info(f"  - 当前系统CPU使用率: {cpu_usage:.1f}%")
+        if cpu_usage is not None:
+            logger.info(f"  - 当前系统CPU使用率: {cpu_usage:.1f}%")
         
         successful_runs = []
         failed_runs = []

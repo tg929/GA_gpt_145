@@ -407,15 +407,14 @@ class DockingWorkflow:
             os.makedirs(results_dir)
         
         # 配体文件查找
-        ligand_files = glob.glob(os.path.join(ligand_dir, "*.pdbqt"))          
+        ligand_files = sorted(glob.glob(os.path.join(ligand_dir, "*.pdbqt")))
         
         # 智能CPU核心数处理
         num_workers = self.vars.get("number_of_processors")
         if num_workers is None or num_workers == -1:
-            # 自动检测模式：使用实时CPU检测
-            available_cores, cpu_usage = get_available_cpu_cores()
-            num_workers = available_cores
-            print(f"自动检测到 {available_cores} 个空闲CPU核心（当前系统使用率: {cpu_usage:.1f}%）")
+            # 为保证可复现性：未配置或为-1时，固定使用1个核心
+            num_workers = 1
+            print("未配置 number_of_processors 或为 -1，默认使用 1 个CPU核心（保证可复现性）")
         else:
             num_workers = int(num_workers)
         
