@@ -54,6 +54,9 @@ def main():
         all_smiles = [line.split()[0].strip() for line in f if line.strip()]
         logger.info(f"加载分子数量: {len(all_smiles)}")    
     initial_population = sorted(set(all_smiles))
+    input_smiles_set = set(initial_population)
+    # 构造 autogrow 风格的 (smiles, id) 对，便于“覆盖式”抽样
+    ligands_list = [[smi, f"ligand_{i}"] for i, smi in enumerate(initial_population)]
     # 从配置中读取交叉参数
     number_of_crossovers = crossover_config.get(
         "number_of_crossovers",
@@ -73,22 +76,28 @@ def main():
     
     logger.info(f"开始交叉操作，本轮目标生成 {crossover_attempts} 个新分子")
     crossed_population = []
+    crossed_population_set = set()
     lineage_records = [] if enable_lineage_tracking else None
     attempts = 0
     max_attempts = crossover_attempts * max_attempts_multiplier
+    react_list = ligands_list.copy()
+    random.shuffle(react_list)
     
     while len(crossed_population) < crossover_attempts and attempts < max_attempts:
         attempts += 1
         try:
-            parent1, parent2 = random.sample(initial_population, 2)
-            mol1 = execute_crossover.convert_mol_from_smiles(parent1)
-            mol2 = execute_crossover.convert_mol_from_smiles(parent2)
-            if mol1 is None or mol2 is None:
-                continue
+            # 按 autogrow4.0 的思路：优先让每个父代都有机会作为 ligand1 参与
+            if not react_list:
+                react_list = ligands_list.copy()
+                random.shuffle(react_list)
+            parent1_pair = react_list.pop()
+            parent1 = parent1_pair[0]
 
-            mcs_result = execute_crossover.test_for_mcs(vars, mol1, mol2)
-            if mcs_result is None:
+            # 为 parent1 找一个能通过 MCS 预筛的 parent2（会遍历随机顺序，覆盖性更强）
+            parent2_pair = execute_crossover.find_random_lig2(vars, ligands_list, parent1_pair)
+            if not parent2_pair:
                 continue
+            parent2 = parent2_pair[0]
 
             ligand_new_smiles = None
             for _ in range(merge_attempts):
@@ -99,8 +108,16 @@ def main():
             if ligand_new_smiles is None:
                 continue
 
+            # 必要去重1：交叉产物不能回到输入池(父代/GPT池)，否则浪费评估预算
+            if ligand_new_smiles in input_smiles_set:
+                continue
+            # 必要去重2：交叉产物不能与本轮已生成交叉产物重复
+            if ligand_new_smiles in crossed_population_set:
+                continue
+
             if Filter.run_filter_on_just_smiles(ligand_new_smiles, vars['filter_object_dict']):
                 crossed_population.append(ligand_new_smiles)
+                crossed_population_set.add(ligand_new_smiles)
                 if lineage_records is not None:
                     lineage_records.append({
                         "child": ligand_new_smiles,

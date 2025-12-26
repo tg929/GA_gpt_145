@@ -73,6 +73,8 @@ class MutationExecutor:
         mutation_results = []
         attempts = 0
         failed_molecules = set()
+        react_list = total_population.copy()
+        random.shuffle(react_list)
         max_attempts = num_mutations * max_attempts_multiplier
         consecutive_failures = 0
         max_consecutive_failures = len(total_population) * max_consecutive_failures_multiplier
@@ -91,11 +93,14 @@ class MutationExecutor:
                 if consecutive_failures >= max_consecutive_failures:
                     self.logger.warning(f"连续失败 {consecutive_failures} 次，可能种群中大部分分子无法变异，提前退出")
                     break                    
-                available_molecules = [mol for mol in total_population if mol not in failed_molecules]
-                if not available_molecules:
+                # 按 autogrow4.0 的思路：尽量覆盖每个父代（用完一轮再洗牌）
+                if not react_list:
+                    react_list = [mol for mol in total_population if mol not in failed_molecules]
+                    random.shuffle(react_list)
+                if not react_list:
                     self.logger.warning("所有分子都尝试过且失败，无法继续生成新的变异分子")
-                    break                    
-                parent = random.choice(available_molecules)                
+                    break
+                parent = react_list.pop()
                 try:
                     # 使用suppress_stdout_stderr来避免输出干扰
                     with suppress_stdout_stderr():
