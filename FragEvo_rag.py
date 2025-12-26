@@ -70,9 +70,7 @@ def main():
             cores_per = inner_processors_config
         results = [run_workflow_for_receptor(args.config, r, args.output_dir, cores_per) for r in receptors_to_run]
     else:
-        available_cores = None
-        if max_workers_config == -1 or inner_processors_config == -1:
-            available_cores, _ = get_available_cpu_cores()
+        available_cores, _ = get_available_cpu_cores()
         if max_workers_config == -1 and inner_processors_config == -1:
             max_workers, cores_per = calculate_optimal_workers(
                 target_count=len(receptors_to_run), available_cores=available_cores, cores_per_worker=-1
@@ -107,4 +105,3 @@ def main():
 if __name__ == '__main__':
     multiprocessing.set_start_method('spawn', force=True)
     main()
-

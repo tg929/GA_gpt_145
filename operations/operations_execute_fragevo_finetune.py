@@ -254,11 +254,6 @@ class FragEvoWorkflowExecutor:    #工作流；主函数/入口文件就是在�
         env = os.environ.copy()
         seed_value = str(getattr(self, "seed", 42))
         env["PYTHONHASHSEED"] = seed_value
-        env["OMP_NUM_THREADS"] = "1"
-        env["MKL_NUM_THREADS"] = "1"
-        env["OPENBLAS_NUM_THREADS"] = "1"
-        env["NUMEXPR_NUM_THREADS"] = "1"
-
         process = None
         try:
             # 创建进程组以便于管理

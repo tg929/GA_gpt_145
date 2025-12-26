@@ -242,7 +242,7 @@
     "description": "性能优化参数",
     "parallel_processing": true,
     "max_workers": 1,
-    "number_of_processors": 1,
+    "number_of_processors": -1,
     "batch_size": 32,
     "memory_optimization": true,
     "cleanup_intermediate_files": false
