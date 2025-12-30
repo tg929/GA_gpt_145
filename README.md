@@ -12,7 +12,7 @@ In our model, consisting of four main modules:
 
 (4) Multi-Objective Fitness Evaluation & Selection — multi-criterion assessment and selection to discard invalid molecules and drive iterative population optimization.
 
-![FragEvo overview and representations](images/model_pictures.png)
+![FragEvo overview and representations](images/model.png)
 
 *Left: A comparison of SMILES and FragSeq representations of the same molecule. Right: Overview of FragEvo. The pipeline comprises four components.*
 
@@ -38,7 +38,7 @@ cd ..
 ```bash
 chmod +x your/path/to/autodock_vina_1_1_2_linux_x86/bin/vina
 ```
-- OpenBabel (installed via Conda)
+
 ### FragMLM pre-trained weighted
 <u><a href="https://drive.google.com/drive/folders/1BWxy8PBHk6zTSI1bTdrp-G2fS82uhT_B">Click here to download the weight files</a></u>
 ## Usage
@@ -49,7 +49,7 @@ python FragEvo_main.py --config fragevo/config_fragevo.json --receptor parp1 --o
 ### 2. Comprehensive Performance Evaluation and Comparative Analysis
 
 ```bash
-python FragEvo_main.py --config fragevo/config_fragevo.json --all_receptor parp1 --output_dir output_all
+python FragEvo_main.py --config fragevo/config_fragevo.json --all_receptors --output_dir output_all
 ```
 #### 1) Single objective
 To set : ./fragevo/congfig_fragevo.json/ "selection_mode": "single_objective";
@@ -59,6 +59,6 @@ To set : ./fragevo/congfig_fragevo.json/ "selection_mode": "multi_objective".
 ### 3. Benchmark Against Genetic and Learning-Based Baselines
 #### CompScore 
 ```bash
-python FragEvo_rag.py --config fragevo/config_fragevo_rag.json --receptor parp1 --output_dir FragEvo_output_rag
+python FragEvo_rag.py --config fragevo/config_fragevo_rag.json --all_receptors --output_dir FragEvo_output_rag
 ```
 
