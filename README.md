@@ -4,97 +4,11 @@ This repository implements an end-to-end workflow for drug-like molecule optimiz
 
 ---
 
-## 1. High-level idea (three key modules)
+## 1. Reproducibility (setup + run)
 
-### 1.1 FragMLM (`fragmlm/`)
-**Role: propose novel candidates to escape local optima.** Each generation, parent molecules are decomposed into fragment sequences, a suffix is masked (we keep only a fragment prefix as a condition), GPT continues the sequence at the fragment level, and fragments are reconstructed back to full-molecule SMILES.
+### 1.1 Environment & dependencies
 
-- Decomposition + masking: `datasets/decompose/demo_frags.py`
-  - Typical line format: `[BOS]frag1[SEP]frag2[SEP]...[SEP]`
-  - Supports **dynamic masking**: mask more fragments early (exploration), fewer late (exploitation/refinement)
-- Batch generation entry: `fragmlm/generate_all.py`
-  - Default checkpoint: `fragmlm/weights/dpo_0_400.pt`
-  - Output: `*.smi` (one generated SMILES per line)
-
-### 1.2 GA (Genetic Algorithm, `operations/`)
-**Role: controlled local search around existing molecules.** The project uses AutoGrow-style operators for crossover/mutation, optional filtering, and docking evaluation.
-
-- Crossover: `operations/crossover/crossover_demo_finetune.py`
-- Mutation: `operations/mutation/mutation_demo_finetune.py`
-- Filtering: `operations/filter/filter_demo.py`
-- Docking evaluation: `operations/docking/docking_demo_finetune.py`
-
-### 1.3 Selection (`operations/selecting/`)
-**Role: select next-generation parents from a merged pool of “current parents + offspring (from GPT/GA)”.** Three selection families are provided:
-
-1) **Single-objective (docking score only)**: `operations/selecting/molecular_selection.py`  
-   - Rank / Roulette / Tournament selectors  
-2) **Multi-objective (NSGA-II)**: `operations/selecting/selecting_multi_demo.py`  
-   - Default objectives: minimize Docking, maximize QED, minimize SA  
-   - Metric caching: `utils/chem_metrics.py` (cache persisted under the run root)  
-3) **RAG-score (composite score)**: `operations/selecting/selecting_rag_score.py`  
-   - `y = DS_hat * QED * SA_hat` (see script header)  
-   - Workflow entry: `FragEvo_rag.py`
-
----
-
-## 2. End-to-end workflow
-
-Two main pipelines are included:
-
-### 2.1 Pure GA pipeline (baseline)
-- Entry: `fragevo/GA_main.py`
-- Core executor: `operations/operations_execute_demo.py`
-
-Per-generation (conceptually):
-1. Gen0: deduplicate initial population + dock
-2. Extract parent SMILES
-3. Crossover + filter
-4. Mutation + filter
-5. Dock offspring
-6. Selection: pick next parents from merged pool (parents + offspring)
-7. Evaluate the selected parents and write a report (Top1/Top10/Top100/Novelty/Diversity/QED/SA)
-
-### 2.2 FragEvo hybrid pipeline (FragMLM + GA)
-- Entry: `FragEvo_main.py`
-- Core executor: `operations/operations_execute_fragevo_demo.py`
-
-Difference vs. GA baseline: insert **decompose+mask → GPT generation** before GA, then feed GPT outputs into the GA input pool:
-
-```
-Parents (plain SMILES)
-  └─ Decompose & mask (datasets/decompose/demo_frags.py)
-      └─ GPT generation (fragmlm/generate_all.py)
-          └─ GA input pool = parents + GPT
-              └─ crossover/mutation → docking → selection → next parents
-```
-
----
-
-## 3. Code map (where to start reading)
-
-If you want to understand the full pipeline quickly, start here:
-
-- Entrypoints
-  - `FragEvo_main.py`: hybrid pipeline (supports multi-receptor serial/parallel)
-  - `fragevo/GA_main.py`: pure GA baseline
-  - `FragEvo_rag.py`: FragEvo with RAG-score selection (selection stage only)
-- The three core modules
-  - FragMLM: `fragmlm/generate_all.py`
-  - GA operators: `operations/crossover/*`, `operations/mutation/*`, `operations/filter/*`
-  - Selection: `operations/selecting/*`
-- Docking
-  - `operations/docking/docking_demo_finetune.py`
-  - Receptor/box settings: `receptors` blocks in `fragevo/*.json`
-- Metrics & reporting
-  - Per-generation report: `operations/scoring/scoring_demo.py`
-  - Multi-receptor aggregation: `operations/stating/statistics_output_demo.py`
-
----
-
-## 4. Environment & dependencies
-
-### 4.1 Python environment (recommended: Conda)
+#### Python environment (recommended: Conda)
 Use the provided environment file: `fragevo.yml`
 
 ```bash
@@ -107,8 +21,8 @@ Optionally ensure these are installed (some environments may miss them):
 pip install -U psutil tqdm openpyxl
 ```
 
-### 4.2 AutoGrow dependency (external)
-The `operations/` pipeline calls operator/docking code from an `autogrow/` package expected at the repo root (e.g. `./autogrow`). You can obtain it from either:
+#### AutoGrow dependency (external)
+The `operations/` pipeline expects an `autogrow/` package at the repo root (`./autogrow`). You can obtain it from either:
 
 - Upstream AutoGrow4.0 (original project): [`durrantlab/autogrow4`](https://github.com/durrantlab/autogrow4/tree/master/autogrow)
 - FragEvo-adapted fork (minor modifications): [`tg929/autogrow`](https://github.com/tg929/autogrow)
@@ -118,13 +32,13 @@ Place it at `./autogrow` (download, clone, symlink, or git submodule), for examp
 git clone https://github.com/tg929/autogrow autogrow
 ```
 
-### 4.3 Docking toolchain
+#### Docking toolchain
 Docking relies on:
 - MGLTools: `mgltools_x86_64Linux2_1.5.6/`
 - AutoDock Vina / QVina2 executables: `autogrow/docking/docking_executables/...`
 - OpenBabel (installed via Conda)
 
-#### Installing MGLTools (1.5.6)
+##### Installing MGLTools (1.5.6)
 Download MGLTools from the official website ([MGLTools downloads](https://ccsb.scripps.edu/mgltools/downloads/)), then install it locally:
 
 ```bash
@@ -141,7 +55,7 @@ If you see `Permission denied` / `Exec format error`, ensure the docking binary 
 chmod +x autogrow/docking/docking_executables/vina/autodock_vina_1_1_2_linux_x86/bin/vina
 ```
 
-### 4.4 GPU (optional)
+#### GPU (optional)
 FragMLM generation can use GPU; it falls back to CPU if CUDA is unavailable (much slower).
 
 The workflow does not explicitly pass `--device` to `fragmlm/generate_all.py`; the simplest way to choose a GPU is:
@@ -149,11 +63,9 @@ The workflow does not explicitly pass `--device` to `fragmlm/generate_all.py`; t
 export CUDA_VISIBLE_DEVICES=0
 ```
 
----
+### 1.2 Data & configuration
 
-## 5. Data & configuration
-
-### 5.1 Initial population (SMILES)
+#### Initial population (SMILES)
 Format: one SMILES per line (extra columns are allowed; the first column must be the SMILES).
 
 Example files shipped in this repo:
@@ -162,7 +74,7 @@ Example files shipped in this repo:
 
 By default, both `fragevo/config_example.json` and `fragevo/config_fragevo.json` point to `datasets/initial_population/my_initial_population.smi`. To use a different initial population, edit `workflow.initial_population_file` in the config.
 
-### 5.2 Receptors and docking boxes
+#### Receptors and docking boxes
 Receptor configuration is under `receptors` in the JSON config:
 - `default_receptor`: used when `--receptor` is not provided
 - `target_list`: iterated by `--all_receptors`
@@ -171,7 +83,7 @@ Each receptor entry needs:
 - `file`: receptor PDB/PDBQT path (relative to project root)
 - `center_x/y/z` and `size_x/y/z`: docking box parameters
 
-### 5.3 Switching selection strategies (single / multi / CompScore)
+#### Switching selection strategies (single / multi / CompScore)
 For the GA baseline (`fragevo/config_example.json`) and the standard FragEvo pipeline (`fragevo/config_fragevo.json`), switch selection by editing:
 - `selection.selection_mode`:
   - `single_objective`: docking-score only (see `selection.single_objective_settings`)
@@ -181,13 +93,11 @@ CompScore (RAG-score) selection is provided as a separate runnable config + entr
 - Config: `fragevo/config_fragevo_rag.json` (`selection.selection_mode = "rag_score"` + `selection.rag_score_settings`)
 - Entry: `FragEvo_rag.py` (the standard executors only handle `single_objective` / `multi_objective`)
 
----
-
-## 6. How to run (reproducible commands)
+### 1.3 How to run (reproducible commands)
 
 All commands below assume you are at the repo root.
 
-### 6.1 Pure GA baseline
+#### Pure GA baseline
 
 1) Single receptor (default receptor from the config)
 ```bash
@@ -204,7 +114,7 @@ python fragevo/GA_main.py --config fragevo/config_example.json --receptor 4r6e -
 python fragevo/GA_main.py --config fragevo/config_example.json --all_receptors --output_dir GA_output_all
 ```
 
-### 6.2 FragEvo hybrid pipeline (FragMLM + GA)
+#### FragEvo hybrid pipeline (FragMLM + GA)
 
 1) Single receptor
 ```bash
@@ -216,20 +126,18 @@ python FragEvo_main.py --config fragevo/config_fragevo.json --receptor parp1 --o
 python FragEvo_main.py --config fragevo/config_fragevo.json --all_receptors --output_dir FragEvo_output_all
 ```
 
-### 6.3 CompScore (RAG-score) selection (optional)
+#### CompScore (RAG-score) selection (optional)
 Entry: `FragEvo_rag.py`  
 This pipeline reuses the FragEvo workflow and only swaps the selection stage to `operations/selecting/selecting_rag_score.py`.
 
-Config: `fragevo/config_fragevo_rag.json` (includes optional docking-score elitism via `selection.rag_score_settings.elitism`).
-
+Config: `fragevo/config_fragevo_rag.json` (includes optional docking-score elitism via `selection.rag_score_settings.elitism`).  
+Note: this runnable CompScore pipeline does **not** depend on `GA_gpt_rag/` (if the folder exists in your workspace, treat it as a reference snapshot only).
 
 ```bash
 python FragEvo_rag.py --config fragevo/config_fragevo_rag.json --receptor parp1 --output_dir FragEvo_output_rag
 ```
 
----
-
-## 7. Outputs
+### 1.4 Outputs & aggregation
 
 Example (`--output_dir FragEvo_output_demo`, `--receptor parp1`):
 
@@ -257,10 +165,6 @@ The per-generation evaluation report (e.g. `generation_10_evaluation.txt`) is pr
 - Diversity: diversity of Top100
 - QED / SA: Top100 mean values
 
----
-
-## 8. Aggregating results (multi-receptor / multi-generation)
-
 For an output directory containing multiple receptor subfolders (e.g. `FragEvo_output_all/`), you can aggregate into an Excel file:
 
 ```bash
@@ -269,7 +173,95 @@ python operations/stating/statistics_output_demo.py --output_dir FragEvo_output_
 
 ---
 
-## 9. Reproduction tips (recommended)
+## 2. High-level idea (three key modules)
+
+### 2.1 FragMLM (`fragmlm/`)
+**Role: propose novel candidates to escape local optima.** Each generation, parent molecules are decomposed into fragment sequences, a suffix is masked (we keep only a fragment prefix as a condition), GPT continues the sequence at the fragment level, and fragments are reconstructed back to full-molecule SMILES.
+
+- Decomposition + masking: `datasets/decompose/demo_frags.py`
+  - Typical line format: `[BOS]frag1[SEP]frag2[SEP]...[SEP]`
+  - Supports **dynamic masking**: mask more fragments early (exploration), fewer late (exploitation/refinement)
+- Batch generation entry: `fragmlm/generate_all.py`
+  - Default checkpoint: `fragmlm/weights/dpo_0_400.pt`
+  - Output: `*.smi` (one generated SMILES per line)
+
+### 2.2 GA (Genetic Algorithm, `operations/`)
+**Role: controlled local search around existing molecules.** The project uses AutoGrow-style operators for crossover/mutation, optional filtering, and docking evaluation.
+
+- Crossover: `operations/crossover/crossover_demo_finetune.py`
+- Mutation: `operations/mutation/mutation_demo_finetune.py`
+- Filtering: `operations/filter/filter_demo.py`
+- Docking evaluation: `operations/docking/docking_demo_finetune.py`
+
+### 2.3 Selection (`operations/selecting/`)
+**Role: select next-generation parents from a merged pool of “current parents + offspring (from GPT/GA)”.** Three selection families are provided:
+
+1) **Single-objective (docking score only)**: `operations/selecting/molecular_selection.py`  
+   - Rank / Roulette / Tournament selectors  
+2) **Multi-objective (NSGA-II)**: `operations/selecting/selecting_multi_demo.py`  
+   - Default objectives: minimize Docking, maximize QED, minimize SA  
+   - Metric caching: `utils/chem_metrics.py` (cache persisted under the run root)  
+3) **RAG-score (composite score)**: `operations/selecting/selecting_rag_score.py`  
+   - `y = DS_hat * QED * SA_hat` (see script header)  
+   - Workflow entry: `FragEvo_rag.py`
+
+---
+
+## 3. End-to-end workflow
+
+Two main pipelines are included:
+
+### 3.1 Pure GA pipeline (baseline)
+- Entry: `fragevo/GA_main.py`
+- Core executor: `operations/operations_execute_demo.py`
+
+Per-generation (conceptually):
+1. Gen0: deduplicate initial population + dock
+2. Extract parent SMILES
+3. Crossover + filter
+4. Mutation + filter
+5. Dock offspring
+6. Selection: pick next parents from merged pool (parents + offspring)
+7. Evaluate the selected parents and write a report (Top1/Top10/Top100/Novelty/Diversity/QED/SA)
+
+### 3.2 FragEvo hybrid pipeline (FragMLM + GA)
+- Entry: `FragEvo_main.py`
+- Core executor: `operations/operations_execute_fragevo_demo.py`
+
+Difference vs. GA baseline: insert **decompose+mask → GPT generation** before GA, then feed GPT outputs into the GA input pool:
+
+```
+Parents (plain SMILES)
+  └─ Decompose & mask (datasets/decompose/demo_frags.py)
+      └─ GPT generation (fragmlm/generate_all.py)
+          └─ GA input pool = parents + GPT
+              └─ crossover/mutation → docking → selection → next parents
+```
+
+---
+
+## 4. Code map (where to start reading)
+
+If you want to understand the full pipeline quickly, start here:
+
+- Entrypoints
+  - `FragEvo_main.py`: hybrid pipeline (supports multi-receptor serial/parallel)
+  - `fragevo/GA_main.py`: pure GA baseline
+  - `FragEvo_rag.py`: FragEvo with RAG-score selection (selection stage only)
+- The three core modules
+  - FragMLM: `fragmlm/generate_all.py`
+  - GA operators: `operations/crossover/*`, `operations/mutation/*`, `operations/filter/*`
+  - Selection: `operations/selecting/*`
+- Docking
+  - `operations/docking/docking_demo_finetune.py`
+  - Receptor/box settings: `receptors` blocks in `fragevo/*.json`
+- Metrics & reporting
+  - Per-generation report: `operations/scoring/scoring_demo.py`
+  - Multi-receptor aggregation: `operations/stating/statistics_output_demo.py`
+
+---
+
+## 5. Reproduction tips (recommended)
 
 1) **Start with a small smoke test**: reduce `max_generations`, `number_of_crossovers`, `number_of_mutants`, and `n_select` to validate the full chain (generation → docking → selection → reporting).
 2) **Docking is the slowest stage**: for fast validation, reduce `docking_exhaustiveness` and `docking_num_modes`.
@@ -279,7 +271,7 @@ python operations/stating/statistics_output_demo.py --output_dir FragEvo_output_
 
 ---
 <!-- 
-## 10. Troubleshooting
+## 6. Troubleshooting
 
 - **Docking fails / empty outputs**: check receptor paths and box parameters first; then check the Vina/QVina2 binary permissions.
 - **MGLTools errors**: ensure `mgltools_x86_64Linux2_1.5.6/bin/pythonsh` exists and is executable.
