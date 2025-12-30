@@ -14,7 +14,6 @@ ppo*
 hot*
 run*
 Untitled*
-*.png
 *.xlsx
 *.iso
 Overleaf Projects/*
@@ -44,6 +43,7 @@ autogrow4.0/*
 GA_gpt_rag/*
 GA_gpt_rag/*
 .cursor/*
+pictures/*
 
 
 
