@@ -107,12 +107,16 @@ def extract_vina_score_from_pdbqt(pdbqt_file):
         try:
             with open(log_file, 'r', errors='ignore') as f:
                 content = f.read()
-            # 常见模式： Vina 记录或 qvina 的结果行
-            # 尝试抓取最优能量（第一个负值）
-            nums = re.findall(r"[-+]?\d*\.\d+|[-+]?\d+", content)
-            negs = [x for x in nums if x.startswith('-')]
-            if negs:
-                return negs[0]
+            # 常见模式：Vina / QVina2 的表格输出（第 1 行即最优构象）
+            #   1         -8.3      0.000      0.000
+            m = re.search(r"^\s*1\s+(-?\d+(?:\.\d+)?)\s+", content, flags=re.MULTILINE)
+            if m:
+                return m.group(1)
+
+            # 兜底：抓取第一个“带小数点”的负数，避免误匹配引用信息中的“455-461”→“-461”
+            neg_floats = re.findall(r"-\d+\.\d+", content)
+            if neg_floats:
+                return neg_floats[0]
         except Exception:
             pass
     return "NA"

@@ -12,7 +12,7 @@ In our model, consisting of four main modules:
 
 (4) Multi-Objective Fitness Evaluation & Selection — multi-criterion assessment and selection to discard invalid molecules and drive iterative population optimization.
  
- <img src="images/model.png" alt="model" style="zoom:50%;" />
+ <img src="images/fig2.png" alt="fig2" style="zoom:50%;" />
 
 *Left: A comparison of SMILES and FragSeq representations of the same molecule. Right: Overview of FragEvo. The pipeline comprises four components.*
 
@@ -41,6 +41,8 @@ chmod +x your/path/to/autodock_vina_1_1_2_linux_x86/bin/vina
 
 ### FragMLM pre-trained weighted
 <u><a href="https://drive.google.com/drive/folders/1BWxy8PBHk6zTSI1bTdrp-G2fS82uhT_B">Click here to download the weight files</a></u>
+
+After downloading, please place the weight files in the `./fragmlm//weights`.
 ## Usage
 ### 1.  Mini Test
 ```bash
