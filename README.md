@@ -12,7 +12,7 @@ In our model, consisting of four main modules:
 
 (4) Multi-Objective Fitness Evaluation & Selection — multi-criterion assessment and selection to discard invalid molecules and drive iterative population optimization.
  
- <img src="images/model.png" alt="model" style="zoom:180%;" />
+ <img src="images/model.png" alt="model" style="zoom:50%;" />
 
 *Left: A comparison of SMILES and FragSeq representations of the same molecule. Right: Overview of FragEvo. The pipeline comprises four components.*
 
