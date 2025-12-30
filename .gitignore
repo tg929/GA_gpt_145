@@ -44,7 +44,7 @@ test_model_*/*
 autogrow4.0/*
 GA_gpt_rag/*
 GA_gpt_rag/*
-
+.cursor/*
 
 
 
