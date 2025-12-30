@@ -111,18 +111,40 @@ conda activate fragevo
 pip install -U psutil tqdm openpyxl
 ```
 
-### 4.2 对接工具链
-对接模块依赖（仓库内已包含/引用）：
+### 4.2 AutoGrow 依赖（外置）
+`operations/` 工作流会调用根目录下的 `autogrow/` 包（例如 `/data2/ytg/paper-ieee/FragEvo/autogrow`）。为了让主仓库更轻量，我计划将 AutoGrow 作为独立仓库提供：
+
+- AutoGrow（外置仓库）：[`tg929/autogrow`](https://github.com/tg929/autogrow)（目前还未上传）
+
+后续可将其放到本项目根目录的 `./autogrow`（clone / 软链接 / submodule 均可），例如：
+```bash
+git clone https://github.com/tg929/autogrow autogrow
+```
+
+### 4.3 对接工具链
+对接模块依赖：
 - MGLTools：`mgltools_x86_64Linux2_1.5.6/`
-- AutoDock Vina（或 QVina2）：`autogrow/docking/docking_executables/...`
+- AutoDock Vina（或 QVina2）可执行文件：`autogrow/docking/docking_executables/...`
 - OpenBabel（Conda 安装）
+
+#### 安装 MGLTools（1.5.6）
+从官方网站下载 MGLTools（[MGLTools downloads](https://ccsb.scripps.edu/mgltools/downloads/)）并在本地安装：
+
+```bash
+tar -zxvf <mgltools-*.tar.gz>
+cd mgltools_x86_64Linux2_1.5.6
+./install.sh
+cd ..
+```
+
+建议将安装后的目录放在项目根目录 `./mgltools_x86_64Linux2_1.5.6`；如果放在其他位置，请同步修改配置文件里对应的路径（例如 `fragevo/*.json` 中的 `docking.mgltools_dir`、`docking.mgl_python`、`docking.prepare_receptor4.py`、`docking.prepare_ligand4.py`）。
 
 如遇到 “Permission denied / Exec format error”，通常需要确保可执行权限，例如：
 ```bash
 chmod +x autogrow/docking/docking_executables/vina/autodock_vina_1_1_2_linux_x86/bin/vina
 ```
 
-### 4.3 GPU（可选）
+### 4.4 GPU（可选）
 FragMLM 生成支持 GPU；如果不满足 CUDA 环境将自动回退 CPU（会慢很多）。
 
 当前工作流默认不显式传 `--device` 给 `fragmlm/generate_all.py`，最简单的 GPU 选择方式是：

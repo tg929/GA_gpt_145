@@ -6,7 +6,7 @@ This repository implements an end-to-end workflow for drug-like molecule optimiz
 
 ## 1. High-level idea (three key modules)
 
-### 1.1 FragMLM / Fragment GPT (`fragmlm/`)
+### 1.1 FragMLM (`fragmlm/`)
 **Role: propose novel candidates to escape local optima.** Each generation, parent molecules are decomposed into fragment sequences, a suffix is masked (we keep only a fragment prefix as a condition), GPT continues the sequence at the fragment level, and fragments are reconstructed back to full-molecule SMILES.
 
 - Decomposition + masking: `datasets/decompose/demo_frags.py`
@@ -107,18 +107,40 @@ Optionally ensure these are installed (some environments may miss them):
 pip install -U psutil tqdm openpyxl
 ```
 
-### 4.2 Docking toolchain
+### 4.2 AutoGrow dependency (external)
+The `operations/` pipeline calls operator/docking code from an `autogrow/` package expected at the repo root (e.g. `/data2/ytg/paper-ieee/FragEvo/autogrow`). For the open-source release, AutoGrow will be maintained as a separate repository:
+
+- AutoGrow (external repo): [`tg929/autogrow`](https://github.com/tg929/autogrow)
+
+Once available, place it at `./autogrow` (clone, symlink, or git submodule), for example:
+```bash
+git clone https://github.com/tg929/autogrow autogrow
+```
+
+### 4.3 Docking toolchain
 Docking relies on:
 - MGLTools: `mgltools_x86_64Linux2_1.5.6/`
-- AutoDock Vina (or QVina2): `autogrow/docking/docking_executables/...`
+- AutoDock Vina / QVina2 executables: `autogrow/docking/docking_executables/...`
 - OpenBabel (installed via Conda)
+
+#### Installing MGLTools (1.5.6)
+Download MGLTools from the official website ([MGLTools downloads](https://ccsb.scripps.edu/mgltools/downloads/)), then install it locally:
+
+```bash
+tar -zxvf <mgltools-*.tar.gz>
+cd mgltools_x86_64Linux2_1.5.6
+./install.sh
+cd ..
+```
+
+Keep the installed directory at `./mgltools_x86_64Linux2_1.5.6`, or update the corresponding paths in your config (e.g. `docking.mgltools_dir`, `docking.mgl_python`, `docking.prepare_receptor4.py`, `docking.prepare_ligand4.py` in `fragevo/*.json`).
 
 If you see `Permission denied` / `Exec format error`, ensure the docking binary is executable, e.g.:
 ```bash
 chmod +x autogrow/docking/docking_executables/vina/autodock_vina_1_1_2_linux_x86/bin/vina
 ```
 
-### 4.3 GPU (optional)
+### 4.4 GPU (optional)
 FragMLM generation can use GPU; it falls back to CPU if CUDA is unavailable (much slower).
 
 The workflow does not explicitly pass `--device` to `fragmlm/generate_all.py`; the simplest way to choose a GPU is:
@@ -244,11 +266,10 @@ python operations/stating/statistics_output_demo.py --output_dir FragEvo_output_
    - Within a receptor (docking etc.): `performance.number_of_processors` (`-1` means auto)
 
 ---
-
+<!-- 
 ## 10. Troubleshooting
 
 - **Docking fails / empty outputs**: check receptor paths and box parameters first; then check the Vina/QVina2 binary permissions.
 - **MGLTools errors**: ensure `mgltools_x86_64Linux2_1.5.6/bin/pythonsh` exists and is executable.
 - **GA fails due to missing initial population**: verify `workflow.initial_population_file` points to an existing `.smi` file.
-- **FragMLM generation is slow**: verify CUDA-enabled PyTorch, or select a GPU via `CUDA_VISIBLE_DEVICES`.
-
+- **FragMLM generation is slow**: verify CUDA-enabled PyTorch, or select a GPU via `CUDA_VISIBLE_DEVICES`. -->
