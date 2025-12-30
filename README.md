@@ -170,6 +170,16 @@ Each receptor entry needs:
 - `file`: receptor PDB/PDBQT path (relative to project root)
 - `center_x/y/z` and `size_x/y/z`: docking box parameters
 
+### 5.3 Switching selection strategies (single / multi / CompScore)
+For the GA baseline (`fragevo/config_example.json`) and the standard FragEvo pipeline (`fragevo/config_fragevo.json`), switch selection by editing:
+- `selection.selection_mode`:
+  - `single_objective`: docking-score only (see `selection.single_objective_settings`)
+  - `multi_objective`: NSGA-II multi-objective (see `selection.multi_objective_settings`)
+
+CompScore (RAG-score) selection is provided as a separate runnable config + entrypoint:
+- Config: `fragevo/config_fragevo_rag.json` (`selection.selection_mode = "rag_score"` + `selection.rag_score_settings`)
+- Entry: `FragEvo_rag.py` (the standard executors only handle `single_objective` / `multi_objective`)
+
 ---
 
 ## 6. How to run (reproducible commands)
@@ -210,6 +220,7 @@ Entry: `FragEvo_rag.py`
 This pipeline reuses the FragEvo workflow and only swaps the selection stage to `operations/selecting/selecting_rag_score.py`.
 
 Config: `fragevo/config_fragevo_rag.json` (includes optional docking-score elitism via `selection.rag_score_settings.elitism`).
+
 
 ```bash
 python FragEvo_rag.py --config fragevo/config_fragevo_rag.json --receptor parp1 --output_dir FragEvo_output_rag
