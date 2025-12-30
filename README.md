@@ -108,11 +108,12 @@ pip install -U psutil tqdm openpyxl
 ```
 
 ### 4.2 AutoGrow dependency (external)
-The `operations/` pipeline calls operator/docking code from an `autogrow/` package expected at the repo root (e.g. `/data2/ytg/paper-ieee/FragEvo/autogrow`). For the open-source release, AutoGrow will be maintained as a separate repository:
+The `operations/` pipeline calls operator/docking code from an `autogrow/` package expected at the repo root (e.g. `./autogrow`). You can obtain it from either:
 
-- AutoGrow (external repo): [`tg929/autogrow`](https://github.com/tg929/autogrow)
+- Upstream AutoGrow4.0 (original project): [`durrantlab/autogrow4`](https://github.com/durrantlab/autogrow4/tree/master/autogrow)
+- FragEvo-adapted fork (minor modifications): [`tg929/autogrow`](https://github.com/tg929/autogrow)
 
-Once available, place it at `./autogrow` (clone, symlink, or git submodule), for example:
+Place it at `./autogrow` (download, clone, symlink, or git submodule), for example:
 ```bash
 git clone https://github.com/tg929/autogrow autogrow
 ```
