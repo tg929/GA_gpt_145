@@ -40,13 +40,13 @@ chmod +x your/path/to/autodock_vina_1_1_2_linux_x86/bin/vina
 ```
 - OpenBabel (installed via Conda)
 ### FragMLM pre-trained weighted
-
+<u><a href="https://drive.google.com/drive/folders/1BWxy8PBHk6zTSI1bTdrp-G2fS82uhT_B">Click here to download the weight files</a></u>
 ## Usage
-### Test
+### 1.  Mini Test
 ```bash
 python FragEvo_main.py --config fragevo/config_fragevo.json --receptor parp1 --output_dir output
 ```
-### Comprehensive Performance Evaluation and Comparative Analysis
+### 2. Comprehensive Performance Evaluation and Comparative Analysis
 
 ```bash
 python FragEvo_main.py --config fragevo/config_fragevo.json --all_receptor parp1 --output_dir output_all
@@ -56,17 +56,9 @@ To set : ./fragevo/congfig_fragevo.json/ "selection_mode": "single_objective";
 #### 2) Multi-objectives 
 To set : ./fragevo/congfig_fragevo.json/ "selection_mode": "multi_objective".
 
-### Benchmark Against Genetic and Learning-Based Baselines
+### 3. Benchmark Against Genetic and Learning-Based Baselines
 #### CompScore 
 ```bash
 python FragEvo_rag.py --config fragevo/config_fragevo_rag.json --receptor parp1 --output_dir FragEvo_output_rag
 ```
-
-## Reproduction tips (recommended)
-
-1) **Start with a small smoke test**: reduce `max_generations`, `number_of_crossovers`, `number_of_mutants`, and `n_select` to validate the full chain (generation → docking → selection → reporting).
-2) **Docking is the slowest stage**: for fast validation, reduce `docking_exhaustiveness` and `docking_num_modes`.
-3) **Parallelism**
-   - Across receptors: `performance.parallel_processing` + `performance.max_workers`
-   - Within a receptor (docking etc.): `performance.number_of_processors` (`-1` means auto)
 
