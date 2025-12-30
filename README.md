@@ -11,8 +11,8 @@ In our model, consisting of four main modules:
 (3) Crossover Operator — recombination by exchanging molecular substructures; 
 
 (4) Multi-Objective Fitness Evaluation & Selection — multi-criterion assessment and selection to discard invalid molecules and drive iterative population optimization.
-
-![FragEvo overview and representations](images/model.png)
+ 
+ <img src="images/model.png" alt="model" style="zoom:180%;" />
 
 *Left: A comparison of SMILES and FragSeq representations of the same molecule. Right: Overview of FragEvo. The pipeline comprises four components.*
 
