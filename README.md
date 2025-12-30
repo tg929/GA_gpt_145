@@ -205,11 +205,11 @@ python FragEvo_main.py --config fragevo/config_fragevo.json --receptor parp1 --o
 python FragEvo_main.py --config fragevo/config_fragevo.json --all_receptors --output_dir FragEvo_output_all
 ```
 
-### 6.3 RAG-score selection (optional)
+### 6.3 CompScore (RAG-score) selection (optional)
 Entry: `FragEvo_rag.py`  
 This pipeline reuses the FragEvo workflow and only swaps the selection stage to `operations/selecting/selecting_rag_score.py`.
 
-`fragevo/config_fragevo_rag.json` currently contains absolute paths (e.g. `/data1/...`). For reproduction on another machine, replace them with relative paths or your local paths.
+Config: `fragevo/config_fragevo_rag.json` (includes optional docking-score elitism via `selection.rag_score_settings.elitism`).
 
 ```bash
 python FragEvo_rag.py --config fragevo/config_fragevo_rag.json --receptor parp1 --output_dir FragEvo_output_rag

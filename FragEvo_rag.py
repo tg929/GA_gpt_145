@@ -42,7 +42,7 @@ def run_workflow_for_receptor(config_path: str, receptor_name: str, output_dir: 
 
 def main():
     parser = argparse.ArgumentParser(description='FragEvo with RAG-score selection')
-    parser.add_argument('--config', type=str, default='fragevo/config_fragevo.json')
+    parser.add_argument('--config', type=str, default='fragevo/config_fragevo_rag.json')
     parser.add_argument('--receptor', type=str, default=None)
     parser.add_argument('--all_receptors', action='store_true')
     parser.add_argument('--output_dir', type=str, default=None)

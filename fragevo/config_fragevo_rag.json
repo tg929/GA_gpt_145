@@ -1,16 +1,19 @@
 {
   "paths": {
-    "project_root": "/data1/ytg/medium_models/FragEvo",
-    "mgltools_path": "/data1/ytg/medium_models/FragEvo/mgltools_x86_64Linux2_1.5.6"
+    "project_root": ".",
+    "mgltools_path": "mgltools_x86_64Linux2_1.5.6"
   },
   "workflow": {
-    "output_directory": "FRAGEVO_output_rag",
-    "max_generations": 5,
-    "initial_population_file": "/data1/ytg/medium_models/FragEvo/datasets/source_compounds/naphthalene_smiles.smi"
+    "output_directory": "FragEvo_output_rag",
+    "max_generations": 10,
+    "initial_population_file": "datasets/initial_population/my_initial_population.smi"
   },
   "gpt": {
     "seed": 42,
     "device": "0",
+    "visible_devices": [
+      0
+    ],
     "temperature": 1.0,
     "n_fragments_to_mask": 1,
     "dynamic_masking": {
@@ -37,13 +40,17 @@
         "sa_max_value": 10.0,
         "sa_denominator": 9.0
       },
+      "elitism": {
+        "enable": true,
+        "dock_top_k": 5
+      },
       "novelty_filter": {
         "enable": false,
         "similarity_threshold": 0.4,
         "qed_min": 0.5,
         "sa_max": 5.0,
         "ds_active_median": -7.5,
-        "reference_smiles_file": "/data1/ytg/medium_models/FragEvo/datasets/source_compounds/naphthalene_smiles.smi",
+        "reference_smiles_file": "datasets/initial_population/my_initial_population.smi",
         "fp_type": "morgan",
         "fp_radius": 2,
         "fp_nbits": 2048
@@ -52,10 +59,10 @@
     }
   },
   "receptors": {
-    "description": "受体配置，支持多个对接目标 - 基于docking_utils.py中定义的五种蛋白",
+    "description": "Receptor configuration (PDBQT + docking box).",
     "default_receptor": {
       "name": "parp1",
-      "description": "PARP1 receptor for drug discovery",
+      "description": "PARP1 receptor (default).",
       "file": "tutorial/parp1.pdbqt",
       "center_x": 26.413,
       "center_y": 11.282,
@@ -65,17 +72,6 @@
       "size_z": 19.995
     },
     "target_list": {
-      "fa7": {
-        "name": "fa7",
-        "description": "FA7 receptor",
-        "file": "tutorial/fa7.pdbqt",
-        "center_x": 10.131,
-        "center_y": 41.879,
-        "center_z": 32.097,
-        "size_x": 20.673,
-        "size_y": 20.198,
-        "size_z": 21.362
-      },
       "parp1": {
         "name": "parp1",
         "description": "PARP1 receptor",
@@ -86,6 +82,17 @@
         "size_x": 18.521,
         "size_y": 17.479,
         "size_z": 19.995
+      },
+      "fa7": {
+        "name": "fa7",
+        "description": "FA7 receptor",
+        "file": "tutorial/fa7.pdbqt",
+        "center_x": 10.131,
+        "center_y": 41.879,
+        "center_z": 32.097,
+        "size_x": 20.673,
+        "size_y": 20.198,
+        "size_z": 21.362
       },
       "5ht1b": {
         "name": "5ht1b",
@@ -98,17 +105,6 @@
         "size_y": 22.5,
         "size_z": 22.5
       },
-      "jak2": {
-        "name": "jak2",
-        "description": "JAK2 receptor",
-        "file": "tutorial/jak2.pdbqt",
-        "center_x": 114.758,
-        "center_y": 65.496,
-        "center_z": 11.345,
-        "size_x": 19.033,
-        "size_y": 17.929,
-        "size_z": 20.283
-      },
       "braf": {
         "name": "braf",
         "description": "BRAF receptor",
@@ -119,15 +115,26 @@
         "size_x": 22.032,
         "size_y": 19.211,
         "size_z": 14.106
+      },
+      "jak2": {
+        "name": "jak2",
+        "description": "JAK2 receptor",
+        "file": "tutorial/jak2.pdbqt",
+        "center_x": 114.758,
+        "center_y": 65.496,
+        "center_z": 11.345,
+        "size_x": 19.033,
+        "size_y": 17.929,
+        "size_z": 20.283
       }
     }
   },
   "docking": {
-    "description": "分子对接参数配置 - 使用QVina2进行对接",
     "dock_choice": "QVinaDocking",
     "conversion_choice": "MGLToolsConversion",
-    "docking_exhaustiveness": 1,
+    "docking_exhaustiveness": 3,
     "docking_num_modes": 10,
+    "seed": 42,
     "number_of_processors": null,
     "max_variants_per_compound": 3,
     "gypsum_thoroughness": 3,
@@ -143,7 +150,6 @@
     "docking_executable": "autogrow/docking/docking_executables/q_vina_2/q_vina_2_1_linux/qvina02",
     "timeout_vs_gtimeout": "timeout",
     "qvina_settings": {
-      "description": "QVina2 specific settings",
       "timeout_gen3d": 30,
       "timeout_dock": 100,
       "num_cpu_dock": 32,
@@ -151,15 +157,21 @@
     }
   },
   "crossover_finetune": {
-    "number_of_crossovers": 100,
+    "crossover_attempts": 50,
     "min_atom_match_mcs": 4,
     "max_time_mcs_prescreen": 1,
     "max_time_mcs_thorough": 1,
-    "protanate_step": true
+    "protanate_step": true,
+    "max_attempts_multiplier": 10,
+    "merge_attempts": 3
   },
   "mutation_finetune": {
-    "number_of_mutants": 100,
+    "mutation_attempts": 50,
+    "max_mutations_per_parent": 2,
     "rxn_library": "all_rxns",
+    "max_attempts_multiplier": 50,
+    "max_consecutive_failures_multiplier": 2,
+    "enable_progress_bar": true,
     "rxn_library_file": "autogrow/operators/mutation/smiles_click_chem/reaction_libraries/all_rxns/All_Rxns_rxn_library.json",
     "function_group_library": "autogrow/operators/mutation/smiles_click_chem/reaction_libraries/all_rxns/All_Rxns_functional_groups.json",
     "complementary_mol_directory": "autogrow/operators/mutation/smiles_click_chem/reaction_libraries/all_rxns/complementary_mol_dir"
@@ -175,15 +187,12 @@
     "enable_nih": false,
     "enable_brenk": false,
     "no_filters": false,
-    "alternative_filters": null,
-    "target_diversity": 0.7,
-    "target_exploitation": 0.3
+    "alternative_filters": null
   },
   "performance": {
-    "parallel_processing": false,
+    "parallel_processing": true,
     "max_workers": -1,
     "number_of_processors": -1,
-    "cleanup_intermediate_files": false
+    "cleanup_intermediate_files": true
   }
 }
-

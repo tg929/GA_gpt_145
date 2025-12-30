@@ -209,11 +209,11 @@ python FragEvo_main.py --config fragevo/config_fragevo.json --receptor parp1 --o
 python FragEvo_main.py --config fragevo/config_fragevo.json --all_receptors --output_dir FragEvo_output_all
 ```
 
-### 6.3 RAG-score 选择策略（可选）
+### 6.3 CompScore（RAG-score）选择策略（可选）
 入口：`FragEvo_rag.py`  
 说明：该入口会复用 FragEvo 流程，仅替换 Selection 阶段为 `operations/selecting/selecting_rag_score.py`。
 
-`fragevo/config_fragevo_rag.json` 当前包含绝对路径（如 `/data1/...`），对外复现前请先改成相对路径或你的本地路径。
+配置文件：`fragevo/config_fragevo_rag.json`（支持在 `selection.rag_score_settings.elitism` 中配置基于对接分数的精英保留）。
 
 ```bash
 python FragEvo_rag.py --config fragevo/config_fragevo_rag.json --receptor parp1 --output_dir FragEvo_output_rag
