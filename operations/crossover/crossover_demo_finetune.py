@@ -10,7 +10,6 @@ import autogrow.operators.crossover.smiles_merge.smiles_merge as smiles_merge
 import autogrow.operators.crossover.execute_crossover as execute_crossover
 import autogrow.operators.filter.execute_filters as Filter
 
-# 配置日志
 def setup_logging():
     logging.basicConfig(
         level=logging.INFO,
