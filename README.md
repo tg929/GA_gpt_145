@@ -12,7 +12,7 @@ In our model, consisting of four main modules:
 
 (4) Multi-Objective Fitness Evaluation & Selection — multi-criterion assessment and selection to discard invalid molecules and drive iterative population optimization.
 
-
+ <img src="image/20251231212726_91_16.png" alt="image/20251231212726_91_16.png" style="zoom: 50%;" />
 ---
 
 ## Installation
